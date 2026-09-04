@@ -8,38 +8,47 @@ that accounts for daylight saving.
 
 ## ⏭ Pick up here
 
-**State as of 4 Sept 2026:** phases 1–5 are done. The app searches 11,486 bundled cities, holds
-six, derives every row from the dial, switches 12h/24h, recomputes real daylight saving for any
-month, remembers all of it across a reload, runs with the server switched off, and now ships a
-**light and dark scheme**. Colour is closed.
+**Read this block, then the *Next version* section. Everything else is reference.**
 
-**Shipped: Sky ground, soft wheel.** The bright wheel was the other finalist and the call was
-close — its exact values are kept as a reserve, in a comment block at the foot of
-`app/styles.css` and in the table below.
+Pando is a mobile-first web app for comparing the time across up to six cities, on a draggable
+24-hour dial, with a month selector that applies real daylight saving. Plain HTML/CSS/JS — no
+build step, no dependencies, no server, no accounts.
 
-**Run it:** `cd Pando/app && ./start.sh` (the app, :8020). `cd Pando && ./start-docs.sh`
-for the design docs (:8021) — `paper-options.html` needs a server, it frames the real app.
+| | |
+|---|---|
+| **Live** | https://halleybennett.github.io/pando/ |
+| **Repo** | `github.com/halleybennett/pando` — public, `main`, Pages from root |
+| **Run the app** | `cd app && ./start.sh` → :8020 |
+| **Run the design docs** | `./start-docs.sh` → :8021 *(needed — some frame the real app)* |
+| **Check colour** | `python3 tools/a11y-audit.py` — reads the real tokens, audits both schemes |
+| **Ship a change** | `./tools/release.sh "message"` — stamps the build, audits, commits, pushes |
 
-**Check it:** `python3 tools/a11y-audit.py` reads the tokens straight out of `app/styles.css`
-and audits both schemes. It passes as of 4 Sept. Run it after any colour change.
+**Status: built, shipped and in daily use.** Phases 0–6 are done — cities, dial, DST, persistence,
+offline PWA, light + dark, mark, icon, hosting. Nothing is half-finished and nothing is broken.
 
-**LIVE at https://halleybennett.github.io/pando/** — 4 Sept 2026.
+**So there is no "next task" — there is a list of things Halley wants better.** They are in
+**## Next version**, each with the measurements and the reasoning, in the order she raised them.
+Nothing there is scoped or scheduled; ask which one she wants before starting.
 
-**Repo:** `github.com/halleybennett/pando`, public, default branch `main`, Pages serving `main` /
-root. The repo root holds an `index.html` that redirects to `app/`, so the public URL has no
-`/app/` in it. Push to `main` and Pages rebuilds in about half a minute.
+**Three things that will bite you if you do not know them:**
+- **`reference/` is gitignored and must stay so.** Frames from a video of someone else's app; a
+  public repo is publication.
+- **The mark exists in two versions on purpose** — see *The mark and the icon* below. It looks like
+  drift and is not.
+- **Do not reintroduce a speed-sensing "slow drag".** Three attempts failed for the same structural
+  reason; see *Slow-drag fine adjust* under Locked decisions.
 
-**`reference/` is gitignored and must stay that way** — those are frames from a video of someone
-else's app. A public repo is publication.
+**Open, not urgent:**
+- Zone abbreviations fall back to country names for most cities; a small hand-map (`JST`, `WAT`,
+  `HST`…) would read better.
+- The Nov 1 DST edge case still needs a decision — see *Technical notes*.
+- The dial has no keyboard/VoiceOver path. Accepted deliberately; see *Known accepted gaps*.
+- The 16px mark has a 0.2-unit stalk/soil overlap where it should have a gap. Invisible at that
+  size; the icon derives its gap from the stroke weights instead.
 
-**Verified on the live URL, not just locally:** HTTPS, the redirect, service worker registered at
-scope `/pando/app/`, `pando-v1` cache populated, manifest and all three icons 200, the full
-11,486-city search working, times correct. No console errors.
+---
 
-**Next up:**
-1. **Add to Home Screen on the phone** — must be **Safari** on iOS; Chrome on iPhone cannot install
-   a PWA. Share → Add to Home Screen, from `https://halleybennett.github.io/pando/`. — Add to Home Screen on the phone needs HTTPS; localhost only installs on the Mac.
-   Decided: local git → GitHub → Pages, source public.
+## The mark and the icon
 
 **The mark is replaced — decided 4 Sept 2026.** The three-stalk mark is retired: it read as
 candles, because three separate stalks standing next to each other are three objects, not a plant.
@@ -66,15 +75,6 @@ the tile and the dial are literally the same colours — an earlier version used
 
 **Icon pages:** `icon-current.html` is the only live one; every other icon/mark page carries a
 superseded banner pointing at it, and `icon-v2-and-header.html` is a redirect.
-
-**Parked, pick up any time:****Parked, pick up any time:**
-- The 16px in-app mark has a 0.2-unit stalk/soil overlap where it should have a gap (stroke caps,
-  not spacing). Invisible at 16px, so it is left alone; the icon derives its gap from the stroke
-  weights instead.
-- Zone abbreviations fall back to country names for most cities; a small hand-map (`JST`, `WAT`,
-  `HST`…) would read better.
-- The Nov 1 DST edge case still needs a decision — see *Technical notes*.
-- The dial has no keyboard/VoiceOver path. Accepted deliberately; see *Known accepted gaps*.
 
 ---
 
@@ -604,8 +604,11 @@ Flagging rather than deciding.
    pipeline, full colour tokenisation.
 5. ~~**Colour: ground, wheel, dark scheme**~~ — **done, 4 Sept 2026.** Sky + soft wheel, light
    and dark, every UI colour sampled from the wheel. `tools/a11y-audit.py` passes.
-6. **App icon** ← next — it now has a ground to work against
+6. ~~**App icon**~~ — **done, 4 Sept 2026.** V2b: the grove in a wheel-gradient cutout.
 7. ~~**Ship**~~ — **done, 4 Sept 2026.** Public repo, Pages, live URL verified.
+
+**All phases complete.** Further work is in *Next version*, above.
+
 8. *Optional* — Capacitor wrap for the App Store
 
 ---
