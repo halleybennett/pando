@@ -433,7 +433,17 @@ filled or outlined at constant size.
 
 Not scoped or scheduled. Recorded here so the reasoning survives.
 
-**1. Drag to reorder the city list.** Order currently only changes via *Set home*, which promotes a
+**1. Row actions should be the Messages swipe, not an expanding strip.** Raised 4 Sept 2026.
+Today a row opens a panel *beneath* itself, which pushes the rest of the list down — the layout
+moves, so it reads as the app rearranging rather than as you acting on one row. The pattern Halley
+wants, and that everybody already knows, is Apple's: the row slides sideways **under your finger**,
+revealing two action boxes beside it, tracking the drag rather than snapping open. Needs a
+transform on `.face` driven by the existing pointer handlers, the action boxes laid out behind it,
+a release threshold and a spring back. The gesture plumbing is already there — `pointerdown`
+/`pointermove` on `.cities` with a horizontal/vertical decision — so this is mostly presentation.
+**Note it shares gesture space with drag-to-reorder below; design them together.**
+
+**2. Drag to reorder the city list.** Order currently only changes via *Set home*, which promotes a
 city to the top — there is no way to arrange the rest. Note that order is not cosmetic here: index
 0 *is* home and drives the dial, so a reorder gesture and the home rule have to agree. Simplest
 version that keeps them consistent: dragging to position 0 promotes to home, exactly as the button
@@ -441,7 +451,7 @@ does. The rows already own `pointerdown`/`pointermove` for swipe-to-delete, so t
 to share that gesture space — a long-press to pick up is the usual answer, and it must not fight
 the horizontal swipe.
 
-**2. The dial still is not good enough to set an arbitrary time.** Detents made the quarter hours
+**3. The dial still is not good enough to set an arbitrary time.** Detents made the quarter hours
 easy and reliable — Halley's verdict on the shipped version was "better but definitely not great",
 and the honest reading is that quarter hours now work while everything else is still out of reach.
 
@@ -466,7 +476,7 @@ What is *not* worth retrying: any scheme that senses drag speed. Three rounds of
 because fingers start slow, so any velocity threshold fires within the first few move events of
 every drag. See *Slow-drag fine adjust* under Locked decisions.
 
-**3. The first run lands strangely.** Halley, after using it: the sheet appears before you have
+**4. The first run lands strangely.** Halley, after using it: the sheet appears before you have
 seen the app, and then choosing a city produces *two* rows — yours and Aspen — so the choice does
 not feel like yours. The question is being asked with no context, and the answer arrives with an
 uninvited passenger.
@@ -480,18 +490,24 @@ Two directions Halley raised:
   in it, you get a moment to see what it is, and only then is the question asked. The prompt has
   context by the time it arrives. Cost: a timed interruption is its own kind of rude, and the
   delay needs a value nobody can justify from first principles.
-- **Seed Aspen and say nothing** — rely on the existing controls to let you make it yours, with a
-  small motion cue so they get discovered. Worth knowing that **swipe-to-delete and Set home
-  already exist** and always have; they are not missing, they are invisible. A row swipes left to
-  reveal Delete, and Set home sits in the same panel. So this option is really *"make the existing
-  affordances discoverable"*, and a one-time bounce on the first row is a reasonable way in.
-  Cost: someone who never finds them is stuck looking at Aspen, and Aspen is not their home.
+- **Seed Aspen and say nothing** — rely on row actions to let you make it yours, with a small
+  motion cue so they get discovered. **The current row actions are not the interaction Halley
+  means.** What exists is an *expanding panel*: swiping left (or tapping) adds `.open` to the row,
+  which reveals a `Set home` / `Delete` pair in a strip that appears **below** the row and pushes
+  the list down. What she is describing is the **Apple Messages pattern** — the row itself slides
+  sideways under the finger, revealing two coloured action boxes **alongside** it, with the row
+  tracking your finger rather than snapping to a state. That is a real build, not a discoverability
+  fix: the row needs a transform that follows the drag, boxes sized to what the swipe reveals, a
+  release threshold, and a spring back. Worth doing — it is the pattern everyone already knows, and
+  it does not disturb the layout the way the current strip does. A one-time bounce on the first row
+  to advertise it still applies.
+  Cost: someone who never finds it is stuck looking at Aspen, and Aspen is not their home.
 
 A third worth considering: **seed Aspen, and let the empty second slot do the asking** — an
 "Add your city" row that reads as an invitation rather than a modal. No timer, no interruption, no
 uninvited passenger, and the first tap opens the sheet you already have.
 
-**4. A typography and spacing pass.** Three things Halley flagged after living with it, all in
+**5. A typography and spacing pass.** Three things Halley flagged after living with it, all in
 the same territory and best done together.
 
 - **The city name in the dial needs a better answer than shrinking.** It currently measures itself
@@ -511,7 +527,7 @@ the same territory and best done together.
   right-hand column (28pt time + 13pt day-shift line), so the name can grow without changing the
   row height at all — the constraint is the *right* column, not the left. Cheap to try.
 
-**5. Usage analytics.** Worth knowing this is not free on GitHub Pages: it is static hosting with
+**6. Usage analytics.** Worth knowing this is not free on GitHub Pages: it is static hosting with
 no server logs, so anything at all means adding a client-side script. Candidates —
 **GoatCounter** (free for personal use, no cookies, ~3KB), **Plausible** (~£7/mo, no cookies),
 self-hosted **Umami**. Two caveats specific to Pando: the service worker means repeat visits can
@@ -520,7 +536,7 @@ any figure will undercount real use, and should be read as "sessions that reache
 not "sessions". Also: adding a third-party script to a page that currently makes **zero** network
 calls after first load is a real change in what the app is. Worth deciding deliberately.
 
-**6. The search sheet's position is wrong on desktop.** It is `position:fixed; inset:0` anchored to
+**7. The search sheet's position is wrong on desktop.** It is `position:fixed; inset:0` anchored to
 the *top* of the viewport, so tapping **Add city** — which sits at the bottom of the list — throws
 the field to the top of the screen. On a phone that is defensible: the sheet lands near the
 keyboard and the viewport is short. On a desktop browser it is a long way from where you clicked,
