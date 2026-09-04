@@ -139,7 +139,7 @@ footer{ text-align:center; color:var(--muted); font-family:var(--accent-font);
     <div class="band">
       <p class="kick">Pando</p>
       <h1>Design Kit</h1>
-      <span class="status">Status: shipped 4 Sept 2026 — Sky ground, soft wheel, light + dark</span>
+      <span class="status">Status: shipped 4 Sept 2026 — live at halleybennett.github.io/pando</span>
     </div>
     <div class="foot">Daybreak, tuned: a pink-paper instrument · source of truth = <code>palette-tuner.html</code> (color) &amp; <code>dial-prototype-v3.html</code> (dial)</div>
   </div>
@@ -181,6 +181,27 @@ footer{ text-align:center; color:var(--muted); font-family:var(--accent-font);
       <div class="sw"><div class="chip" style="background:#f7c948"></div><div class="meta"><div class="nm">Noon</div><div class="hex">#f7c948</div><div class="role">Fill of the sun glyph, and the foot of the dial ramp. Never text, never bare.</div></div></div>
       <div class="sw"><div class="chip" style="background:#a97103"></div><div class="meta"><div class="nm">Amber</div><div class="hex">#a97103</div><div class="role">Outline &amp; rays of the sun glyph only. Exists purely to get Noon over the 3:1 floor.</div></div></div>
       <div class="sw"><div class="chip" style="background:#dedbd8"></div><div class="meta"><div class="nm">Hairline</div><div class="hex">#dedbd8</div><div class="role">All borders &amp; row dividers.</div></div></div>
+      <div class="sw"><div class="chip" style="background:#f4f1f7"></div><div class="meta"><div class="nm">Field</div><div class="hex">#f4f1f7</div><div class="role">Input backgrounds. A solid, because the paper is a gradient and a gradient inside a search field looks like a mistake.</div></div></div>
+      <div class="sw"><div class="chip" style="background:#f9f7f3"></div><div class="meta"><div class="nm">Row open</div><div class="hex">#f9f7f3</div><div class="role">An opened city row, tinted off the paper.</div></div></div>
+    </div>
+
+    <h3>Role tokens — separate from the palette on purpose</h3>
+    <div class="panel">
+      <p style="margin:0 0 16px;font-size:16.2px;color:var(--muted)">A palette entry is a colour.
+        A role token is a <i>job</i>. Keeping them apart means changing which colour fills the home
+        chip does not drag the palette entry around with it — and it caught a live bug: the chip's
+        text was <code>var(--ink)</code>, which silently failed the moment <code>--ink</code> went
+        light in dark mode.</p>
+      <table>
+        <tr><th>Token</th><th>Light</th><th>Dark</th><th>Job</th></tr>
+        <tr><td class="val">--chip-bg</td><td><span class="dot" style="background:#8ba2f0"></span><code>#8ba2f0</code></td><td><span class="dot" style="background:#fbe29c"></span><code>#fbe29c</code></td><td>the home pill</td></tr>
+        <tr><td class="val">--on-chip</td><td><code>#14161a</code></td><td><code>#14161a</code></td><td>its label — dark in <i>both</i> schemes</td></tr>
+        <tr><td class="val">--on-night</td><td><code>#ffffff</code></td><td><code>#14161a</code></td><td>text sitting on the action colour</td></tr>
+        <tr><td class="val">--field</td><td><code>#f4f1f7</code></td><td><code>#241f4a</code></td><td>input backgrounds</td></tr>
+        <tr><td class="val">--row-open</td><td><code>#f9f7f3</code></td><td><code>#332d60</code></td><td>an opened row</td></tr>
+        <tr><td class="val">--scrim</td><td><code>rgba(20,22,26,.28)</code></td><td><code>rgba(4,5,10,.55)</code></td><td>behind the search sheet</td></tr>
+        <tr><td class="val">--ramp-mode</td><td colspan="2"><code>mix</code> · toward <code>--ramp-toward</code> by <code>--ramp-soften</code></td><td>how the wheel is toned down; <code>lift</code> is the reserve</td></tr>
+      </table>
     </div>
 
     <h3>The dial ramp</h3>
@@ -310,7 +331,7 @@ footer{ text-align:center; color:var(--muted); font-family:var(--accent-font);
         <tr><td>Dial home-city label</td><td class="val">10px</td><td class="val">5.39:1</td><td class="pass">Pass</td></tr>
         <tr><td>Country, day-shift, am/pm</td><td class="val">10.5–17px</td><td class="val">5.39:1</td><td class="pass">Pass</td></tr>
         <tr><td>Home chip label</td><td class="val">11px</td><td class="val">7.35:1</td><td class="pass">Pass</td></tr>
-        <tr><td><code>12H · 24H</code> separator @45%</td><td class="val">11px</td><td class="val">1.90:1</td><td>Exempt — decorative dot, no meaning</td></tr>
+        <tr><td><code>12H · 24H</code> separator @45%</td><td class="val">12px</td><td class="val">1.90:1</td><td>Exempt — decorative dot, no meaning</td></tr>
         <tr><td><s>Already-added row @40% opacity</s></td><td class="val">12px</td><td class="val">1.75:1</td><td class="fail">Failed — replaced</td></tr>
         <tr><td>Already-added row, quietened by colour</td><td class="val">12px</td><td class="val">5.39:1</td><td class="pass">Pass</td></tr>
       </table>
@@ -469,36 +490,101 @@ footer{ text-align:center; color:var(--muted); font-family:var(--accent-font);
         </div>
       </div>
     </div>
+  </section>
 
   <!-- 5. ICON / IMAGERY -->
   <section>
     <h2><span class="num">05</span>Icons &amp; imagery</h2>
-    <p class="lead">No icon library, no photography, no illustration. At this size a font-icon set would be more bytes than the whole app.</p>
+    <p class="lead">No icon library, no photography, no illustration. At this size a font-icon set
+      would be more bytes than the whole app.</p>
     <div class="panel">
-      <p style="margin:0;font-size:16.8px">Every glyph is hand-drawn inline SVG on a 24×24 grid: <b>1.25px stroke, round caps, no fill, currentColor</b>. The set is four — search, plus, chevron, close — plus the sun and moon in §04. The dial is SVG on the same principles, and its tick marks are generated, not drawn.</p>
-
-      <h3 style="margin-top:30px">The mark</h3>
-      <div style="display:flex;gap:34px;align-items:flex-end;flex-wrap:wrap;background:var(--page-bg);border-radius:14px;padding:24px 26px;margin-bottom:20px">
-        <div style="text-align:center"><svg viewBox="0 0 20 18" width="71.1" height="64" role="img" aria-label="Pando"><path d="M4.2 13.40 L4.2 16.4" stroke="#14161a" stroke-width="0.95" stroke-linecap="round" fill="none"/><path d="M10 9.20 L10 16.4" stroke="#14161a" stroke-width="0.95" stroke-linecap="round" fill="none"/><path d="M15.8 14.60 L15.8 16.4" stroke="#14161a" stroke-width="0.95" stroke-linecap="round" fill="none"/><path d="M2.2 17.2 L7 17.2 M9 17.2 L11.6 17.2 M13.6 17.2 L18 17.2" stroke="#14161a" stroke-width="1.05" stroke-linecap="round" opacity=".6"/><g transform="translate(0.66,7.38) scale(0.443)"><path d="M8 1.4 C10.9 4.4 13.1 6.9 13.1 9.3 C13.1 11.9 10.9 13.6 8 13.6 C5.1 13.6 2.9 11.9 2.9 9.3 C2.9 6.9 5.1 4.4 8 1.4 Z" fill="#14161a"/></g><g transform="translate(5.67,1.84) scale(0.541)"><path d="M8 1.4 C10.9 4.4 13.1 6.9 13.1 9.3 C13.1 11.9 10.9 13.6 8 13.6 C5.1 13.6 2.9 11.9 2.9 9.3 C2.9 6.9 5.1 4.4 8 1.4 Z" fill="#14161a"/></g><g transform="translate(12.52,9.03) scale(0.410)"><path d="M8 1.4 C10.9 4.4 13.1 6.9 13.1 9.3 C13.1 11.9 10.9 13.6 8 13.6 C5.1 13.6 2.9 11.9 2.9 9.3 C2.9 6.9 5.1 4.4 8 1.4 Z" fill="#14161a"/></g></svg><div style="font-size:13px;color:var(--muted);margin-top:10px;letter-spacing:.08em">64px</div></div>
-        <div style="text-align:center"><svg viewBox="0 0 20 18" width="26.7" height="24" role="img" aria-label="Pando"><path d="M4.2 13.40 L4.2 16.4" stroke="#6e6874" stroke-width="0.95" stroke-linecap="round" fill="none"/><path d="M10 9.20 L10 16.4" stroke="#6e6874" stroke-width="0.95" stroke-linecap="round" fill="none"/><path d="M15.8 14.60 L15.8 16.4" stroke="#6e6874" stroke-width="0.95" stroke-linecap="round" fill="none"/><path d="M2.2 17.2 L7 17.2 M9 17.2 L11.6 17.2 M13.6 17.2 L18 17.2" stroke="#6e6874" stroke-width="1.05" stroke-linecap="round" opacity=".6"/><g transform="translate(0.66,7.38) scale(0.443)"><path d="M8 1.4 C10.9 4.4 13.1 6.9 13.1 9.3 C13.1 11.9 10.9 13.6 8 13.6 C5.1 13.6 2.9 11.9 2.9 9.3 C2.9 6.9 5.1 4.4 8 1.4 Z" fill="#6e6874"/></g><g transform="translate(5.67,1.84) scale(0.541)"><path d="M8 1.4 C10.9 4.4 13.1 6.9 13.1 9.3 C13.1 11.9 10.9 13.6 8 13.6 C5.1 13.6 2.9 11.9 2.9 9.3 C2.9 6.9 5.1 4.4 8 1.4 Z" fill="#6e6874"/></g><g transform="translate(12.52,9.03) scale(0.410)"><path d="M8 1.4 C10.9 4.4 13.1 6.9 13.1 9.3 C13.1 11.9 10.9 13.6 8 13.6 C5.1 13.6 2.9 11.9 2.9 9.3 C2.9 6.9 5.1 4.4 8 1.4 Z" fill="#6e6874"/></g></svg><div style="font-size:13px;color:var(--muted);margin-top:10px;letter-spacing:.08em">24px</div></div>
-        <div style="text-align:center"><svg viewBox="0 0 20 18" width="17.8" height="16" role="img" aria-label="Pando"><path d="M4.2 13.40 L4.2 16.4" stroke="#6e6874" stroke-width="0.95" stroke-linecap="round" fill="none"/><path d="M10 9.20 L10 16.4" stroke="#6e6874" stroke-width="0.95" stroke-linecap="round" fill="none"/><path d="M15.8 14.60 L15.8 16.4" stroke="#6e6874" stroke-width="0.95" stroke-linecap="round" fill="none"/><path d="M2.2 17.2 L7 17.2 M9 17.2 L11.6 17.2 M13.6 17.2 L18 17.2" stroke="#6e6874" stroke-width="1.05" stroke-linecap="round" opacity=".6"/><g transform="translate(0.66,7.38) scale(0.443)"><path d="M8 1.4 C10.9 4.4 13.1 6.9 13.1 9.3 C13.1 11.9 10.9 13.6 8 13.6 C5.1 13.6 2.9 11.9 2.9 9.3 C2.9 6.9 5.1 4.4 8 1.4 Z" fill="#6e6874"/></g><g transform="translate(5.67,1.84) scale(0.541)"><path d="M8 1.4 C10.9 4.4 13.1 6.9 13.1 9.3 C13.1 11.9 10.9 13.6 8 13.6 C5.1 13.6 2.9 11.9 2.9 9.3 C2.9 6.9 5.1 4.4 8 1.4 Z" fill="#6e6874"/></g><g transform="translate(12.52,9.03) scale(0.410)"><path d="M8 1.4 C10.9 4.4 13.1 6.9 13.1 9.3 C13.1 11.9 10.9 13.6 8 13.6 C5.1 13.6 2.9 11.9 2.9 9.3 C2.9 6.9 5.1 4.4 8 1.4 Z" fill="#6e6874"/></g></svg><div style="font-size:13px;color:var(--accent);margin-top:10px;letter-spacing:.08em">16px · in use</div></div>
-      </div>
-      <p style="margin:0 0 14px;font-size:16.8px;color:var(--muted)"><b style="color:var(--ink);font-weight:400">Three stalks of uneven height, each carrying a leaf, rising from a broken soil line.</b> One root system showing above ground as many trees — which is what a pando is. Solid blades on 0.95 stalks; the soil line is three dashes at 1.05 and 60% opacity, which the stalks do not touch.</p>
-      <p style="margin:0 0 14px;font-size:16.8px;color:var(--muted)"><b style="color:var(--ink);font-weight:400">Always 16px, never 12.</b> The mark is sized independently of the 12px label beside it — a brand mark has no obligation to match the type it sits next to. The soil dashes are the finest detail in the system and the first thing to vanish; at 12px they fall below a device pixel on a 1× screen.</p>
-      <div class="callout warn"><b>Never join the stalks with a solid bar.</b> A continuous base under three uprights is a candle holder at any size. The rejected alternatives are worth recording, because each one solved the candelabra by becoming a different wrong object: converging stalks make an <b>anchor</b>, a forked trunk makes a <b>clover</b>, removing the stalks makes <b>falling rain</b>. <b>Asymmetry does the real work</b> — uneven spacing and uneven leaf sizes are why three uprights read as a stand of trees rather than as an object.</div>
-
-      <h3 style="margin-top:30px">Held in reserve</h3>
-      <div style="display:flex;gap:40px;align-items:flex-end;flex-wrap:wrap;background:var(--page-bg);border-radius:14px;padding:24px 26px">
-        <div style="text-align:center;max-width:170px"><svg viewBox="0 0 20 18" width="53.3" height="48" role="img" aria-label="Pando"><path d="M4.2 13.00 L4.2 17.2" stroke="#14161a" stroke-width="0.95" stroke-linecap="round" fill="none"/><path d="M10 9.20 L10 17.2" stroke="#14161a" stroke-width="0.95" stroke-linecap="round" fill="none"/><path d="M15.8 14.40 L15.8 17.2" stroke="#14161a" stroke-width="0.95" stroke-linecap="round" fill="none"/><g transform="translate(0.53,6.76) scale(0.459)"><path d="M8 1.4 C10.9 4.4 13.1 6.9 13.1 9.3 C13.1 11.9 10.9 13.6 8 13.6 C5.1 13.6 2.9 11.9 2.9 9.3 C2.9 6.9 5.1 4.4 8 1.4 Z" fill="#14161a"/></g><g transform="translate(5.67,1.84) scale(0.541)"><path d="M8 1.4 C10.9 4.4 13.1 6.9 13.1 9.3 C13.1 11.9 10.9 13.6 8 13.6 C5.1 13.6 2.9 11.9 2.9 9.3 C2.9 6.9 5.1 4.4 8 1.4 Z" fill="#14161a"/></g><g transform="translate(12.52,8.83) scale(0.410)"><path d="M8 1.4 C10.9 4.4 13.1 6.9 13.1 9.3 C13.1 11.9 10.9 13.6 8 13.6 C5.1 13.6 2.9 11.9 2.9 9.3 C2.9 6.9 5.1 4.4 8 1.4 Z" fill="#14161a"/></g></svg><div style="font-size:14px;color:var(--muted);margin-top:10px"><b style="color:var(--ink);font-weight:400">No soil line</b><br>Stalks run to the baseline. Simplest, and the only version that survives 12px.</div></div>
-        <div style="text-align:center;max-width:170px">
-          <div style="height:48px;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:200;letter-spacing:.2em;text-transform:uppercase;color:#14161a">Pando</div>
-          <div style="font-size:14px;color:var(--muted);margin-top:10px"><b style="color:var(--ink);font-weight:400">No mark</b><br>Name alone. The chevron on the control already separates identity from function.</div></div>
-      </div>
-      <p style="margin:16px 0 0;font-size:16.8px;color:var(--muted)">Both are <b style="color:var(--ink);font-weight:400">live alternates, not rejects</b> — swapping to either is a one-line change and needs no other adjustment.</p>
-
-      <p style="margin:22px 0 0;font-size:16.8px;color:var(--muted)"><b style="color:var(--ink);font-weight:400">App icon</b> for Add to Home Screen: still to design. It must read at 60px, which rules out the full dial — the mark is the obvious candidate.</p>
+      <p style="margin:0;font-size:16.2px;color:var(--muted)">Every glyph is hand-drawn inline SVG:
+        search, plus, chevron, close, plus the sun and moon in §04. The plus is drawn as two stroked
+        lines rather than a <code>+</code> character — a glyph's position comes from font metrics,
+        not geometry, so it cannot be reliably centred in a circle. The dial is SVG on the same
+        principles, and its tick marks are generated, not drawn.</p>
     </div>
-  </section>
+
+    <h3>The mark</h3>
+    <div class="panel">
+      <div style="display:flex;gap:44px;align-items:flex-end;color:var(--ink);margin-bottom:22px">
+        <figure style="margin:0;text-align:center"><svg viewBox="6.3 0 87.4 83.5" width="66.99" height="64" aria-hidden="true" fill="currentColor"><g fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M 24 50.0 L 24 77"/><path d="M 76 56.0 L 76 77"/><path d="M 50 36.0 L 50 75.5 Q 50 82 43.5 82 L 16 82"/><path d="M 50 75.5 Q 50 82 56.5 82 L 84 82"/></g><g transform="translate(24,16)"><path d="M -1.04 0 C 1.50 8.16, 11.69 10.88, 14.99 19.72 C 14.99 27.88, 8.24 34.68, 0.81 34.00 L -0.81 34.00 C -6.61 34.68, -12.02 27.88, -12.02 19.72 C -12.02 10.88, -1.20 8.16, -1.04 0 Z"/></g><g transform="translate(50,2)"><path d="M -1.04 0 C 1.50 8.16, 11.69 10.88, 14.99 19.72 C 14.99 27.88, 8.24 34.68, 0.81 34.00 L -0.81 34.00 C -6.61 34.68, -12.02 27.88, -12.02 19.72 C -12.02 10.88, -1.20 8.16, -1.04 0 Z"/></g><g transform="translate(76,22)"><path d="M -1.04 0 C 1.50 8.16, 11.69 10.88, 14.99 19.72 C 14.99 27.88, 8.24 34.68, 0.81 34.00 L -0.81 34.00 C -6.61 34.68, -12.02 27.88, -12.02 19.72 C -12.02 10.88, -1.20 8.16, -1.04 0 Z"/></g></svg>
+          <figcaption style="font-size:11px;color:var(--muted);margin-top:8px">64px</figcaption></figure>
+        <figure style="margin:0;text-align:center"><svg viewBox="6.3 0 87.4 83.5" width="25.12" height="24" aria-hidden="true" fill="currentColor"><g fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M 24 50.0 L 24 77"/><path d="M 76 56.0 L 76 77"/><path d="M 50 36.0 L 50 75.5 Q 50 82 43.5 82 L 16 82"/><path d="M 50 75.5 Q 50 82 56.5 82 L 84 82"/></g><g transform="translate(24,16)"><path d="M -1.04 0 C 1.50 8.16, 11.69 10.88, 14.99 19.72 C 14.99 27.88, 8.24 34.68, 0.81 34.00 L -0.81 34.00 C -6.61 34.68, -12.02 27.88, -12.02 19.72 C -12.02 10.88, -1.20 8.16, -1.04 0 Z"/></g><g transform="translate(50,2)"><path d="M -1.04 0 C 1.50 8.16, 11.69 10.88, 14.99 19.72 C 14.99 27.88, 8.24 34.68, 0.81 34.00 L -0.81 34.00 C -6.61 34.68, -12.02 27.88, -12.02 19.72 C -12.02 10.88, -1.20 8.16, -1.04 0 Z"/></g><g transform="translate(76,22)"><path d="M -1.04 0 C 1.50 8.16, 11.69 10.88, 14.99 19.72 C 14.99 27.88, 8.24 34.68, 0.81 34.00 L -0.81 34.00 C -6.61 34.68, -12.02 27.88, -12.02 19.72 C -12.02 10.88, -1.20 8.16, -1.04 0 Z"/></g></svg>
+          <figcaption style="font-size:11px;color:var(--muted);margin-top:8px">24px</figcaption></figure>
+        <figure style="margin:0;text-align:center"><svg viewBox="6.3 0 87.4 83.5" width="16.75" height="16" aria-hidden="true" fill="currentColor"><g fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M 24 50.0 L 24 77"/><path d="M 76 56.0 L 76 77"/><path d="M 50 36.0 L 50 75.5 Q 50 82 43.5 82 L 16 82"/><path d="M 50 75.5 Q 50 82 56.5 82 L 84 82"/></g><g transform="translate(24,16)"><path d="M -1.04 0 C 1.50 8.16, 11.69 10.88, 14.99 19.72 C 14.99 27.88, 8.24 34.68, 0.81 34.00 L -0.81 34.00 C -6.61 34.68, -12.02 27.88, -12.02 19.72 C -12.02 10.88, -1.20 8.16, -1.04 0 Z"/></g><g transform="translate(50,2)"><path d="M -1.04 0 C 1.50 8.16, 11.69 10.88, 14.99 19.72 C 14.99 27.88, 8.24 34.68, 0.81 34.00 L -0.81 34.00 C -6.61 34.68, -12.02 27.88, -12.02 19.72 C -12.02 10.88, -1.20 8.16, -1.04 0 Z"/></g><g transform="translate(76,22)"><path d="M -1.04 0 C 1.50 8.16, 11.69 10.88, 14.99 19.72 C 14.99 27.88, 8.24 34.68, 0.81 34.00 L -0.81 34.00 C -6.61 34.68, -12.02 27.88, -12.02 19.72 C -12.02 10.88, -1.20 8.16, -1.04 0 Z"/></g></svg>
+          <figcaption style="font-size:11px;color:var(--muted);margin-top:8px">16px · in use</figcaption></figure>
+      </div>
+      <p style="margin:0 0 14px;font-size:16.2px;color:var(--muted)">
+        <b style="color:var(--ink);font-weight:400">A grove joined by a root.</b> Three aspen at
+        uneven heights, and the root that connects them: the outer stems turn into lateral roots
+        reaching for the edge, and the centre stem runs deeper before forking beneath the other two.
+        Which is what Pando is — a colony of some 47,000 quaking aspen in Utah sharing one root
+        system, genetically one organism. The trees are only what you can see of it.</p>
+      <p style="margin:0;font-size:16.2px;color:var(--muted)">
+        <b style="color:var(--ink);font-weight:400">Leaves are asymmetric, with a midrib only.</b>
+        The blade leans, as a real one does. A full vein fan was drawn and dropped: below about
+        120px it stops being detail and becomes noise, and only the centre line survives anyway.</p>
+    </div>
+
+    <h3>Two versions, and why</h3>
+    <div class="panel">
+      <table>
+        <tr><th></th><th>App icon</th><th>Header mark</th></tr>
+        <tr><td class="val">roots</td><td>all three trees</td><td>centre only; outer stems bare</td></tr>
+        <tr><td class="val">midribs</td><td>visible</td><td>dropped</td></tr>
+        <tr><td class="val">centre root</td><td>26 either side</td><td>34</td></tr>
+        <tr><td class="val">lives in</td><td><code>tools/make-icons.py</code></td><td><code>markSVG()</code> in <code>app/app.js</code></td></tr>
+      </table>
+      <div class="callout" style="margin-top:20px"><b>This is deliberate, not drift.</b> The header
+      draws at 16px. At that size the two-line root system is a <b>0.37px</b> stroke and the midribs
+      close up — both turn to mush. One forked line survives; two do not. The icon has 512px and
+      keeps the detail. A mark with a reduced small-size variant is ordinary practice, but it looks
+      like a mistake to anyone who finds it later, so it is written down here.
+      <br><br>
+      The header mark is <b>baked path data</b> rather than a generator, because none of it varies
+      at runtime. The parametric source, with the sliders it was tuned on, is
+      <code>icon-current.html</code>.</div>
+    </div>
+
+    <h3>App icon</h3>
+    <div class="panel">
+      <div style="display:flex;gap:34px;align-items:flex-end;flex-wrap:wrap;margin-bottom:20px">
+        <figure style="margin:0;text-align:center">
+          <img src="app/icons/icon-512.png" width="150" height="150" alt=""
+            style="display:block;border-radius:22.37%;box-shadow:0 1px 4px rgba(20,22,26,.18)">
+          <figcaption style="font-size:11px;color:var(--muted);margin-top:8px">512</figcaption></figure>
+        <figure style="margin:0;text-align:center">
+          <img src="app/icons/apple-touch-icon.png" width="76" height="76" alt=""
+            style="display:block;border-radius:22.37%;box-shadow:0 1px 3px rgba(20,22,26,.2)">
+          <figcaption style="font-size:11px;color:var(--muted);margin-top:8px">76</figcaption></figure>
+        <figure style="margin:0;text-align:center">
+          <img src="app/icons/apple-touch-icon.png" width="60" height="60" alt=""
+            style="display:block;border-radius:22.37%;box-shadow:0 1px 3px rgba(20,22,26,.2)">
+          <figcaption style="font-size:11px;color:var(--muted);margin-top:8px">60 · home screen</figcaption></figure>
+        <figure style="margin:0;text-align:center">
+          <img src="app/icons/icon-maskable-512.png" width="76" height="76" alt=""
+            style="display:block;border-radius:22.37%;box-shadow:0 1px 3px rgba(20,22,26,.2)">
+          <figcaption style="font-size:11px;color:var(--muted);margin-top:8px">maskable</figcaption></figure>
+      </div>
+      <p style="margin:0 0 14px;font-size:16.2px;color:var(--muted)">
+        <b style="color:var(--ink);font-weight:400">The wheel's own gradient, full bleed, with a
+        white circle punched out of it.</b> A nod to the dial rather than a copy of it. The gradient
+        samples <code>ramp()</code> from midnight to noon, so the tile and the dial are literally
+        the same colours — an earlier version used the <i>page tint</i>
+        (<code>#eaeefb → #fbf0d2</code>, Sky whitened so text can sit on it), which is far paler and
+        was simply wrong.</p>
+      <p style="margin:0;font-size:16.2px;color:var(--muted)">
+        Cutout at <b>0.43</b> of the tile, mark at <b>0.69</b> of the cutout. The maskable variant
+        pulls the cutout in to <b>0.34</b> so its edge survives Android's 80% crop. Regenerate with
+        <code>python3 tools/make-icons.py</code>.</p>
+      <div class="callout" style="margin-top:20px"><b>60px is the only size that decides anything.</b>
+      Everything larger is the App Store and the settings list. Flat grounds and a fine-line leaf
+      both looked better at 512 and died at 60 — the line went to a pale blur, and a flat ground
+      looked like a different app. The test that mattered was a mock home screen with neighbours
+      and a wallpaper, not the icon in isolation.</div>
+    </div>
+</section>
 
   <footer>Pando design kit · US English · a living reference, updated as design decisions lock in</footer>
 </div>
