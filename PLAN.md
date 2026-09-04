@@ -491,7 +491,27 @@ A third worth considering: **seed Aspen, and let the empty second slot do the as
 "Add your city" row that reads as an invitation rather than a modal. No timer, no interruption, no
 uninvited passenger, and the first tap opens the sheet you already have.
 
-**4. Usage analytics.** Worth knowing this is not free on GitHub Pages: it is static hosting with
+**4. A typography and spacing pass.** Three things Halley flagged after living with it, all in
+the same territory and best done together.
+
+- **The city name in the dial needs a better answer than shrinking.** It currently measures itself
+  and drops tracking (2.4 → 0.6), then size (11 → 8.2), then truncates. That is a safety net, not a
+  design: a genuinely long name ends up small and tightly tracked while a short one sits large and
+  airy, so the label's weight changes with the city. Worth exploring: two lines; dropping to a
+  shorter form (the GeoNames name without its qualifier); or accepting a fixed smaller size for
+  every city so the treatment is at least consistent. The available width is **152 units** at the
+  label's height, and `PALMA DE MALLORCA` needs 156 at full tracking — so this bites at around
+  17 characters, which is not rare.
+- **The spacing inside the ring is loose.** Measured: the face is 156 units tall, and the content
+  (readout, label, toggle) occupies roughly **y=124–186**. That leaves about **52 units empty
+  above and 42 below** — the group sits high and the composition is not centred on anything in
+  particular. Either centre the group properly in the face, or use the room deliberately.
+- **The city rows could carry more type.** The name is **17px** against a **25px** time, with the
+  country at 11px. On a 390pt screen there is width to spare, and the row's height is set by the
+  right-hand column (28pt time + 13pt day-shift line), so the name can grow without changing the
+  row height at all — the constraint is the *right* column, not the left. Cheap to try.
+
+**5. Usage analytics.** Worth knowing this is not free on GitHub Pages: it is static hosting with
 no server logs, so anything at all means adding a client-side script. Candidates —
 **GoatCounter** (free for personal use, no cookies, ~3KB), **Plausible** (~£7/mo, no cookies),
 self-hosted **Umami**. Two caveats specific to Pando: the service worker means repeat visits can
@@ -500,7 +520,7 @@ any figure will undercount real use, and should be read as "sessions that reache
 not "sessions". Also: adding a third-party script to a page that currently makes **zero** network
 calls after first load is a real change in what the app is. Worth deciding deliberately.
 
-**5. The search sheet's position is wrong on desktop.** It is `position:fixed; inset:0` anchored to
+**6. The search sheet's position is wrong on desktop.** It is `position:fixed; inset:0` anchored to
 the *top* of the viewport, so tapping **Add city** — which sits at the bottom of the list — throws
 the field to the top of the screen. On a phone that is defensible: the sheet lands near the
 keyboard and the viewport is short. On a desktop browser it is a long way from where you clicked,
