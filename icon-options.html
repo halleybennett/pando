@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pando — app icon</title>
+<style>
+  :root{--bg:#f2f0f7;--card:#fff;--ink:#14161a;--muted:#6e6874;--klein:#0d21a5;--line:#dedbd8}
+  *{box-sizing:border-box}
+  body{margin:0;padding:38px 26px 90px;background:var(--bg);color:var(--ink);
+    font:300 17.5px/1.55 "Helvetica Neue",Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1240px;margin:0 auto}
+  h1{font-weight:200;font-size:42px;letter-spacing:-.5px;margin:0 0 8px}
+  .sub{color:var(--muted);max-width:66ch;margin:0 0 4px}
+  h2{font-weight:300;font-size:25px;margin:46px 0 4px}
+  .note{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px 24px;margin:22px 0 0}
+  .note p{margin:0 0 11px} .note p:last-child{margin:0} .note b{font-weight:500}
+  code{font:500 15px/1 ui-monospace,Menlo,monospace;background:#eae7ef;padding:2px 6px;border-radius:5px}
+  .bar{display:flex;gap:9px;align-items:center;flex-wrap:wrap;position:sticky;top:0;z-index:20;
+    background:var(--card);border:1px solid var(--line);border-radius:999px;padding:10px 16px;margin:22px 0 0;
+    box-shadow:0 4px 18px rgba(20,22,26,.06)}
+  .bar span.lbl{font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--muted)}
+  .bar button{font:inherit;font-size:15px;border:1px solid var(--line);background:none;color:var(--ink);
+    border-radius:999px;padding:8px 18px;cursor:pointer}
+  .bar button.on{background:var(--klein);border-color:var(--klein);color:#fff}
+  .bar input{width:150px;accent-color:var(--klein)}
+  .bar output{font-variant-numeric:tabular-nums;color:var(--klein);min-width:38px;display:inline-block}
+  .grid{display:grid;gap:24px;margin-top:22px;grid-template-columns:repeat(auto-fit,minmax(320px,1fr))}
+  .cand{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:20px}
+  .cand.sel{outline:2.5px solid var(--klein);outline-offset:-2.5px}
+  .top{display:flex;gap:20px;align-items:flex-start}
+  .hero{width:150px;height:150px;flex:0 0 auto;border-radius:22.37%;overflow:hidden;
+    box-shadow:0 1px 4px rgba(20,22,26,.18);cursor:pointer}
+  .hero svg{display:block;width:100%;height:100%}
+  .tag{font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--klein);font-weight:500}
+  .cand h3{font-weight:400;font-size:20px;margin:2px 0 6px}
+  .cand p{margin:0;font-size:14.5px;color:var(--muted);line-height:1.5}
+  .strip{display:flex;gap:14px;align-items:flex-end;padding:12px 14px;border-radius:12px;margin-top:14px}
+  .strip.light{background:#e7e4ee} .strip.dark{background:#1a1720;margin-top:8px}
+  .strip figure{margin:0;text-align:center}
+  .strip .tile{border-radius:22.37%;overflow:hidden;display:block}
+  .strip .tile svg{display:block;width:100%;height:100%}
+  .strip figcaption{font-size:11px;color:var(--muted);margin-top:5px}
+  .strip.dark figcaption{color:#a9a3b4}
+  .ratio{font-size:13px;color:var(--muted);margin-top:10px;font-variant-numeric:tabular-nums}
+  .ratio b{color:var(--ink);font-weight:500}
+  .fail{color:#b3261e;font-weight:500}
+</style>
+</head>
+<body>
+<div style="position:sticky;top:0;z-index:999;background:#0d21a5;color:#fff;font:400 15px/1.5 'Helvetica Neue',Helvetica,Arial,sans-serif;padding:12px 20px;text-align:center"><b>Superseded page.</b> Round 1 — six flat grounds, the old mark, the old palette. &nbsp;→&nbsp; the current icon work is always at <a href="icon-current.html" style="color:#fbe29c">icon-current.html</a></div>
+<div class="wrap">
+
+<h1>App icon</h1>
+<p class="sub">Six grounds, every colour taken from the shipped palette or the wheel. The mark is
+  the locked one, rendered live — the sliders retune all six at once.</p>
+
+<div class="note">
+  <p><b>One thing is fixed in all six, and it is a real bug rather than a preference.</b> In the
+    16px mark the stalks stop 0.8 units above the soil dashes — but the stalk's rounded cap is
+    0.475 deep and the soil stroke is 0.525, so they overlap by 0.2. At 16px that is a fifth of a
+    device pixel and reads as the gap it is meant to be. At 512px it is six visible pixels of the
+    stalks <i>touching</i> the ground, which is the one thing this mark is not supposed to do. The
+    gap is now derived from the two stroke weights, so it holds at any size.</p>
+  <p><b>The soil line is still an open question</b> — it is the toggle above. At icon scale the
+    dashes stop reading as a line and start reading as three separate objects, which is why
+    <i>unified</i> and <i>none</i> are on the table alongside the faithful version.</p>
+</div>
+
+<div class="bar">
+  <span class="lbl">Soil</span>
+  <button type="button" data-soil="unified" class="on">Unified</button>
+  <button type="button" data-soil="faithful">As drawn</button>
+  <button type="button" data-soil="none">None</button>
+  <span class="lbl" style="margin-left:14px">Mark size <output id="oFill">56%</output></span>
+  <input id="fill" type="range" min="0.40" max="0.76" step="0.01" value="0.56">
+  <span class="lbl" style="margin-left:10px">Stalk <output id="oSW">0.95</output></span>
+  <input id="sw" type="range" min="0.7" max="1.6" step="0.05" value="0.95">
+</div>
+
+<h2>The six</h2>
+<div class="grid" id="grid"></div>
+
+<div class="note" style="margin-top:32px">
+  <p><b>How the numbers work.</b> The figure under each is the mark against the <i>worst</i> point
+    of its ground — for a gradient that is the stop it contrasts least with, not the average. An
+    icon is a graphic, so 3:1 is the floor; anything below is marked red and is out regardless of
+    how it looks.</p>
+  <p>Click a tile to mark your pick.</p>
+</div>
+
+</div>
+
+<script>
+function hx(h){h=h.replace('#','');return [0,2,4].map(function(i){return parseInt(h.slice(i,i+2),16);});}
+function s2l(c){c/=255;return c<=.04045?c/12.92:Math.pow((c+.055)/1.055,2.4);}
+function lum(h){var p=hx(h);return .2126*s2l(p[0])+.7152*s2l(p[1])+.0722*s2l(p[2]);}
+function cr(a,b){var x=lum(a),y=lum(b),hi=Math.max(x,y),lo=Math.min(x,y);return (hi+.05)/(lo+.05);}
+
+/* The mark, identical to markSVG() in app/app.js. */
+var BLADE='M8 1.4 C10.9 4.4 13.1 6.9 13.1 9.3 C13.1 11.9 10.9 13.6 8 13.6 C5.1 13.6 2.9 11.9 2.9 9.3 C2.9 6.9 5.1 4.4 8 1.4 Z';
+var STALKS=[[4.2,5.4,8.0],[10,6.6,2.6],[15.8,5.0,9.6]], BASE=17.2, CLEAR=0.35, SOILW=1.05;
+
+function markBody(fg, soil, sw){
+  var gap = soil==='none' ? 0.8 : sw/2 + SOILW/2 + CLEAR;
+  var end = BASE-gap, o='';
+  STALKS.forEach(function(s){
+    o+='<path d="M'+s[0]+' '+(s[2]+s[1]).toFixed(2)+' L'+s[0]+' '+end.toFixed(2)+
+       '" stroke="'+fg+'" stroke-width="'+sw+'" stroke-linecap="round" fill="none"/>';
+  });
+  if(soil!=='none'){
+    o+='<path d="M2.2 '+BASE+' L7 '+BASE+' M9 '+BASE+' L11.6 '+BASE+' M13.6 '+BASE+' L18 '+BASE+
+       '" stroke="'+fg+'" stroke-width="'+SOILW+'" stroke-linecap="round"'+
+       (soil==='faithful'?' opacity=".6"':'')+'/>';
+  }
+  STALKS.forEach(function(s){
+    var k=s[1]/12.2;
+    o+='<g transform="translate('+(s[0]-8*k).toFixed(3)+','+(s[2]-1.4*k).toFixed(3)+') scale('+k.toFixed(4)+')">'+
+       '<path d="'+BLADE+'" fill="'+fg+'"/></g>';
+  });
+  return {body:o, box:box(soil, end, sw)};
+}
+function box(soil, end, sw){
+  var L=Infinity,R=-Infinity,T=Infinity,B;
+  STALKS.forEach(function(s){var k=s[1]/12.2;
+    L=Math.min(L,s[0]-5.1*k,s[0]-sw/2); R=Math.max(R,s[0]+5.1*k,s[0]+sw/2); T=Math.min(T,s[2]);});
+  B=end+sw/2;
+  if(soil!=='none'){L=Math.min(L,2.2-SOILW/2);R=Math.max(R,18+SOILW/2);B=Math.max(B,BASE+SOILW/2);}
+  return {x:L,y:T,w:R-L,h:B-T};
+}
+function iconSVG(c, px, fill, soil, sw){
+  var m=markBody(c.fg, soil, sw), b=m.box;
+  var k=px*fill/Math.max(b.w, b.h*0.92);
+  var tx=(px-b.w*k)/2-b.x*k, ty=(px-b.h*k)/2-b.y*k;
+  var id='g'+c.id+px+Math.round(fill*100);
+  var ground = c.grad
+    ? '<defs><linearGradient id="'+id+'" x1="0" y1="0" x2="1" y2="1">'+
+      c.grad.map(function(st,i){return '<stop offset="'+(i/(c.grad.length-1)*100)+'%" stop-color="'+st+'"/>';}).join('')+
+      '</linearGradient></defs><rect width="'+px+'" height="'+px+'" fill="url(#'+id+')"/>'
+    : '<rect width="'+px+'" height="'+px+'" fill="'+c.bg+'"/>';
+  return '<svg viewBox="0 0 '+px+' '+px+'" width="'+px+'" height="'+px+'">'+ground+
+    '<g transform="translate('+tx.toFixed(2)+','+ty.toFixed(2)+') scale('+k.toFixed(4)+')">'+m.body+'</g></svg>';
+}
+
+var CANDIDATES=[
+  { id:'A', name:'Sky', tag:'the app’s own ground', fg:'#14161a',
+    grad:['#eaeefb','#eff0f9','#f6edf0','#fbf0d2'],
+    why:'Literally the app’s background, at the same 135° angle, with the mark in Ink. Open the icon and the ground does not change — the tile is a window onto the app rather than a badge beside it.' },
+  { id:'B', name:'Sky, Klein mark', tag:'same ground, action colour', fg:'#0d21a5',
+    grad:['#eaeefb','#eff0f9','#f6edf0','#fbf0d2'],
+    why:'The same ground with the mark in Klein instead. Warmer-blue and less severe than Ink, and it puts the app’s one action colour on the home screen.' },
+  { id:'C', name:'Night', tag:'the dark ground', fg:'#fbe29c',
+    grad:['#080c26','#241a33'],
+    why:'Dark mode’s ground with the mark in the wheel’s noon gold — the same pairing the dark home chip uses. The only dark tile here, and the only one that will still be findable on a busy wallpaper.' },
+  { id:'D', name:'Klein', tag:'flat, loudest', fg:'#eaeefb',
+    bg:'#0d21a5',
+    why:'Flat Klein with a pale Sky mark. No gradient, maximum contrast, reads at any size. The bluntest option and the one most likely to survive being a 40px notification badge one day.' },
+  { id:'E', name:'Noon', tag:'flat, warm', fg:'#0d21a5',
+    bg:'#f7c948',
+    why:'The wheel’s gold as a flat ground with a Klein mark. The warmest tile, and the pairing already carries meaning in the app — gold is daylight, Klein is what acts.' },
+  { id:'F', name:'Full sweep', tag:'the wheel, undiluted', fg:'#14161a',
+    grad:['#8ba2f0','#cfd3ee','#f6e3b4','#f7c948'],
+    why:'The wheel’s own dawn-to-noon run at full strength, on the same diagonal. Louder than the app itself ever gets — which may be exactly right for a 60px tile, or may over-promise.' }
+];
+
+var SIZES=[[180,'180'],[120,'120'],[60,'60']];
+var soil='unified', picked=null, grid=document.getElementById('grid');
+
+function worst(c){
+  var stops = c.grad || [c.bg];
+  return stops.reduce(function(m,s){ return Math.min(m, cr(c.fg,s)); }, Infinity);
+}
+function draw(){
+  var f=+document.getElementById('fill').value, sw=+document.getElementById('sw').value;
+  document.getElementById('oFill').textContent=Math.round(f*100)+'%';
+  document.getElementById('oSW').textContent=sw.toFixed(2);
+  grid.innerHTML=CANDIDATES.map(function(c){
+    var w=worst(c), ok=w>=3;
+    var strips=['light','dark'].map(function(t){
+      return '<div class="strip '+t+'">'+SIZES.map(function(s){
+        return '<figure><span class="tile" style="width:'+s[0]/2+'px;height:'+s[0]/2+'px">'+
+          iconSVG(c,s[0],f,soil,sw)+'</span><figcaption>'+s[1]+'</figcaption></figure>';
+      }).join('')+'</div>';
+    }).join('');
+    return '<div class="cand'+(picked===c.id?' sel':'')+'" data-cand="'+c.id+'">'+
+      '<div class="top"><span class="hero">'+iconSVG(c,512,f,soil,sw)+'</span>'+
+      '<div><span class="tag">'+c.id+' — '+c.tag+'</span><h3>'+c.name+'</h3><p>'+c.why+'</p>'+
+      '<div class="ratio">mark against the worst point of the ground: <b class="'+(ok?'':'fail')+'">'+
+      w.toFixed(2)+(ok?'':' ✗')+'</b></div></div></div>'+strips+'</div>';
+  }).join('');
+}
+document.querySelector('.bar').addEventListener('click',function(e){
+  var b=e.target.closest('button[data-soil]'); if(!b) return;
+  soil=b.dataset.soil;
+  document.querySelectorAll('.bar button').forEach(function(x){x.classList.toggle('on',x===b);});
+  draw();
+});
+['fill','sw'].forEach(function(id){document.getElementById(id).addEventListener('input',draw);});
+grid.addEventListener('click',function(e){
+  var c=e.target.closest('.cand'); if(!c) return;
+  picked = picked===c.dataset.cand ? null : c.dataset.cand;
+  document.querySelectorAll('.cand').forEach(function(x){x.classList.toggle('sel',x.dataset.cand===picked);});
+});
+draw();
+</script>
+</body>
+</html>

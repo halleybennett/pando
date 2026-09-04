@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pando — Design Kit</title>
+<style>
+:root{
+  /* ===== PANDO DESIGN TOKENS ===== */
+  --page-bg:#f2f0f7;     /* Sky, flattened - the kit itself stays a flat ground */
+  --ink:#14161a;         /* Ink    */
+  --muted:#6e6874;       /* Muted  — darkened from #7c7f86 to clear 4.5:1 */
+  --card:#ffffff;        /* Card   */
+  --line:#dedbd8;        /* Hairline */
+  --accent:#0d21a5;      /* Night / Klein */
+  --dawn:#8ba2f0;
+  --noon:#f7c948;
+
+  --header-font:"Helvetica Neue",Helvetica,Arial,sans-serif;
+  --body-font:"Helvetica Neue",Helvetica,Arial,sans-serif;
+  --accent-font:"Helvetica Neue",Helvetica,Arial,sans-serif;
+
+  --radius:20px; --radius-sm:12px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  font-family:var(--body-font); font-weight:300; color:var(--ink);
+  background:var(--page-bg); line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+  padding:56px 22px 100px;
+}
+.wrap{ max-width:960px; margin:0 auto; }
+
+/* masthead */
+.mast{ border-radius:var(--radius); overflow:hidden; margin-bottom:40px;
+  border:1px solid var(--line); box-shadow:0 12px 34px rgba(20,20,20,.08); }
+.mast .band{ background:var(--card); padding:40px 34px; }
+.mast .kick{ font-family:var(--accent-font); text-transform:uppercase; letter-spacing:.22em;
+  font-size:14.4px; color:var(--muted); margin:0 0 12px; }
+.mast h1{ font-family:var(--header-font); font-weight:200; font-size:64.8px; line-height:1; margin:0; letter-spacing:-.02em; }
+.mast .status{ display:inline-block; margin-top:16px; font-family:var(--accent-font);
+  font-size:13.2px; text-transform:uppercase; letter-spacing:.12em; color:var(--muted);
+  border:1px solid var(--line); border-radius:999px; padding:4px 12px; }
+.mast .foot{ background:var(--page-bg); color:var(--muted); padding:14px 34px;
+  font-family:var(--accent-font); font-size:15.6px; letter-spacing:.03em; border-top:1px solid var(--line); }
+
+/* overview */
+.overview{ background:var(--card); border:1px solid var(--line); border-radius:var(--radius-sm);
+  padding:22px 24px; margin-bottom:40px; }
+.overview dl{ margin:0; display:grid; grid-template-columns:150px 1fr; gap:10px 18px; font-size:16.8px; }
+.overview dt{ font-family:var(--accent-font); text-transform:uppercase; letter-spacing:.08em;
+  font-size:13.2px; color:var(--muted); padding-top:2px; }
+.overview dd{ margin:0; }
+
+/* section scaffold */
+section{ margin:0 0 46px; }
+h2{ font-family:var(--header-font); font-weight:200; font-size:38.4px; margin:0 0 4px; letter-spacing:-.01em; }
+h2 .num{ color:var(--accent); margin-right:12px; }
+.lead{ color:var(--muted); font-size:18px; margin:0 0 22px; max-width:66ch; }
+h3{ font-family:var(--accent-font); font-size:15.6px; text-transform:uppercase; letter-spacing:.12em;
+  color:var(--accent); margin:26px 0 12px; }
+
+.panel{ background:var(--card); border:1px solid var(--line); border-radius:var(--radius-sm); padding:24px; }
+.todo{ border-left:3px dashed var(--muted); background:var(--card); border-radius:0 10px 10px 0;
+  padding:12px 16px; font-size:16.2px; color:var(--muted); margin:12px 0; }
+.todo b{ color:var(--ink); }
+
+/* color grid */
+.swatches{ display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:14px; }
+.sw{ border:1px solid var(--line); border-radius:12px; overflow:hidden; background:#fff; }
+.sw .chip{ height:76px; }
+.sw .meta{ padding:9px 11px; }
+.sw .nm{ font-weight:500; font-size:15.6px; }
+.sw .hex{ font-family:var(--accent-font); font-size:14.4px; color:var(--muted);
+  text-transform:uppercase; letter-spacing:.06em; margin-top:2px; }
+.sw .role{ font-size:13.8px; color:var(--muted); margin-top:4px; line-height:1.35; }
+
+/* type specimens */
+.spec{ border:1px solid var(--line); border-radius:12px; padding:20px 22px; margin-bottom:14px; background:#fff; }
+.spec .tag{ font-family:var(--accent-font); font-size:13.2px; text-transform:uppercase; letter-spacing:.12em;
+  color:var(--accent); margin-bottom:10px; }
+.spec .big{ line-height:1.05; }
+.spec .use{ font-size:15.6px; color:var(--muted); margin-top:12px; }
+.spec .use code, .callout code, td code{ background:#f3edf1; padding:1px 6px; border-radius:5px; font-size:14.4px; }
+
+.ramplbl{font-size:13.2px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:7px}
+.ramplbl em{font-style:normal;letter-spacing:.04em;text-transform:none;color:var(--accent)}
+.rampbar{display:flex;height:34px;border-radius:9px;overflow:hidden;border:1px solid var(--line)}
+.rampbar.live{height:46px;box-shadow:0 0 0 3px rgba(13,33,165,.10)}
+.rampbar i{flex:1}
+.rampscale{display:flex;justify-content:space-between;font-size:13.2px;color:var(--muted);letter-spacing:.06em;margin-top:6px}
+.dot{display:inline-block;width:13px;height:13px;border-radius:3px;border:1px solid rgba(20,22,26,.22);margin-right:7px;vertical-align:-2px}
+/* token table */
+table{ width:100%; border-collapse:collapse; font-size:16.8px; }
+th,td{ text-align:left; padding:10px 12px; border-bottom:1px solid var(--line); vertical-align:top; }
+th{ font-family:var(--accent-font); font-size:13.2px; text-transform:uppercase; letter-spacing:.1em; color:var(--muted); }
+td.val{ font-weight:500; }
+td.pass{ color:#0d21a5; font-weight:500; }
+td.fail{ color:#b3115c; font-weight:500; }
+
+.demo{ display:flex; flex-wrap:wrap; gap:22px; align-items:flex-end; }
+.callout{ border-left:3px solid var(--accent); background:#fff; border-radius:0 12px 12px 0;
+  padding:14px 18px; font-size:16.8px; margin-top:16px; }
+.callout.warn{ border-left-color:#b3115c; }
+
+/* live components */
+.lbl{ font-size:13.2px; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); margin-bottom:9px; }
+.toggle{ display:inline-flex; background:var(--page-bg); border-radius:99px; padding:3px; font-size:16.8px; }
+.toggle span{ padding:8px 20px; border-radius:99px; color:var(--muted); }
+.toggle span.on{ background:var(--card); color:var(--ink); box-shadow:0 1px 3px rgba(0,0,0,.14); }
+.select{ display:inline-flex; align-items:center; justify-content:space-between; gap:14px; min-width:180px;
+  background:var(--card); border:1px solid var(--line); border-radius:var(--radius-sm); padding:11px 15px; font-size:18px; }
+.select i{ font-style:normal; color:var(--muted); font-size:13.2px; }
+.search{ display:flex; align-items:center; gap:9px; background:var(--card); border:1px solid var(--line);
+  border-radius:var(--radius-sm); padding:11px 15px; font-size:18px; color:var(--muted); min-width:240px; }
+.rows{ background:var(--card); border:1px solid var(--line); border-radius:var(--radius-sm); padding:4px 16px; min-width:280px; }
+.row{ display:flex; justify-content:space-between; align-items:center; padding:11px 0; border-bottom:1px solid var(--line); }
+.row:last-child{ border-bottom:none; }
+.city{ font-size:18px; }
+.city small{ display:block; font-size:12px; letter-spacing:.09em; text-transform:uppercase; color:var(--muted); margin-top:2px; }
+.tm{ display:flex; align-items:center; gap:10px; }
+.tm b{ font-weight:200; font-size:25.2px; font-variant-numeric:tabular-nums; letter-spacing:-.01em; }
+.homechip{ display:inline-block; font-size:12.5px; letter-spacing:.13em; text-transform:uppercase;
+  background:var(--dawn); color:var(--ink); border-radius:99px; padding:3px 10px; margin-left:9px; vertical-align:2px; }
+.plus{ width:28px; height:28px; border-radius:99px; display:grid; place-items:center; font-size:18px; color:#fff; background:var(--accent); }
+.state{ width:13px; height:13px; border-radius:99px; flex:none; border:1px solid rgba(20,22,26,.30); }
+.shape{ display:flex; gap:20px; align-items:center; flex-wrap:wrap; font-size:15px; color:var(--muted); }
+.shape div{ display:flex; align-items:center; gap:7px; }
+
+footer{ text-align:center; color:var(--muted); font-family:var(--accent-font);
+  font-size:14.4px; margin-top:50px; letter-spacing:.04em; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="mast">
+    <div class="band">
+      <p class="kick">Pando</p>
+      <h1>Design Kit</h1>
+      <span class="status">Status: shipped 4 Sept 2026 — Sky ground, soft wheel, light + dark</span>
+    </div>
+    <div class="foot">Daybreak, tuned: a pink-paper instrument · source of truth = <code>palette-tuner.html</code> (color) &amp; <code>dial-prototype-v3.html</code> (dial)</div>
+  </div>
+
+  <!-- OVERVIEW -->
+  <div class="overview">
+    <dl>
+      <dt>Project</dt><dd>Compare the local time across up to 6 cities, with a spinnable dial and daylight-saving-aware month selection.</dd>
+      <dt>Design direction</dt><dd>A precision instrument that happens to be pink. Neutral geometry, Helvetica Light, one loud blue — sitting on Posie paper so it never reads clinical.</dd>
+      <dt>Source of truth</dt><dd><code>Pando/palette-tuner.html</code> (color) · <code>Pando/dial-prototype-v3.html</code> (the working dial) · <code>Pando/dot-options.html</code> &amp; <code>dawn-placements.html</code> (decision records)</dd>
+      <dt>Platform</dt><dd>Mobile-first web, installed via Add to Home Screen. Light mode only.</dd>
+      <dt>Status</dt><dd>design locked — colour, marker, ramp and dial all settled; phase 1 next</dd>
+    </dl>
+  </div>
+
+  <!-- 1. COLOR -->
+  <section>
+    <h2><span class="num">01</span>Color</h2>
+    <p class="lead">A <b>Sky</b> gradient carries the mood; white cards float on top of it. Ink does all the reading. Klein blue is the only color that acts. Dawn and Noon are pure data: they encode where a city is in its day, and are never decoration.</p>
+    <div class="callout" style="margin:0 0 22px"><b>The rule, added 4 Sept 2026.</b> Every UI color —
+      the add button, the sun, the moon, the home chip — <b>must be a color the time-picker wheel
+      actually paints.</b> Not "from the palette", not "near it": on the wheel. In dark mode they are
+      not chosen at all, they are <i>sampled</i> from it with the same treatment the wheel uses, so
+      they cannot drift. Three earlier candidates died on this rule — Posie, an amber chip, and a
+      lifted Klein — each a color that existed nowhere else on screen.
+      <br><br>
+      <b>One exemption, deliberate:</b> the sun's Amber outline. Noon on a white card measures
+      <b>1.57</b> and the disc vanishes; no wheel stop can do that job. Recorded here rather than
+      quietly allowed.</div>
+
+    <h3>Core swatches</h3>
+    <div class="swatches">
+      <div class="sw"><div class="chip" style="background:linear-gradient(135deg,#eaeefb,#eff0f9 44%,#f6edf0 68%,#fbf0d2)"></div><div class="meta"><div class="nm">Sky</div><div class="hex">135° · #eaeefb → #fbf0d2</div><div class="role">Page background. Blue in the top-left corner falling to gold at the bottom-right — the dial's own midnight-top, noon-bottom orientation, laid across the page. Holds its blue to 44% and detours through a cool pink at 68%: a straight blue→gold line turns khaki through the middle, the same reason the wheel needs a bridge stop.</div></div></div>
+      <div class="sw"><div class="chip" style="background:#ffffff;border-bottom:1px solid var(--line)"></div><div class="meta"><div class="nm">Card</div><div class="hex">#ffffff</div><div class="role">Every raised surface: dial center, city list, inputs.</div></div></div>
+      <div class="sw"><div class="chip" style="background:#14161a"></div><div class="meta"><div class="nm">Ink</div><div class="hex">#14161a</div><div class="role">All primary text, tick marks, the big time readout.</div></div></div>
+      <div class="sw"><div class="chip" style="background:#6e6874"></div><div class="meta"><div class="nm">Muted</div><div class="hex">#6e6874</div><div class="role">Secondary text: zone labels, offsets, placeholders.</div></div></div>
+      <div class="sw"><div class="chip" style="background:#0d21a5"></div><div class="meta"><div class="nm">Night · Klein</div><div class="hex">#0d21a5</div><div class="role">The single action color. Knob, add button, top of the dial ramp.</div></div></div>
+      <div class="sw"><div class="chip" style="background:#8ba2f0"></div><div class="meta"><div class="nm">Dawn</div><div class="hex">#8ba2f0</div><div class="role">The home chip, and the dial ramp. Ink sits on it at 7.35:1 — white never does.</div></div></div>
+      <div class="sw"><div class="chip" style="background:#f7c948"></div><div class="meta"><div class="nm">Noon</div><div class="hex">#f7c948</div><div class="role">Fill of the sun glyph, and the foot of the dial ramp. Never text, never bare.</div></div></div>
+      <div class="sw"><div class="chip" style="background:#a97103"></div><div class="meta"><div class="nm">Amber</div><div class="hex">#a97103</div><div class="role">Outline &amp; rays of the sun glyph only. Exists purely to get Noon over the 3:1 floor.</div></div></div>
+      <div class="sw"><div class="chip" style="background:#dedbd8"></div><div class="meta"><div class="nm">Hairline</div><div class="hex">#dedbd8</div><div class="role">All borders &amp; row dividers.</div></div></div>
+    </div>
+
+    <h3>The dial ramp</h3>
+    <div class="panel">
+      <p style="margin:0 0 16px;font-size:16.2px;color:var(--muted)">
+        <b style="color:var(--ink);font-weight:400">Keyed to the hour, not symmetric around noon.</b>
+        An even ramp either side of midday hands half the circle to blue and makes the day look
+        short. This one is skewed so cool runs only <b style="color:var(--ink);font-weight:400">21:00–06:30</b>
+        — the same window as the sun/moon threshold, so the ring and the city rows say the same thing.
+      </p>
+      <p style="margin:0 0 20px;font-size:16.2px;color:var(--muted)">
+        <b style="color:var(--ink);font-weight:400">Painted, not declared.</b> It is 144 conic
+        segments of SVG stroke, because a CSS gradient cannot express an asymmetric hour mapping.
+        The arc on the dial is drawn from the same function, so arc and ring always agree.
+      </p>
+
+      <div class="ramplbl">Soft &nbsp;<em>— live</em></div>
+      <div class="rampbar live"><i style="background:#7c87ce"></i><i style="background:#7e89cf"></i><i style="background:#7f8acf"></i><i style="background:#808cd0"></i><i style="background:#828dd1"></i><i style="background:#848fd2"></i><i style="background:#8591d2"></i><i style="background:#8692d3"></i><i style="background:#8894d4"></i><i style="background:#8a96d4"></i><i style="background:#8b97d5"></i><i style="background:#8c99d6"></i><i style="background:#8e9ad7"></i><i style="background:#909cd7"></i><i style="background:#919ed8"></i><i style="background:#929fd9"></i><i style="background:#94a1da"></i><i style="background:#96a2da"></i><i style="background:#97a4db"></i><i style="background:#9ca9de"></i><i style="background:#a1aee2"></i><i style="background:#a6b3e6"></i><i style="background:#acb8e9"></i><i style="background:#b1beec"></i><i style="background:#b6c3f0"></i><i style="background:#bbc8f4"></i><i style="background:#c0cdf7"></i><i style="background:#c6d1f7"></i><i style="background:#ccd6f7"></i><i style="background:#d2daf6"></i><i style="background:#d9def6"></i><i style="background:#dfe3f6"></i><i style="background:#e5e7f6"></i><i style="background:#e8e8f1"></i><i style="background:#eceaeb"></i><i style="background:#f0ece6"></i><i style="background:#f3ede1"></i><i style="background:#f6eedb"></i><i style="background:#faf0d6"></i><i style="background:#faeecc"></i><i style="background:#faebc3"></i><i style="background:#fae9b9"></i><i style="background:#fbe7af"></i><i style="background:#fbe4a6"></i><i style="background:#fbe29c"></i><i style="background:#fbe29c"></i><i style="background:#fbe29c"></i><i style="background:#fbe29c"></i><i style="background:#fbe29c"></i><i style="background:#fbe29c"></i><i style="background:#fbe29c"></i><i style="background:#fbe29c"></i><i style="background:#fbe29c"></i><i style="background:#fbe29c"></i><i style="background:#fbe29c"></i><i style="background:#fbe29c"></i><i style="background:#fbe29c"></i><i style="background:#fbe29c"></i><i style="background:#fbe29c"></i><i style="background:#fbe29c"></i><i style="background:#fbe29c"></i><i style="background:#fbe29c"></i><i style="background:#fbe29c"></i><i style="background:#fbe29c"></i><i style="background:#fbe29c"></i><i style="background:#fbe29c"></i><i style="background:#fbe29c"></i><i style="background:#fbe29c"></i><i style="background:#fbe29c"></i><i style="background:#fbe29c"></i><i style="background:#fbe29c"></i><i style="background:#fbe4a2"></i><i style="background:#fbe5a8"></i><i style="background:#fbe6ae"></i><i style="background:#fbe8b4"></i><i style="background:#fbeaba"></i><i style="background:#fbebc0"></i><i style="background:#fbecc6"></i><i style="background:#fbeecc"></i><i style="background:#faeed4"></i><i style="background:#f8eddc"></i><i style="background:#f6ece5"></i><i style="background:#f5eced"></i><i style="background:#ece7ef"></i><i style="background:#e3e2f0"></i><i style="background:#daddf2"></i><i style="background:#d1d8f4"></i><i style="background:#c7cff1"></i><i style="background:#bcc6ee"></i><i style="background:#b2bdea"></i><i style="background:#a8b4e7"></i><i style="background:#a1ace3"></i><i style="background:#99a5df"></i><i style="background:#929eda"></i><i style="background:#8b96d6"></i><i style="background:#838ed2"></i></div>
+      <div class="ramplbl" style="margin-top:16px">Full &nbsp;<em>— held in reserve</em></div>
+      <div class="rampbar"><i style="background:#0d21a5"></i><i style="background:#1024a6"></i><i style="background:#1327a8"></i><i style="background:#152aa9"></i><i style="background:#182daa"></i><i style="background:#1b30ac"></i><i style="background:#1e33ad"></i><i style="background:#2036ae"></i><i style="background:#2339b0"></i><i style="background:#263cb1"></i><i style="background:#293fb2"></i><i style="background:#2c42b4"></i><i style="background:#2e45b5"></i><i style="background:#3148b6"></i><i style="background:#344bb8"></i><i style="background:#374eb9"></i><i style="background:#3951ba"></i><i style="background:#3c54bc"></i><i style="background:#3f57bd"></i><i style="background:#4860c3"></i><i style="background:#526aca"></i><i style="background:#5c73d0"></i><i style="background:#657cd6"></i><i style="background:#6e86dd"></i><i style="background:#788fe3"></i><i style="background:#8299ea"></i><i style="background:#8ba2f0"></i><i style="background:#96aaf0"></i><i style="background:#a2b2ef"></i><i style="background:#adbaef"></i><i style="background:#b8c3ef"></i><i style="background:#c4cbee"></i><i style="background:#cfd3ee"></i><i style="background:#d6d6e4"></i><i style="background:#dcd8db"></i><i style="background:#e2dbd1"></i><i style="background:#e9dec7"></i><i style="background:#f0e0be"></i><i style="background:#f6e3b4"></i><i style="background:#f6dfa2"></i><i style="background:#f6da90"></i><i style="background:#f6d67e"></i><i style="background:#f7d26c"></i><i style="background:#f7cd5a"></i><i style="background:#f7c948"></i><i style="background:#f7c948"></i><i style="background:#f7c948"></i><i style="background:#f7c948"></i><i style="background:#f7c948"></i><i style="background:#f7c948"></i><i style="background:#f7c948"></i><i style="background:#f7c948"></i><i style="background:#f7c948"></i><i style="background:#f7c948"></i><i style="background:#f7c948"></i><i style="background:#f7c948"></i><i style="background:#f7c948"></i><i style="background:#f7c948"></i><i style="background:#f7c948"></i><i style="background:#f7c948"></i><i style="background:#f7c948"></i><i style="background:#f7c948"></i><i style="background:#f7c948"></i><i style="background:#f7c948"></i><i style="background:#f7c948"></i><i style="background:#f7c948"></i><i style="background:#f7c948"></i><i style="background:#f7c948"></i><i style="background:#f7c948"></i><i style="background:#f7c948"></i><i style="background:#f7c948"></i><i style="background:#f7cc53"></i><i style="background:#f7ce5e"></i><i style="background:#f7d169"></i><i style="background:#f8d474"></i><i style="background:#f8d77f"></i><i style="background:#f8da8a"></i><i style="background:#f8dc95"></i><i style="background:#f8dfa0"></i><i style="background:#f5deaf"></i><i style="background:#f2debe"></i><i style="background:#efddce"></i><i style="background:#ecdcdd"></i><i style="background:#dbd2e0"></i><i style="background:#cac9e4"></i><i style="background:#bac0e7"></i><i style="background:#a9b6ea"></i><i style="background:#96a6e4"></i><i style="background:#8395de"></i><i style="background:#7084d8"></i><i style="background:#5d74d2"></i><i style="background:#5066ca"></i><i style="background:#4258c3"></i><i style="background:#354abc"></i><i style="background:#283db4"></i><i style="background:#1a2fac"></i></div>
+      <div class="rampscale"><span>midnight</span><span>dawn</span><span>noon</span><span>dusk</span><span>midnight</span></div>
+
+      <div class="callout" style="margin-top:22px"><b>Two strengths, one shape.</b> <b>Soft</b> is live.
+      <b>Full</b> is the saturated original, kept so the decision can be reversed without redoing the
+      work. They share identical timing — only intensity differs, so swapping between them changes
+      how loud the dial is and nothing else. In code this is a single constant:
+      <code>--ramp-soften: 0.46</code>, the fraction each stop is mixed toward white. Set it
+      to <code>0</code> for full. It moved out of <code>app.js</code> and into the stylesheet on
+      4 Sept 2026, when every colour in the dial was tokenised so a second scheme could exist.</div>
+
+      <div class="ramplbl" style="margin-top:26px">Measured &nbsp;<em>— what &ldquo;brighter&rdquo; actually buys</em></div>
+      <table style="margin-top:10px">
+        <tr><th>Treatment</th><th>Night band<br>off the face</th><th>Day band<br>off the face</th><th>Noon chroma</th><th>Noon lands at</th></tr>
+        <tr><td class="val">Soft — <code>0.46</code>, live</td><td class="val">3.38</td><td class="val">1.28</td><td class="val">0.092</td><td><span class="dot" style="background:#fbe29c"></span><code>#fbe29c</code></td></tr>
+        <tr><td class="val">Full — <code>0</code></td><td class="val">11.81</td><td class="val">1.57</td><td class="val">0.150</td><td><span class="dot" style="background:#f7c948"></span><code>#f7c948</code></td></tr>
+        <tr><td class="val">Lift — OKLab, tested &amp; rejected here</td><td class="val">14.73</td><td class="val">2.30</td><td class="val">0.150</td><td><span class="dot" style="background:#d2a509"></span><code>#d2a509</code></td></tr>
+      </table>
+
+      <div class="callout" style="margin-top:20px"><b>How to read that.</b> Going full does
+      <i>not</i> fix the weak end. The day band only moves 1.28 → 1.57, because the ramp's gold
+      and the dial's white face are both very light — no amount of saturation separates them.
+      What full actually buys is the <i>night</i> end, 3.38 → 11.81, and Noon keeping all
+      <b>0.150</b> of its chroma instead of being washed to 0.092. So &ldquo;brighter&rdquo; means
+      a harder blue and a truer gold, not a more legible clock.
+      <br><br>
+      <b>The third option, and why it is not on the table for light.</b> Remapping lightness in
+      OKLab — the treatment that fixed dark mode — does finally move the day band, to 2.30. But
+      to darken gold enough to separate from white it has to take Noon to <code>#d2a509</code>,
+      which is mustard. It buys legibility by giving up the colour, and Noon is the one colour on
+      the dial that is carrying a meaning. Rejected.</div>
+
+      <div class="ramplbl" style="margin-top:26px">Dark scheme &nbsp;<em>— the same question, opposite answer</em></div>
+      <table style="margin-top:10px">
+        <tr><th>Treatment</th><th>Night band<br>off the face</th><th>Day band<br>off the face</th><th>Noon chroma</th><th>Noon lands at</th></tr>
+        <tr><td class="val">Mix toward the ground — rejected</td><td class="val">1.11</td><td class="val">3.74</td><td class="val">0.071</td><td><span class="dot" style="background:#917d4c"></span><code>#917d4c</code></td></tr>
+        <tr><td class="val">Lift — OKLab <code>0.56–0.88</code></td><td class="val">3.08</td><td class="val">9.20</td><td class="val">0.150</td><td><span class="dot" style="background:#f3c543"></span><code>#f3c543</code></td></tr>
+      </table>
+
+      <div class="callout" style="margin-top:20px"><b>Why the ramp cannot simply be softened toward
+      the ground.</b> On white that operation just pales everything. Toward a dark navy it does not:
+      Noon and the ground are near opposites, so the blend runs through grey and the gold comes out
+      olive — chroma <b>0.150 → 0.071</b>, measured. No choice of dark background fixes it, because
+      the background <i>is</i> what the colour is being dragged toward. The fix is to keep each
+      stop's hue and chroma exactly and remap only its lightness, in OKLab, into
+      <code>--ramp-floor</code>&hairsp;–&hairsp;<code>--ramp-ceil</code>. At a floor of
+      <b>0.56</b> the night band lands at <b>3.08</b> — within a hair of light mode's 3.38 — so the
+      ring reads the same strength in both schemes instead of inverting.</div>
+
+      <table style="margin-top:22px">
+        <tr><th>Hour</th><th>Full</th><th>Soft (live)</th><th>Role</th></tr>
+        <tr><td class="val">00:00</td><td><span class="dot" style="background:#0d21a5"></span><code>#0d21a5</code></td><td><span class="dot" style="background:#7c87ce"></span><code>#7c87ce</code></td><td>midnight — deepest Klein</td></tr><tr><td class="val">04:30</td><td><span class="dot" style="background:#3f57bd"></span><code>#3f57bd</code></td><td><span class="dot" style="background:#97a4db"></span><code>#97a4db</code></td><td>still night, lightening</td></tr><tr><td class="val">06:30</td><td><span class="dot" style="background:#8ba2f0"></span><code>#8ba2f0</code></td><td><span class="dot" style="background:#c0cdf7"></span><code>#c0cdf7</code></td><td>dawn</td></tr><tr><td class="val">08:00</td><td><span class="dot" style="background:#cfd3ee"></span><code>#cfd3ee</code></td><td><span class="dot" style="background:#e5e7f6"></span><code>#e5e7f6</code></td><td>pale bridge — stops blue mixing into gold and going grey</td></tr><tr><td class="val">09:30</td><td><span class="dot" style="background:#f6e3b4"></span><code>#f6e3b4</code></td><td><span class="dot" style="background:#faf0d6"></span><code>#faf0d6</code></td><td>warm cream</td></tr><tr><td class="val">11:00</td><td><span class="dot" style="background:#f7c948"></span><code>#f7c948</code></td><td><span class="dot" style="background:#fbe29c"></span><code>#fbe29c</code></td><td>gold — start of the plateau</td></tr><tr><td class="val">17:30</td><td><span class="dot" style="background:#f7c948"></span><code>#f7c948</code></td><td><span class="dot" style="background:#fbe29c"></span><code>#fbe29c</code></td><td>gold — end of the plateau</td></tr><tr><td class="val">19:30</td><td><span class="dot" style="background:#f8dfa0"></span><code>#f8dfa0</code></td><td><span class="dot" style="background:#fbeecc"></span><code>#fbeecc</code></td><td>warming down</td></tr><tr><td class="val">20:30</td><td><span class="dot" style="background:#ecdcdd"></span><code>#ecdcdd</code></td><td><span class="dot" style="background:#f5eced"></span><code>#f5eced</code></td><td>pale bridge again</td></tr><tr><td class="val">21:30</td><td><span class="dot" style="background:#a9b6ea"></span><code>#a9b6ea</code></td><td><span class="dot" style="background:#d1d8f4"></span><code>#d1d8f4</code></td><td>into night — matches the asleep threshold</td></tr><tr><td class="val">22:30</td><td><span class="dot" style="background:#5d74d2"></span><code>#5d74d2</code></td><td><span class="dot" style="background:#a8b4e7"></span><code>#a8b4e7</code></td><td>deepening</td></tr><tr><td class="val">24:00</td><td><span class="dot" style="background:#0d21a5"></span><code>#0d21a5</code></td><td><span class="dot" style="background:#7c87ce"></span><code>#7c87ce</code></td><td>back to midnight</td></tr>
+      </table>
+    </div>
+
+    <h3>Hour ticks — darkened 4 Sept 2026</h3>
+    <div class="panel">
+      <p style="margin:0 0 14px;font-size:16.2px;color:var(--muted)">
+        <b style="color:var(--ink);font-weight:400">The major tick moved
+        <code>#8d8792</code> → <code>#79717e</code>.</b> At the old value it measured
+        <b style="color:var(--ink)">exactly 3.00</b> against every paper tried — dead on the 3:1
+        floor a meaningful graphic needs, with no margin anywhere. It had quietly blocked three
+        rounds of ground work, because any deeper ground pushed it under. It now scores
+        <b style="color:var(--ink)">4.05</b> at worst across the Sky gradient, and stays lighter
+        than the numerals so the hierarchy on the rim survives.</p>
+      <p style="margin:0;font-size:16.2px;color:var(--muted)">
+        <b style="color:var(--ink);font-weight:400">The minor tick moved
+        <code>#c2bcc6</code> → <code>#aea7b3</code></b>, only to hold its old relationship to the
+        majors. These are half-hour subdivisions, redundant with both the hour ticks and the
+        numerals — decorative, so the 3:1 rule does not reach them. They measure 2.02 and are not
+        pretending otherwise. Darkening them to clear 3:1 would flatten the rim into one
+        undifferentiated ring of lines.</p>
+    </div>
+
+    <h3>Dark scheme</h3>
+    <div class="panel">
+      <p style="margin:0 0 16px;font-size:16.2px;color:var(--muted)">
+        Follows <code>prefers-color-scheme</code>; there is no in-app control, because the header
+        has no room for one and the OS already knows the answer. Every colour below is
+        <b style="color:var(--ink)">sampled from the wheel</b>, per the rule above.</p>
+      <table>
+        <tr><th>Token</th><th>Value</th><th>Where it comes from</th></tr>
+        <tr><td class="val">--paper</td><td><code>135° #080c26 → #241a33</code></td><td>Sky at night, same angle</td></tr>
+        <tr><td class="val">--card</td><td><span class="dot" style="background:#2a2456"></span><code>#2a2456</code></td><td>1.17 off the ground's warm end</td></tr>
+        <tr><td class="val">--ink</td><td><span class="dot" style="background:#f1f0f6"></span><code>#f1f0f6</code></td><td>12.48 on the card</td></tr>
+        <tr><td class="val">--muted</td><td><span class="dot" style="background:#a9a5c4"></span><code>#a9a5c4</code></td><td>5.97 on the card. The light value fails here at 3.36</td></tr>
+        <tr><td class="val">--night <i>(action)</i></td><td><span class="dot" style="background:#c0cdf7"></span><code>#c0cdf7</code></td><td><b>The wheel at 06:30</b> — Dawn. Klein itself scores 1.50 on a dark ground and dies</td></tr>
+        <tr><td class="val">--moon</td><td><span class="dot" style="background:#c0cdf7"></span><code>#c0cdf7</code></td><td>The same stop, exactly as light pairs moon with the action</td></tr>
+        <tr><td class="val">--sun</td><td><span class="dot" style="background:#fbe29c"></span><code>#fbe29c</code></td><td><b>The wheel at noon.</b> Its outline matches the fill — Amber is a light-mode patch and is not needed here</td></tr>
+        <tr><td class="val">--chip-bg</td><td><span class="dot" style="background:#fbe29c"></span><code>#fbe29c</code></td><td>The same stop. The wheel has exactly one yellow: its three warm stops measure 1.01–1.07 apart</td></tr>
+        <tr><td class="val">--tick-maj</td><td><span class="dot" style="background:#7d76b0"></span><code>#7d76b0</code></td><td>4.01 on the ground</td></tr>
+        <tr><td class="val">--tick-min</td><td><span class="dot" style="background:#514d88"></span><code>#514d88</code></td><td>Decorative, as in light</td></tr>
+      </table>
+      <div class="callout" style="margin-top:20px"><b>The chip and the sun are the same colour, and
+        that is deliberate.</b> Opposite ends of the same row — a labelled pill on the left, a rayed
+        disc on the right. Different objects, one colour. Light mode already does this: the add
+        button and the moon are both Klein. The one thing to know is that the chip therefore matches
+        the day-state marker half the time — gold chip beside a gold sun when home is awake, gold
+        chip beside a blue moon when it is asleep. Light does the same in mirror image.</div>
+    </div>
+
+    <h3>Small text — the tightest things in the app</h3>
+    <div class="panel">
+      <table>
+        <tr><th>Element</th><th>Size</th><th>Ratio</th><th>Verdict</th></tr>
+        <tr><td>Dial hour numerals on the ground</td><td class="val">10.5px</td><td class="val">4.65:1</td><td class="pass">Pass</td></tr>
+        <tr><td>Footer &amp; header on the ground</td><td class="val">11.5&nbsp;/&nbsp;12px</td><td class="val">4.65:1</td><td class="pass">Pass</td></tr>
+        <tr><td>Dial home-city label</td><td class="val">10px</td><td class="val">5.39:1</td><td class="pass">Pass</td></tr>
+        <tr><td>Country, day-shift, am/pm</td><td class="val">10.5–17px</td><td class="val">5.39:1</td><td class="pass">Pass</td></tr>
+        <tr><td>Home chip label</td><td class="val">11px</td><td class="val">7.35:1</td><td class="pass">Pass</td></tr>
+        <tr><td><code>12H · 24H</code> separator @45%</td><td class="val">11px</td><td class="val">1.90:1</td><td>Exempt — decorative dot, no meaning</td></tr>
+        <tr><td><s>Already-added row @40% opacity</s></td><td class="val">12px</td><td class="val">1.75:1</td><td class="fail">Failed — replaced</td></tr>
+        <tr><td>Already-added row, quietened by colour</td><td class="val">12px</td><td class="val">5.39:1</td><td class="pass">Pass</td></tr>
+      </table>
+      <div class="callout" style="margin-top:20px"><b>Opacity is not a legibility tool here.</b> The
+      already-added row was faded to 40%, which put its label at 1.75. Raising the opacity cannot
+      rescue it — even 85% only reaches 3.90, because it is fading a colour that starts at 5.39 on
+      white. It is now quietened by dropping the city name from Ink to Muted instead: the row still
+      reads as unavailable, and every part of it clears 4.5.</div>
+      <div class="callout" style="margin-top:14px"><b>Header weight is 400, not 300.</b> At 12px
+      uppercase with 0.2em tracking, 300 reads as a whisper. Colour is untouched, so the app name
+      and the date control still match in every state. The mark is <b>baseline-aligned</b> to the
+      wordmark rather than centred — its soil line sits 0.71px above the text baseline, so the
+      stalks stand on the same ground as the letters.</div>
+    </div>
+
+    <h3>Contrast — measured</h3>
+    <div class="panel">
+      <table>
+        <tr><th>Pair</th><th>Ratio</th><th>WCAG</th><th>Verdict</th></tr>
+        <tr><td>Ink on Sky <i>(worst stop)</i></td><td class="val">15.63:1</td><td>AAA</td><td class="pass">Pass — huge headroom</td></tr>
+        <tr><td>Ink on Card</td><td class="val">18.11:1</td><td>AAA</td><td class="pass">Pass</td></tr>
+        <tr><td>Klein on Sky <i>(worst stop)</i></td><td class="val">10.19:1</td><td>AAA</td><td class="pass">Pass</td></tr>
+        <tr><td>White on Klein (button)</td><td class="val">11.81:1</td><td>AAA</td><td class="pass">Pass</td></tr>
+        <tr><td>Muted <code>#6e6874</code> on Sky <i>(worst stop, <code>#eaeefb</code>)</i></td><td class="val">4.65:1</td><td>AA</td><td class="pass">Pass — after darkening</td></tr>
+        <tr><td><s>Muted <code>#7c7f86</code> on the old Petal ground</s></td><td class="val">3.45:1</td><td>AA</td><td class="fail">Failed — replaced</td></tr>
+        <tr><td>Klein moon glyph on Card</td><td class="val">11.81:1</td><td>AA (3:1, non-text)</td><td class="pass">Pass — needs no outline</td></tr>
+        <tr><td>Noon sun fill, bare</td><td class="val">1.57:1</td><td>AA (3:1, non-text)</td><td class="fail">Fails badly on its own</td></tr>
+        <tr><td><s>Ink outline @30% <code>#b8b9ba</code></s></td><td class="val">1.97:1</td><td>AA (3:1, non-text)</td><td class="fail">Failed — measured, replaced</td></tr>
+        <tr><td>Amber outline <code>#a97103</code> on Card</td><td class="val">4.16:1</td><td>AA (3:1, non-text)</td><td class="pass">Pass — the fix</td></tr>
+        <tr><td>Ink on Dawn (home chip)</td><td class="val">7.35:1</td><td>AA</td><td class="pass">Pass</td></tr>
+        <tr><td><s>White on Dawn</s></td><td class="val">2.46:1</td><td>AA</td><td class="fail">Failed — contrast is symmetric, same ratio either way round</td></tr>
+        <tr><td>Ink on Noon</td><td class="val">11.56:1</td><td>AAA</td><td class="pass">Pass — Noon works as a <em>background</em></td></tr>
+      </table>
+      <div class="callout warn"><b>Standing rules from the above.</b> Muted text is <code>#6e6874</code>, never lighter. Dawn and Noon are background-or-fill colors only — they never carry text. <b>Noon can never appear as a bare shape on white</b> (1.57:1); wherever it is drawn it takes an Amber <code>#a97103</code> outline, which is the only reason Amber exists. Klein and Ink are the only foreground colors.</div>
+    </div>
+  </section>
+
+  <!-- 2. TYPOGRAPHY -->
+  <section>
+    <h2><span class="num">02</span>Typography</h2>
+    <p class="lead">One face, three weights. Helvetica Neue ships on every Mac and iPhone, so there is no webfont, no flash of unstyled text, and no network dependency — which matters for something meant to work offline on a plane.</p>
+    <div class="spec">
+      <div class="tag">Display — weight 200</div>
+      <div class="big" style="font-weight:200;font-size:62.4px;letter-spacing:-.02em">14:30</div>
+      <div class="use"><b>Helvetica Neue UltraLight</b> — the dial readout and screen titles only. Always <code>font-variant-numeric: tabular-nums</code> so digits don't jitter as time ticks.</div>
+    </div>
+    <div class="spec">
+      <div class="tag">Body — weight 300</div>
+      <div class="big" style="font-weight:300;font-size:31.2px">Mexico City, Lagos, Tokyo</div>
+      <div class="use"><b>Helvetica Neue Light</b> — city names, controls, everything you read. <code>var(--body-font)</code></div>
+    </div>
+    <div class="spec">
+      <div class="tag">Label — weight 300, tracked</div>
+      <div class="big" style="font-weight:300;font-size:15.6px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)">JST · +8H · NEXT DAY</div>
+      <div class="use">Same face, uppercased, <code>letter-spacing:.14em</code>, Muted. Zone codes, offsets, section headers.</div>
+    </div>
+    <div class="callout"><b>Embed:</b> none. <code>font-family:"Helvetica Neue",Helvetica,Arial,sans-serif</code> — falls back to Arial off Apple hardware, which is the correct trade.</div>
+  </section>
+
+  <!-- 3. SPACING & SHAPE -->
+  <section>
+    <h2><span class="num">03</span>Spacing &amp; shape</h2>
+    <p class="lead">Generously rounded, thin-lined, and quiet. Nothing is boxed in that doesn't need to be — dividers do the work borders would.</p>
+    <div class="panel">
+      <table>
+        <tr><th>Token</th><th>Value</th><th>Where</th></tr>
+        <tr><td><code>--maxw</code></td><td class="val">420px</td><td>Content column. Mobile-first; it simply centers on desktop.</td></tr>
+        <tr><td><code>--radius</code></td><td class="val">20px</td><td>Cards, the city list, the sheet that slides up for city search.</td></tr>
+        <tr><td><code>--radius-sm</code></td><td class="val">12px</td><td>Inputs, the month select, small surfaces.</td></tr>
+        <tr><td>pill</td><td class="val">99px</td><td>The 12h/24h toggle, the add button, state dots.</td></tr>
+        <tr><td>hairline</td><td class="val">1px <code>#dedbd8</code></td><td>All borders &amp; dividers. Never heavier.</td></tr>
+        <tr><td>card shadow</td><td class="val">0 14px 40px rgba(0,0,0,.07)</td><td>Only the main card lifts off the ground. Nothing else casts.</td></tr>
+        <tr><td>touch target</td><td class="val">44 × 44px min</td><td>Every interactive element, per Apple HIG. Hit areas may exceed the visible shape.</td></tr>
+      </table>
+    </div>
+  </section>
+
+  <!-- 4. COMPONENTS -->
+  <section>
+    <h2><span class="num">04</span>Components</h2>
+    <p class="lead">Live examples — these are the real recipes, not pictures of them.</p>
+
+    <div class="panel">
+      <div class="demo">
+        <div>
+          <div class="lbl">City search</div>
+          <div class="search">⌕ &nbsp;Mexi</div>
+        </div>
+        <div>
+          <div class="lbl">12h / 24h</div>
+          <div class="toggle"><span>12h</span><span class="on">24h</span></div>
+        </div>
+        <div>
+          <div class="lbl">Date context</div>
+          <div class="select"><span>1 March</span><i>▾</i></div>
+        </div>
+      </div>
+
+      <h3>City row</h3>
+      <div class="rows" style="max-width:340px">
+        <div class="row"><div class="city">London <span class="homechip">home</span><small>BST</small></div>
+          <div class="tm"><b>14:30</b><svg width="18" height="18" viewBox="0 0 18 18"><circle cx="9" cy="9" r="4" fill="#f7c948" stroke="#a97103" stroke-width="1"/><g stroke="#a97103" stroke-width="1.4" stroke-linecap="round"><line x1="9" y1="1.2" x2="9" y2="2.8"/><line x1="9" y1="15.2" x2="9" y2="16.8"/><line x1="1.2" y1="9" x2="2.8" y2="9"/><line x1="15.2" y1="9" x2="16.8" y2="9"/><line x1="3.5" y1="3.5" x2="4.6" y2="4.6"/><line x1="13.4" y1="13.4" x2="14.5" y2="14.5"/><line x1="14.5" y1="3.5" x2="13.4" y2="4.6"/><line x1="4.6" y1="13.4" x2="3.5" y2="14.5"/></g></svg></div></div>
+        <div class="row"><div class="city">Mexico City<small>CST · −6h</small></div>
+          <div class="tm"><b>08:30</b><svg width="18" height="18" viewBox="0 0 18 18"><circle cx="9" cy="9" r="4" fill="#f7c948" stroke="#a97103" stroke-width="1"/><g stroke="#a97103" stroke-width="1.4" stroke-linecap="round"><line x1="9" y1="1.2" x2="9" y2="2.8"/><line x1="9" y1="15.2" x2="9" y2="16.8"/><line x1="1.2" y1="9" x2="2.8" y2="9"/><line x1="15.2" y1="9" x2="16.8" y2="9"/><line x1="3.5" y1="3.5" x2="4.6" y2="4.6"/><line x1="13.4" y1="13.4" x2="14.5" y2="14.5"/><line x1="14.5" y1="3.5" x2="13.4" y2="4.6"/><line x1="4.6" y1="13.4" x2="3.5" y2="14.5"/></g></svg></div></div>
+        <div class="row"><div class="city">Tokyo<small>JST · +8h · next day</small></div>
+          <div class="tm"><b>22:30</b><svg width="18" height="18" viewBox="0 0 18 18"><path d="M13.4 11.6A5.6 5.6 0 0 1 6.4 4.6 5.8 5.8 0 1 0 13.4 11.6Z" fill="#0d21a5"/></svg></div></div>
+        <div class="row"><div class="city" style="color:var(--muted)">Add city…</div><span class="plus">＋</span></div>
+      </div>
+      <p style="font-size:16.2px;color:var(--muted);margin-top:12px">Name in Body 300, zone line in Label, time in Display 200 with tabular numerals. Rows divide with hairlines, not borders. Max 6 rows, then the add row disappears entirely. <b style="color:var(--ink);font-weight:400">One line per row, permanently</b> — the country sits inline beside the city name, not on a second line. A fold-on-drag alternative was prototyped and rejected as distracting; the list never animates. Tap a row for its actions: <b style="color:var(--ink);font-weight:400">Set home</b> and <b style="color:var(--ink);font-weight:400">Delete</b>, both ≥44pt. Swipe left opens the same panel.</p>
+      <p style="font-size:16.2px;color:var(--muted);margin-top:12px"><b style="color:var(--ink);font-weight:400">Home chip.</b> Solid Dawn <code>#8ba2f0</code> pill, Ink text at 12.5px uppercase, <code>letter-spacing:.13em</code>, 3px&nbsp;/&nbsp;10px padding. Marks the one city the dial speaks for; tapping another row moves it. <b style="color:var(--ink);font-weight:400">Never white text</b> — white on Dawn is 2.46:1, the same ratio that keeps Dawn out of type everywhere else.</p>
+
+      <h3>Day-state marker — locked</h3>
+      <div class="panel" style="background:var(--page-bg)">
+        <div class="shape" style="font-size:16px">
+          <div><svg width="18" height="18" viewBox="0 0 18 18"><path d="M13.4 11.6A5.6 5.6 0 0 1 6.4 4.6 5.8 5.8 0 1 0 13.4 11.6Z" fill="#0d21a5"/></svg> &nbsp;<b style="color:var(--ink);font-weight:400">Asleep</b> — local time 21:00–06:59</div>
+          <div><svg width="18" height="18" viewBox="0 0 18 18"><circle cx="9" cy="9" r="4" fill="#f7c948" stroke="#a97103" stroke-width="1"/><g stroke="#a97103" stroke-width="1.4" stroke-linecap="round"><line x1="9" y1="1.2" x2="9" y2="2.8"/><line x1="9" y1="15.2" x2="9" y2="16.8"/><line x1="1.2" y1="9" x2="2.8" y2="9"/><line x1="15.2" y1="9" x2="16.8" y2="9"/><line x1="3.5" y1="3.5" x2="4.6" y2="4.6"/><line x1="13.4" y1="13.4" x2="14.5" y2="14.5"/><line x1="14.5" y1="3.5" x2="13.4" y2="4.6"/><line x1="4.6" y1="13.4" x2="3.5" y2="14.5"/></g></svg> &nbsp;<b style="color:var(--ink);font-weight:400">Awake</b> — local time 07:00–20:59</div>
+        </div>
+        <p style="font-size:16px;color:var(--muted);margin:18px 0 0">
+          <b style="color:var(--ink);font-weight:400">Binary, and every row carries one.</b> Three states were tested and dropped: without a contrasting mark beside it, a lone symbol doesn't explain itself. A mark only means something next to a mark that differs — so both states are always drawn.
+        </p>
+        <p style="font-size:16px;color:var(--muted);margin:14px 0 0">
+          <b style="color:var(--ink);font-weight:400">Recipe.</b> Moon: solid Klein <code>#0d21a5</code>, no outline needed at 11.81:1. Sun: Noon <code>#f7c948</code> disc with a 1px Amber <code>#a97103</code> outline and rays, 4.16:1. Both 18×18 on a 24px hit area. Yellow is never drawn bare.
+        </p>
+        <div class="callout" style="margin-top:18px"><b>Passes WCAG 1.4.1.</b> The two glyphs differ in silhouette, not just hue — a crescent and a rayed disc survive having their color removed entirely. Color is reinforcement here, not the message.</div>
+      </div>
+
+      <h3>The dial — locked</h3>
+      <div class="panel" style="background:var(--page-bg)">
+        <table>
+          <tr><th>Decision</th><th>Value</th></tr>
+          <tr><td>Form</td><td class="val">Full centred 24-hour wheel. Midnight top, noon bottom.</td></tr>
+          <tr><td>Arc</td><td class="val">Outer — rides between the ramp band and the hour ticks.</td></tr>
+          <tr><td>Ramp</td><td class="val">Soft (see §01). Full is kept and reversible.</td></tr>
+          <tr><td>Marker</td><td class="val">The arc's own rounded cap. No notch, bar or knob.</td></tr>
+          <tr><td>Drag surface</td><td class="val">The entire dial, middle included.</td></tr>
+          <tr><td>Steps</td><td class="val">5 minutes on a normal drag; 1 minute when the drag slows below ~0.75 rad/s.</td></tr>
+          <tr><td>Drag feedback</td><td class="val">Ticks thicken and turn Klein on entering fine mode, with a label under the dial.</td></tr>
+        </table>
+        <p style="font-size:16.2px;color:var(--muted);margin:18px 0 0">
+          <b style="color:var(--ink);font-weight:400">Geometry</b> (400px viewBox): white face r&nbsp;104
+          · ramp band 104–142 · outer arc track r&nbsp;155, 13px wide · ticks 168–180 · numerals r&nbsp;192.
+          The 26px gap between band and ticks is deliberate — the earlier 4px version read as strangled.
+        </p>
+        <p style="font-size:16.2px;color:var(--muted);margin:14px 0 0">
+          <b style="color:var(--ink);font-weight:400">Why the marker can be this quiet.</b> Because the
+          whole dial is the drag target, the marker never has to be aimed at, so it is an indicator rather
+          than a hit area and is free to be as small as it likes. Taken from the reference app, which has
+          no handle at all — see <code>reference/NOTES.md</code>.
+        </p>
+        <div class="callout warn" style="margin-top:18px">
+          <b>Known accepted gap — no keyboard or VoiceOver path.</b> A drag-only control cannot be operated
+          by keyboard, switch control or VoiceOver, so the dial is unusable for those users and the app fails
+          WCAG 2.1.1 (Keyboard). This is a <b>deliberate decision, not an oversight</b>: accepted 3 Sept 2026
+          for the current scope. The fix is one typed time input beside the readout. Revisit before any
+          public release.
+        </div>
+      </div>
+    </div>
+
+  <!-- 5. ICON / IMAGERY -->
+  <section>
+    <h2><span class="num">05</span>Icons &amp; imagery</h2>
+    <p class="lead">No icon library, no photography, no illustration. At this size a font-icon set would be more bytes than the whole app.</p>
+    <div class="panel">
+      <p style="margin:0;font-size:16.8px">Every glyph is hand-drawn inline SVG on a 24×24 grid: <b>1.25px stroke, round caps, no fill, currentColor</b>. The set is four — search, plus, chevron, close — plus the sun and moon in §04. The dial is SVG on the same principles, and its tick marks are generated, not drawn.</p>
+
+      <h3 style="margin-top:30px">The mark</h3>
+      <div style="display:flex;gap:34px;align-items:flex-end;flex-wrap:wrap;background:var(--page-bg);border-radius:14px;padding:24px 26px;margin-bottom:20px">
+        <div style="text-align:center"><svg viewBox="0 0 20 18" width="71.1" height="64" role="img" aria-label="Pando"><path d="M4.2 13.40 L4.2 16.4" stroke="#14161a" stroke-width="0.95" stroke-linecap="round" fill="none"/><path d="M10 9.20 L10 16.4" stroke="#14161a" stroke-width="0.95" stroke-linecap="round" fill="none"/><path d="M15.8 14.60 L15.8 16.4" stroke="#14161a" stroke-width="0.95" stroke-linecap="round" fill="none"/><path d="M2.2 17.2 L7 17.2 M9 17.2 L11.6 17.2 M13.6 17.2 L18 17.2" stroke="#14161a" stroke-width="1.05" stroke-linecap="round" opacity=".6"/><g transform="translate(0.66,7.38) scale(0.443)"><path d="M8 1.4 C10.9 4.4 13.1 6.9 13.1 9.3 C13.1 11.9 10.9 13.6 8 13.6 C5.1 13.6 2.9 11.9 2.9 9.3 C2.9 6.9 5.1 4.4 8 1.4 Z" fill="#14161a"/></g><g transform="translate(5.67,1.84) scale(0.541)"><path d="M8 1.4 C10.9 4.4 13.1 6.9 13.1 9.3 C13.1 11.9 10.9 13.6 8 13.6 C5.1 13.6 2.9 11.9 2.9 9.3 C2.9 6.9 5.1 4.4 8 1.4 Z" fill="#14161a"/></g><g transform="translate(12.52,9.03) scale(0.410)"><path d="M8 1.4 C10.9 4.4 13.1 6.9 13.1 9.3 C13.1 11.9 10.9 13.6 8 13.6 C5.1 13.6 2.9 11.9 2.9 9.3 C2.9 6.9 5.1 4.4 8 1.4 Z" fill="#14161a"/></g></svg><div style="font-size:13px;color:var(--muted);margin-top:10px;letter-spacing:.08em">64px</div></div>
+        <div style="text-align:center"><svg viewBox="0 0 20 18" width="26.7" height="24" role="img" aria-label="Pando"><path d="M4.2 13.40 L4.2 16.4" stroke="#6e6874" stroke-width="0.95" stroke-linecap="round" fill="none"/><path d="M10 9.20 L10 16.4" stroke="#6e6874" stroke-width="0.95" stroke-linecap="round" fill="none"/><path d="M15.8 14.60 L15.8 16.4" stroke="#6e6874" stroke-width="0.95" stroke-linecap="round" fill="none"/><path d="M2.2 17.2 L7 17.2 M9 17.2 L11.6 17.2 M13.6 17.2 L18 17.2" stroke="#6e6874" stroke-width="1.05" stroke-linecap="round" opacity=".6"/><g transform="translate(0.66,7.38) scale(0.443)"><path d="M8 1.4 C10.9 4.4 13.1 6.9 13.1 9.3 C13.1 11.9 10.9 13.6 8 13.6 C5.1 13.6 2.9 11.9 2.9 9.3 C2.9 6.9 5.1 4.4 8 1.4 Z" fill="#6e6874"/></g><g transform="translate(5.67,1.84) scale(0.541)"><path d="M8 1.4 C10.9 4.4 13.1 6.9 13.1 9.3 C13.1 11.9 10.9 13.6 8 13.6 C5.1 13.6 2.9 11.9 2.9 9.3 C2.9 6.9 5.1 4.4 8 1.4 Z" fill="#6e6874"/></g><g transform="translate(12.52,9.03) scale(0.410)"><path d="M8 1.4 C10.9 4.4 13.1 6.9 13.1 9.3 C13.1 11.9 10.9 13.6 8 13.6 C5.1 13.6 2.9 11.9 2.9 9.3 C2.9 6.9 5.1 4.4 8 1.4 Z" fill="#6e6874"/></g></svg><div style="font-size:13px;color:var(--muted);margin-top:10px;letter-spacing:.08em">24px</div></div>
+        <div style="text-align:center"><svg viewBox="0 0 20 18" width="17.8" height="16" role="img" aria-label="Pando"><path d="M4.2 13.40 L4.2 16.4" stroke="#6e6874" stroke-width="0.95" stroke-linecap="round" fill="none"/><path d="M10 9.20 L10 16.4" stroke="#6e6874" stroke-width="0.95" stroke-linecap="round" fill="none"/><path d="M15.8 14.60 L15.8 16.4" stroke="#6e6874" stroke-width="0.95" stroke-linecap="round" fill="none"/><path d="M2.2 17.2 L7 17.2 M9 17.2 L11.6 17.2 M13.6 17.2 L18 17.2" stroke="#6e6874" stroke-width="1.05" stroke-linecap="round" opacity=".6"/><g transform="translate(0.66,7.38) scale(0.443)"><path d="M8 1.4 C10.9 4.4 13.1 6.9 13.1 9.3 C13.1 11.9 10.9 13.6 8 13.6 C5.1 13.6 2.9 11.9 2.9 9.3 C2.9 6.9 5.1 4.4 8 1.4 Z" fill="#6e6874"/></g><g transform="translate(5.67,1.84) scale(0.541)"><path d="M8 1.4 C10.9 4.4 13.1 6.9 13.1 9.3 C13.1 11.9 10.9 13.6 8 13.6 C5.1 13.6 2.9 11.9 2.9 9.3 C2.9 6.9 5.1 4.4 8 1.4 Z" fill="#6e6874"/></g><g transform="translate(12.52,9.03) scale(0.410)"><path d="M8 1.4 C10.9 4.4 13.1 6.9 13.1 9.3 C13.1 11.9 10.9 13.6 8 13.6 C5.1 13.6 2.9 11.9 2.9 9.3 C2.9 6.9 5.1 4.4 8 1.4 Z" fill="#6e6874"/></g></svg><div style="font-size:13px;color:var(--accent);margin-top:10px;letter-spacing:.08em">16px · in use</div></div>
+      </div>
+      <p style="margin:0 0 14px;font-size:16.8px;color:var(--muted)"><b style="color:var(--ink);font-weight:400">Three stalks of uneven height, each carrying a leaf, rising from a broken soil line.</b> One root system showing above ground as many trees — which is what a pando is. Solid blades on 0.95 stalks; the soil line is three dashes at 1.05 and 60% opacity, which the stalks do not touch.</p>
+      <p style="margin:0 0 14px;font-size:16.8px;color:var(--muted)"><b style="color:var(--ink);font-weight:400">Always 16px, never 12.</b> The mark is sized independently of the 12px label beside it — a brand mark has no obligation to match the type it sits next to. The soil dashes are the finest detail in the system and the first thing to vanish; at 12px they fall below a device pixel on a 1× screen.</p>
+      <div class="callout warn"><b>Never join the stalks with a solid bar.</b> A continuous base under three uprights is a candle holder at any size. The rejected alternatives are worth recording, because each one solved the candelabra by becoming a different wrong object: converging stalks make an <b>anchor</b>, a forked trunk makes a <b>clover</b>, removing the stalks makes <b>falling rain</b>. <b>Asymmetry does the real work</b> — uneven spacing and uneven leaf sizes are why three uprights read as a stand of trees rather than as an object.</div>
+
+      <h3 style="margin-top:30px">Held in reserve</h3>
+      <div style="display:flex;gap:40px;align-items:flex-end;flex-wrap:wrap;background:var(--page-bg);border-radius:14px;padding:24px 26px">
+        <div style="text-align:center;max-width:170px"><svg viewBox="0 0 20 18" width="53.3" height="48" role="img" aria-label="Pando"><path d="M4.2 13.00 L4.2 17.2" stroke="#14161a" stroke-width="0.95" stroke-linecap="round" fill="none"/><path d="M10 9.20 L10 17.2" stroke="#14161a" stroke-width="0.95" stroke-linecap="round" fill="none"/><path d="M15.8 14.40 L15.8 17.2" stroke="#14161a" stroke-width="0.95" stroke-linecap="round" fill="none"/><g transform="translate(0.53,6.76) scale(0.459)"><path d="M8 1.4 C10.9 4.4 13.1 6.9 13.1 9.3 C13.1 11.9 10.9 13.6 8 13.6 C5.1 13.6 2.9 11.9 2.9 9.3 C2.9 6.9 5.1 4.4 8 1.4 Z" fill="#14161a"/></g><g transform="translate(5.67,1.84) scale(0.541)"><path d="M8 1.4 C10.9 4.4 13.1 6.9 13.1 9.3 C13.1 11.9 10.9 13.6 8 13.6 C5.1 13.6 2.9 11.9 2.9 9.3 C2.9 6.9 5.1 4.4 8 1.4 Z" fill="#14161a"/></g><g transform="translate(12.52,8.83) scale(0.410)"><path d="M8 1.4 C10.9 4.4 13.1 6.9 13.1 9.3 C13.1 11.9 10.9 13.6 8 13.6 C5.1 13.6 2.9 11.9 2.9 9.3 C2.9 6.9 5.1 4.4 8 1.4 Z" fill="#14161a"/></g></svg><div style="font-size:14px;color:var(--muted);margin-top:10px"><b style="color:var(--ink);font-weight:400">No soil line</b><br>Stalks run to the baseline. Simplest, and the only version that survives 12px.</div></div>
+        <div style="text-align:center;max-width:170px">
+          <div style="height:48px;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:200;letter-spacing:.2em;text-transform:uppercase;color:#14161a">Pando</div>
+          <div style="font-size:14px;color:var(--muted);margin-top:10px"><b style="color:var(--ink);font-weight:400">No mark</b><br>Name alone. The chevron on the control already separates identity from function.</div></div>
+      </div>
+      <p style="margin:16px 0 0;font-size:16.8px;color:var(--muted)">Both are <b style="color:var(--ink);font-weight:400">live alternates, not rejects</b> — swapping to either is a one-line change and needs no other adjustment.</p>
+
+      <p style="margin:22px 0 0;font-size:16.8px;color:var(--muted)"><b style="color:var(--ink);font-weight:400">App icon</b> for Add to Home Screen: still to design. It must read at 60px, which rules out the full dial — the mark is the obvious candidate.</p>
+    </div>
+  </section>
+
+  <footer>Pando design kit · US English · a living reference, updated as design decisions lock in</footer>
+</div>
+</body>
+</html>

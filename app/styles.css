@@ -1,0 +1,249 @@
+/* Pando.  Tokens are the locked design kit; do not drift. */
+:root{
+  /* Sky, soft wheel - shipped 4 Sept 2026. The bright wheel is kept as a reserve at the
+     bottom of this file, with exact values. */
+  --paper:linear-gradient(135deg,#eaeefb,#eff0f9 44%,#f6edf0 68%,#fbf0d2);
+  --field:#f4f1f7;          /* a solid for input backgrounds - the paper is a gradient */
+  --card:#ffffff;
+  --ink:#14161a;
+  --muted:#6e6874;
+  --line:#dedbd8;
+  --night:#0d21a5;   /* Klein - the only action colour */
+  --dawn:#8ba2f0;    /* palette blue - the ramp's bridge, the home chip, the dark action */
+  /* The chip is a role, not a palette entry. Swapping which colour fills it must not
+     drag the palette entry around with it. Its text is dark in BOTH schemes: every
+     candidate fill is a mid-light colour, so --ink would fail here the moment --ink
+     turns light. Dawn + white measures 2.46, Posie + white 2.73; both need dark text. */
+  --chip-bg:#8ba2f0;
+  --chip-line:transparent;   /* always declared, so an outlined chip is the same size as a filled one */
+  --on-chip:#14161a;
+  --noon:#f7c948;    /* sun fill */
+  --amber:#a97103;   /* sun outline - the only reason this colour exists */
+  /* The dial is hand-drawn SVG, so app.js reads these out rather than inheriting them.
+     They live here so one stylesheet still holds every colour in the app. */
+  --dial-face:#ffffff;
+  /* Darkened 4 Sept 2026. At #8d8792 the major tick measured exactly 3.00 against every
+     paper tried - dead on the floor, no margin, and it blocked three rounds of ground work.
+     #79717e scores 4.04 at worst across both live grounds. It stays lighter than the
+     numerals (--muted) so the hour hierarchy on the dial survives.
+     The minor ticks are half-hour subdivisions, redundant with the majors and the numerals,
+     so they are decorative and the 3:1 rule does not reach them - they are lifted only to
+     hold their old relationship to the majors. */
+  --tick-maj:#79717e;
+  --tick-min:#aea7b3;
+  --tick-maj-fine:#0d21a5;   /* slow-drag: the ticks thicken and turn Klein */
+  --tick-min-fine:#8ba2f0;
+  /* How the ramp is toned down. 'mix' blends each stop toward --ramp-toward by
+     --ramp-soften (0 = full strength); that is the locked light-mode treatment. 'lift'
+     keeps every stop's hue and chroma and remaps only its lightness into
+     --ramp-floor..--ramp-ceil - the dark-mode treatment, because mixing toward a dark
+     ground turns Noon to olive. */
+  --ramp-mode:mix;
+  --ramp-toward:#ffffff;
+  --ramp-soften:0.46;        /* was the SOFTEN constant in app.js; 0 = full strength */
+  --ramp-floor:0.68;         /* unused while --ramp-mode is mix; matches the reserve below */
+  --ramp-ceil:0.88;
+  --moon:#0d21a5;
+  --sun:#f7c948;
+  --sun-edge:#a97103;
+  --row-open:#f9f7f3;        /* an opened row, tinted off the paper */
+  --scrim:rgba(20,22,26,.28);
+  --shadow:0 14px 40px rgba(20,20,26,.18);
+  --on-night:#ffffff;        /* text that sits on Klein */
+  --radius:20px;
+  --radius-sm:12px;
+  --maxw:420px;
+  --font:"Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+/* Dark. Every UI colour here is sampled from the wheel this scheme actually paints - the rule
+   is that plus, sun, moon and the home chip must all be colours you can find on the dial.
+   The sun's Amber outline is the one deliberate exemption: Noon on white measures 1.97 and the
+   disc vanishes without it, and no wheel stop can do that job. In dark it is not needed at all,
+   so the outline simply matches the fill. */
+@media (prefers-color-scheme: dark) {
+  :root{
+    --paper:linear-gradient(135deg,#080c26,#241a33);
+    --field:#241f4a;
+    --card:#2a2456;
+    --ink:#f1f0f6;
+    --muted:#a9a5c4;
+    --line:#3a3468;
+    --row-open:#332d60;
+    --night:#c0cdf7;        /* the wheel at 06:30 - Dawn, as the soft wheel paints it */
+    --on-night:#14161a;
+    --chip:#fbe29c;
+    --chip-bg:#fbe29c;      /* the wheel at noon */
+    --on-chip:#14161a;
+    --moon:#c0cdf7;         /* the same stop as the action, exactly as in light */
+    --sun:#fbe29c;
+    --sun-edge:#fbe29c;     /* Amber retired here: Noon needs no outline on a dark ground */
+    --dial-face:#2a2456;
+    --tick-maj:#7d76b0;
+    --tick-min:#514d88;
+    --ramp-toward:#ffffff;
+    --scrim:rgba(4,5,10,.55);
+    --shadow:0 14px 40px rgba(0,0,0,.5);
+  }
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  font-family:var(--font); font-weight:300; font-size:17px; line-height:1.5;
+  color:var(--ink);
+  /* A gradient sizes to its box, and the body box is only as tall as the content - which left
+     the wash stopping short and a hard edge below the footer. min-height pins it to the
+     viewport; no-repeat stops it tiling if the content ever runs longer. */
+  background:var(--paper) no-repeat; min-height:100vh;
+  -webkit-font-smoothing:antialiased; -webkit-tap-highlight-color:transparent;
+  padding:max(14px,env(safe-area-inset-top)) 20px calc(20px + env(safe-area-inset-bottom));
+}
+main,header,footer{max-width:var(--maxw);margin:0 auto}
+@supports (min-height:100dvh){body{min-height:100dvh}}   /* iOS: exclude the browser chrome */
+
+/* ---- header: one line, mark + name left, date control right ---- */
+.top{display:flex;justify-content:space-between;align-items:center;
+  font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);
+  font-weight:400;                 /* 300 at 12px with .2em tracking reads as a whisper */
+  padding:2px 0 4px}
+/* baseline, not centre: an SVG's baseline is its bottom edge, and the mark's soil line sits
+   0.7px above that - so the soil lands on the text baseline and the two share a ground. */
+.brand{display:inline-flex;align-items:baseline;gap:8px}
+.brand svg{display:block}
+/* the date control and the app name share one colour in every state - a difference
+   this small reads as a mistake, and the label already says which date you are on */
+/* 44pt hit area without a 44pt row: the padding is pulled back out by an equal
+   negative margin, so the touch target overflows the header instead of growing it.
+   The header budget is 40pt and a literal min-height:44 blew straight through it. */
+.datebtn{border:0;background:none;font-family:var(--font);font-size:12px;
+  letter-spacing:.2em;text-transform:uppercase;color:var(--muted);cursor:pointer;
+  font-weight:400;
+  display:inline-flex;align-items:center;gap:6px;
+  padding:15px 6px;margin:-15px -6px}
+.datebtn svg{display:block}
+.picker{position:absolute;z-index:30;background:var(--card);border:1px solid var(--line);
+  border-radius:var(--radius-sm);box-shadow:var(--shadow);padding:6px;
+  width:170px;max-height:60vh;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.picker[hidden]{display:none}
+.picker button{display:block;width:100%;text-align:left;border:0;background:none;cursor:pointer;
+  font-family:var(--font);font-weight:300;font-size:15px;color:var(--ink);
+  padding:11px 12px;border-radius:9px;min-height:44px}
+.picker button.on{background:var(--chip-bg)}
+
+/* ---- dial ---- */
+.dialbox{position:relative;width:300px;height:300px;margin:2px auto 6px}
+.dial{display:block;touch-action:none;cursor:grab;user-select:none;-webkit-user-select:none}
+.dial.drag{cursor:grabbing}
+/* the toggle is an overlay ABOVE the svg, so tapping it cannot start a drag.
+   Padding carries the 44pt hit area; the box is positioned so the *text* sits
+   close under the city label rather than the box being centred on it. */
+.tog{position:absolute;left:0;right:0;top:157px;display:flex;justify-content:center;z-index:3}
+.tg{display:inline-flex;align-items:center;gap:6px;font-size:12px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--muted);cursor:pointer;padding:15px 10px}
+.tg b{font-weight:400;color:var(--ink)}
+.tg .sep{opacity:.45}
+
+/* ---- city list ---- */
+.cities{list-style:none;margin:0;padding:0;background:var(--card);
+  border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
+.cities:empty{display:none}
+.city{position:relative;overflow:hidden;border-bottom:1px solid var(--line)}
+.city:last-child{border-bottom:none}
+.city:first-child{border-radius:var(--radius) var(--radius) 0 0}
+.city:last-child{border-radius:0 0 var(--radius) var(--radius)}
+.city:only-child{border-radius:var(--radius)}
+.city .face{display:flex;justify-content:space-between;align-items:center;gap:12px;
+  padding:10px 18px;background:var(--card);cursor:pointer;transition:background .18s;touch-action:pan-y}
+.city.open .face{background:var(--row-open)}
+/* both columns are a 28px primary line over a 13px secondary line, so the country
+   and the day tag land on the same baseline across the row */
+.name{font-size:17px;min-width:0;flex:1;display:flex;flex-direction:column}
+.name .n{display:flex;align-items:center;gap:9px;min-width:0;height:28px}
+.zone{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;
+  height:13px;line-height:13px;margin-top:3px}
+.chip{font-size:11px;letter-spacing:.13em;text-transform:uppercase;
+  background:var(--chip-bg);border:1px solid var(--chip-line);
+  color:var(--on-chip);border-radius:99px;padding:2px 8px}
+/* The glyph and the add button sit in one column, so they must share a centre. The glyph is
+   19px and the button 30px, both flush right - which put their centres 5.5px apart. The glyph
+   now rides in a 30px box to match. The box is 28px tall, the height of the time line, and the
+   row is top-aligned, so the glyph centres on the TIME rather than on the whole stack - the
+   stack is 44px because the day-shift line is always reserved, which was pushing it 8px low. */
+.right{display:flex;align-items:flex-start;gap:11px;flex:none}
+.markbox{width:30px;height:28px;display:grid;place-items:center;flex:none}
+.stack{display:flex;flex-direction:column;align-items:flex-end}
+.time{height:28px;line-height:28px;display:block;font-weight:200;font-size:25px;
+  font-variant-numeric:tabular-nums;letter-spacing:-.01em;white-space:nowrap}
+.time i{font-style:normal;font-size:17px;margin-left:5px;color:var(--muted);vertical-align:baseline}
+.shift{font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);
+  margin-top:3px;height:13px;line-height:13px}
+.actions{display:none;gap:10px;padding:0 18px 14px;background:var(--row-open)}
+.city.open .actions{display:flex}
+.actions button{flex:1;padding:12px 10px;border:1px solid var(--line);border-radius:var(--radius-sm);
+  background:var(--card);color:var(--night);font-family:var(--font);font-weight:300;font-size:15px;
+  cursor:pointer;min-height:44px}
+.actions button.danger{color:var(--on-night);background:var(--night);border-color:var(--night)}
+
+/* ---- add ---- */
+.add{display:flex;width:100%;justify-content:space-between;align-items:center;
+  margin-top:12px;padding:13px 18px;background:var(--card);
+  border:1px solid var(--line);border-radius:var(--radius);
+  font-family:var(--font);font-weight:300;font-size:17px;color:var(--muted);cursor:pointer}
+.add[hidden]{display:none}
+.add .plus{width:30px;height:30px;min-width:30px;border-radius:99px;background:var(--night);
+  color:var(--on-night);display:grid;place-items:center}
+.add .plus svg{display:block}
+.empty{font-size:15px;color:var(--muted);margin:18px 2px 0}
+.empty b{font-weight:400;color:var(--ink)}
+.empty[hidden]{display:none}
+
+/* ---- search sheet ---- */
+.sheet{position:fixed;inset:0;background:var(--scrim);display:flex;
+  align-items:flex-start;justify-content:center;z-index:40}
+.sheet[hidden]{display:none}
+.sheetcard{background:var(--card);width:100%;max-width:var(--maxw);
+  border-radius:0 0 var(--radius) var(--radius);
+  padding:max(20px,env(safe-area-inset-top)) 16px 12px;
+  display:flex;flex-direction:column;max-height:88vh}
+.searchrow{display:flex;gap:10px;align-items:center}
+#q{flex:1;min-width:0;font-family:var(--font);font-weight:300;font-size:17px;color:var(--ink);
+  background:var(--field);border:1px solid var(--line);border-radius:var(--radius-sm);
+  padding:12px 14px;outline:none;-webkit-appearance:none}
+#q:focus{border-color:var(--night)}
+.cancel{border:0;background:none;font-family:var(--font);font-weight:300;font-size:16px;
+  color:var(--night);cursor:pointer;padding:6px 2px}
+.results{list-style:none;margin:12px 0 0;padding:0;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.results li{display:flex;justify-content:space-between;align-items:baseline;gap:12px;
+  padding:13px 4px;border-top:1px solid var(--line);cursor:pointer}
+.results li:first-child{border-top:none}
+/* Fading the whole row put "added" at 1.75 - and opacity cannot rescue it, because it is
+   fading a colour that only starts at 5.39. Quieten it by dropping the name from ink to muted
+   instead: the row still reads as unavailable, and every part of it stays above 4.5. */
+.results li[aria-disabled="true"]{cursor:default;color:var(--muted)}
+.results li[aria-disabled="true"] .rc{color:var(--muted)}
+.results .rc{font-size:16px}
+.results .rc em{font-style:normal;color:var(--muted)}
+.results .rz{font-size:12px;color:var(--muted);flex:none;font-variant-numeric:tabular-nums}
+.hint{font-size:14px;color:var(--muted);padding:16px 4px;margin:0}
+.hint[hidden]{display:none}
+
+footer{font-size:11.5px;color:var(--muted);text-align:center;margin-top:24px;line-height:1.6}
+footer b{font-weight:400}
+
+/* ---------------------------------------------------------------------------
+   RESERVE - the bright wheel, exact values, 4 Sept 2026.
+   Shipped soft; this was the other finalist and the decision was close. To swap,
+   replace the ramp tokens in :root and in the dark block with these.
+
+   LIGHT   --ramp-mode:lift;  --ramp-floor:0.68;  --ramp-ceil:0.88;
+   DARK    --ramp-mode:lift;  --ramp-floor:0.70;  --ramp-ceil:0.88;
+
+   The dark UI colours must be re-sampled from the bright wheel, because they are
+   wheel colours and the bright wheel paints different ones:
+     --night, --moon      #a7bfff   (was #c0cdf7)
+     --chip-bg, --sun,
+     --sun-edge           #f9cb4a   (was #fbe29c)
+
+   Light mode's UI colours do not change between the two - they are the raw stops.
+   0.68 is the light ceiling: at 0.70 the night band measures 2.92 against a 3.0 floor.
+   --------------------------------------------------------------------------- */

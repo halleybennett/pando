@@ -1,0 +1,7 @@
+# Frames extracted from a video Halley was shown - someone else's app.
+# Kept locally as design reference; must never be published.
+reference/
+
+.DS_Store
+tools/.tmp/
+*.HEIC

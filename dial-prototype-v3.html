@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pando — dial v3</title>
+<style>
+:root{
+  --font:"Helvetica Neue",Helvetica,Arial,sans-serif;
+  --paper:#fbe9f4; --card:#fff; --ink:#14161a; --muted:#6e6874; --line:#e2d2dc;
+  --night:#0d21a5; --dawn:#8ba2f0; --noon:#f7c948; --amber:#a97103;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{font-family:var(--font);font-weight:300;background:var(--paper);color:var(--ink);
+  -webkit-font-smoothing:antialiased;padding:48px 20px 110px;line-height:1.6;font-size:18px}
+.wrap{max-width:1180px;margin:0 auto}
+h1{font-weight:200;font-size:56px;letter-spacing:-.02em;margin:0 0 10px}
+.sub{color:var(--muted);font-size:20px;margin:0 0 18px;max-width:66ch}
+.key{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px 26px;
+  font-size:17.5px;color:var(--muted);max-width:80ch;margin-bottom:14px}
+.key b{color:var(--ink);font-weight:400}
+h2{font-weight:300;font-size:17px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);
+  margin:54px 0 6px;padding-bottom:12px;border-bottom:1px solid var(--line)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(400px,1fr));gap:26px;margin-top:30px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:26px 22px 24px;display:flex;flex-direction:column}
+.card h3{font-weight:400;font-size:23px;margin:0 0 6px;letter-spacing:-.01em}
+.card .why{font-size:16.5px;color:var(--muted);margin:0 0 10px}
+.stagewrap{display:flex;justify-content:center;margin:4px 0 6px}
+svg.dial{display:block;touch-action:none;cursor:grab;user-select:none;-webkit-user-select:none;max-width:100%;height:auto}
+svg.dial.drag{cursor:grabbing}
+.mode{text-align:center;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);min-height:22px}
+.mode.fine{color:var(--night)}
+ul{margin:auto 0 0;padding-left:20px;font-size:16px;color:var(--muted);padding-top:14px}
+li{margin-bottom:7px} li b{color:var(--ink);font-weight:400}
+.cities{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:6px 22px;margin:30px auto 0;max-width:560px}
+.row{display:flex;justify-content:space-between;align-items:center;padding:13px 0;border-bottom:1px solid var(--line)}
+.row:last-child{border-bottom:none}
+.city{font-size:17px}
+.city small{display:block;font-size:12px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);margin-top:3px}
+.homechip{display:inline-block;font-size:12px;letter-spacing:.13em;text-transform:uppercase;
+  background:var(--dawn);color:var(--ink);border-radius:99px;padding:3px 10px;margin-left:9px;vertical-align:2px}
+.tm{display:flex;align-items:center;gap:12px}
+.tm b{font-weight:200;font-size:26px;font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+.rampstrip{display:flex;align-items:center;gap:14px;margin-top:8px;font-size:15px;color:var(--muted)}
+.rampstrip .bar{flex:1;height:26px;border-radius:8px;border:1px solid var(--line);overflow:hidden;display:flex}
+.rampstrip .bar i{flex:1}
+.scale{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);letter-spacing:.08em;margin-top:4px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>Four ways</h1>
+<p class="sub">Arc inside or outside, ramp full-strength or soft. All four live — drag anywhere.</p>
+
+<div class="key">
+  <b>The marker is now the arc itself.</b> No notch, no bar, no knob — the arc simply ends in a rounded cap that travels with your finger. It's the most subtle marker available, and it only works because the whole dial is the drag target, so nothing has to be aimed at.
+</div>
+<div class="key">
+  <b>The ring got wider and the padding got real.</b> The band is now 38px of ramp with a <b>26px gap</b> before the hour ticks, instead of the 4px squeeze it had. Numerals sit further out again.
+</div>
+<div class="key">
+  <b>Two gradient strengths.</b> The <b>full</b> ramp is the saturated one from the last round; <b>soft</b> is the earlier gentler version, every stop pulled 46% toward white. Both use the same <em>timing</em> — only the intensity differs, so you can judge saturation without the daylight window changing under you.
+</div>
+<div class="key">
+  <b>Daylight now runs to 21:00.</b> The old ramp was symmetric around noon, which handed half the circle to blue and made the day look short. It's now skewed: cool only from <b>21:00 to 06:30</b> — the same window as the sun/moon threshold, so the ring and the city rows finally agree with each other.
+  <div class="rampstrip"><span>full</span><div class="bar" id="strip"></div></div>
+  <div class="rampstrip"><span>soft</span><div class="bar" id="stripsoft"></div></div>
+  <div class="scale"><span>midnight</span><span>dawn</span><span>noon</span><span>dusk</span><span>midnight</span></div>
+</div>
+
+<h2>The matrix</h2>
+<div class="grid" id="grid"></div>
+
+<div class="cities" id="cities"></div>
+
+</div>
+
+<script>
+var STATE={mins:14*60+30,fine:false};
+var CITIES=[{n:"London",tz:"BST",off:0,home:true},{n:"Mexico City",tz:"CST",off:-6},
+            {n:"Lagos",tz:"WAT",off:1},{n:"Tokyo",tz:"JST",off:8}];
+function pad(n){return n<10?"0"+n:""+n;}
+function fmt(m){m=((m%1440)+1440)%1440;return pad(Math.floor(m/60))+":"+pad(m%60);}
+function dayShift(m){return Math.floor(m/1440);}
+function asleep(m){var h=Math.floor((((m%1440)+1440)%1440)/60);return h>=21||h<7;}
+var MOON='<svg width="19" height="19" viewBox="0 0 18 18"><path d="M13.4 11.6A5.6 5.6 0 0 1 6.4 4.6 5.8 5.8 0 1 0 13.4 11.6Z" fill="#0d21a5"/></svg>';
+var SUN='<svg width="19" height="19" viewBox="0 0 18 18"><circle cx="9" cy="9" r="4" fill="#f7c948" stroke="#a97103" stroke-width="1"/><g stroke="#a97103" stroke-width="1.4" stroke-linecap="round"><line x1="9" y1="1.2" x2="9" y2="2.8"/><line x1="9" y1="15.2" x2="9" y2="16.8"/><line x1="1.2" y1="9" x2="2.8" y2="9"/><line x1="15.2" y1="9" x2="16.8" y2="9"/><line x1="3.5" y1="3.5" x2="4.6" y2="4.6"/><line x1="13.4" y1="13.4" x2="14.5" y2="14.5"/><line x1="14.5" y1="3.5" x2="13.4" y2="4.6"/><line x1="4.6" y1="13.4" x2="3.5" y2="14.5"/></g></svg>';
+
+function hx(c){c=c.replace('#','');return [parseInt(c.slice(0,2),16),parseInt(c.slice(2,4),16),parseInt(c.slice(4,6),16)];}
+function mix(a,b,t){var A=hx(a),B=hx(b);return '#'+[0,1,2].map(function(i){var v=Math.round(A[i]+(B[i]-A[i])*t).toString(16);return v.length<2?'0'+v:v;}).join('');}
+
+/* Ramp keyed to the HOUR, not to distance-from-noon.
+   Cool only 21:00 -> 06:30, matching the asleep threshold. The pale stops at
+   08:00 and 20:00 are bridges - blue mixed straight into gold goes grey. */
+var STOPS=[[0,'#0d21a5'],[4.5,'#3f57bd'],[6.5,'#8ba2f0'],[8,'#cfd3ee'],
+           [9.5,'#f6e3b4'],[11,'#f7c948'],[17.5,'#f7c948'],[19.5,'#f8dfa0'],
+           [20.5,'#ecdcdd'],[21.5,'#a9b6ea'],[22.5,'#5d74d2'],[24,'#0d21a5']];
+var SOFTEN=0.46;   // how far the "previous gradient" pulls each stop toward white
+function rampAt(m,soft){
+  var h=((m%1440)+1440)%1440/60, col=STOPS[STOPS.length-1][1];
+  for(var i=1;i<STOPS.length;i++){
+    if(h<=STOPS[i][0]){var a=STOPS[i-1],b=STOPS[i];col=mix(a[1],b[1],(h-a[0])/(b[0]-a[0]));break;}
+  }
+  return soft ? mix(col,'#ffffff',SOFTEN) : col;
+}
+
+// ---- geometry: generous, per the padding note ----
+var S=400,c=200;
+var R_CENTER=104;          // white face
+var R_BAND_OUT=142;        // ramp band outer edge  -> 38px band
+var R_TICK_IN=168, R_TICK_OUT=180;   // 26px gap from the band
+var R_NUM=192;
+var ARC={inner:{r:86,w:13}, outer:{r:155,w:13}};
+
+function pt(r,a){return [c+r*Math.sin(a), c-r*Math.cos(a)];}
+
+function ringSegments(soft){   // conic ramp, painted once
+  var out="",N=144,rMid=(R_CENTER+R_BAND_OUT)/2,w=R_BAND_OUT-R_CENTER;
+  for(var i=0;i<N;i++){
+    var m0=i/N*1440, m1=(i+1.02)/N*1440;
+    var p0=pt(rMid,m0/1440*2*Math.PI), p1=pt(rMid,m1/1440*2*Math.PI);
+    out+='<path d="M '+p0[0].toFixed(2)+' '+p0[1].toFixed(2)+' A '+rMid+' '+rMid+' 0 0 1 '+p1[0].toFixed(2)+' '+p1[1].toFixed(2)+
+         '" fill="none" stroke="'+rampAt((m0+m1)/2,soft)+'" stroke-width="'+w+'"/>';
+  }
+  return out;
+}
+function ticksAndNums(){
+  var t="",n="";
+  for(var i=0;i<48;i++){
+    var a=i*7.5*Math.PI/180,maj=i%2===0;
+    var p1=pt(maj?R_TICK_IN:R_TICK_IN+5,a),p2=pt(R_TICK_OUT,a);
+    t+='<line x1="'+p1[0].toFixed(1)+'" y1="'+p1[1].toFixed(1)+'" x2="'+p2[0].toFixed(1)+'" y2="'+p2[1].toFixed(1)+
+       '" stroke="'+(maj?"#8d8792":"#c2bcc6")+'" stroke-width="'+(maj?1.5:.9)+'" class="tick" data-maj="'+(maj?1:0)+'"/>';
+  }
+  for(var h=0;h<24;h+=3){
+    var p=pt(R_NUM,h*15*Math.PI/180);
+    n+='<text x="'+p[0].toFixed(1)+'" y="'+(p[1]+4.5).toFixed(1)+'" text-anchor="middle" font-family="Helvetica Neue,Helvetica,Arial" font-weight="300" font-size="13" fill="#6e6874">'+pad(h)+'</text>';
+  }
+  return t+n;
+}
+
+var V=[
+ {id:"inner-strong",arc:"inner",soft:false,name:"Inner arc · full",
+  why:"Arc inside the face, tucked under the readout. Saturated ramp."},
+ {id:"inner-soft",arc:"inner",soft:true,name:"Inner arc · soft",
+  why:"Same, with the earlier gentler gradient — every stop pulled 46% toward white."},
+ {id:"outer-strong",arc:"outer",soft:false,name:"Outer arc · full",
+  why:"Arc rides between the band and the hour ticks. Saturated ramp."},
+ {id:"outer-soft",arc:"outer",soft:true,name:"Outer arc · soft",
+  why:"Same placement, the gentler gradient."}
+];
+
+document.getElementById('grid').innerHTML=V.map(function(v){
+  return '<div class="card"><h3>'+v.name+'</h3><p class="why">'+v.why+'</p>'+
+   '<div class="stagewrap"><svg class="dial" data-v="'+v.id+'" data-arc="'+v.arc+'" data-soft="'+(v.soft?1:0)+'" viewBox="0 0 '+S+' '+S+'" width="340" height="340">'+
+     '<circle cx="'+c+'" cy="'+c+'" r="'+R_BAND_OUT+'" fill="#fff"/>'+
+     ringSegments(v.soft)+
+     '<circle cx="'+c+'" cy="'+c+'" r="'+R_CENTER+'" fill="#fff"/>'+
+     ticksAndNums()+
+     '<g class="arc"></g>'+
+     '<text class="big" x="'+c+'" y="'+(c+2)+'" text-anchor="middle" font-family="Helvetica Neue,Helvetica,Arial" font-weight="200" font-size="56" fill="#14161a"></text>'+
+     '<text x="'+c+'" y="'+(c+30)+'" text-anchor="middle" font-family="Helvetica Neue,Helvetica,Arial" font-weight="300" font-size="12" letter-spacing="2.8" fill="#6e6874">LONDON</text>'+
+   '</svg></div><div class="mode"></div>'+
+   '<ul><li><b>Marker:</b> the arc’s own rounded cap. Nothing else.</li>'+
+   '<li><b>Grab anywhere</b> — the whole circle, middle included.</li>'+
+   (v.arc==="inner"?'<li>Reads as a <b>progress ring around the time</b>.</li>':'<li>Reads as a <b>setting on the dial</b>, closer to the hour scale it maps to.</li>')+
+   (v.soft?'<li><b>Softer ramp</b> — lower contrast against the white face, so the arc has to carry more of the signal.</li>':'<li><b>Full-strength ramp</b> — the day/night read is unmistakable from across the room.</li>')+
+   '</ul></div>';
+}).join("");
+
+function drawArc(g,m,spec,soft){
+  if(m<2){g.innerHTML='';return;}
+  var out="",steps=Math.max(2,Math.round(m/1440*96));
+  for(var i=0;i<steps;i++){
+    var m0=m*i/steps, m1=m*(i+1)/steps;
+    var p0=pt(spec.r,m0/1440*2*Math.PI), p1=pt(spec.r,m1/1440*2*Math.PI);
+    var last=(i===steps-1), first=(i===0);
+    out+='<path d="M '+p0[0].toFixed(2)+' '+p0[1].toFixed(2)+' A '+spec.r+' '+spec.r+' 0 0 1 '+p1[0].toFixed(2)+' '+p1[1].toFixed(2)+
+      '" fill="none" stroke="'+rampAt((m0+m1)/2,soft)+'" stroke-width="'+spec.w+'" stroke-linecap="'+((last||first)?'round':'butt')+'"/>';
+  }
+  g.innerHTML=out;
+}
+
+function render(){
+  var m=((STATE.mins%1440)+1440)%1440;
+  document.querySelectorAll('svg.dial').forEach(function(sv){
+    drawArc(sv.querySelector('.arc'),m,ARC[sv.dataset.arc],sv.dataset.soft==='1');
+    sv.querySelector('.big').textContent=fmt(m);
+    sv.querySelectorAll('.tick').forEach(function(t){
+      var maj=t.dataset.maj==="1";
+      t.setAttribute('stroke-width',STATE.fine?(maj?2.3:1.6):(maj?1.5:.9));
+      t.setAttribute('stroke',STATE.fine?(maj?"#0d21a5":"#8ba2f0"):(maj?"#8d8792":"#c2bcc6"));
+    });
+  });
+  document.querySelectorAll('.mode').forEach(function(el){
+    el.textContent=STATE.fine?"fine — 1 minute steps":"5 minute steps";
+    el.className="mode"+(STATE.fine?" fine":"");
+  });
+  document.getElementById('cities').innerHTML=CITIES.map(function(ct){
+    var t=m+ct.off*60,sh=dayShift(t);
+    return '<div class="row"><div class="city">'+ct.n+(ct.home?' <span class="homechip">home</span>':'')+
+      '<small>'+ct.tz+' · '+(ct.off>=0?"+":"")+ct.off+'h'+(sh>0?" · next day":sh<0?" · prev day":"")+'</small></div>'+
+      '<div class="tm"><b>'+fmt(t)+'</b>'+(asleep(t)?MOON:SUN)+'</div></div>';
+  }).join("");
+}
+
+// ramp legend strip
+function stripHTML(soft){var o="";for(var i=0;i<96;i++){o+='<i style="background:'+rampAt(i/96*1440,soft)+'"></i>';}return o;}
+document.getElementById('strip').innerHTML=stripHTML(false);
+document.getElementById('stripsoft').innerHTML=stripHTML(true);
+
+var drag=null;
+function angleAt(sv,e){
+  var r=sv.getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height/2;
+  var a=Math.atan2(e.clientX-cx,-(e.clientY-cy));return a<0?a+2*Math.PI:a;
+}
+document.querySelectorAll('svg.dial').forEach(function(sv){
+  sv.addEventListener('pointerdown',function(e){
+    try{sv.setPointerCapture(e.pointerId);}catch(_){}
+    sv.classList.add('drag');drag={sv:sv,last:angleAt(sv,e),t:performance.now()};e.preventDefault();
+  });
+  sv.addEventListener('pointermove',function(e){
+    if(!drag||drag.sv!==sv)return;
+    var a=angleAt(sv,e),now=performance.now(),d=a-drag.last;
+    if(d>Math.PI)d-=2*Math.PI; if(d<-Math.PI)d+=2*Math.PI;
+    STATE.fine=Math.abs(d)/Math.max(now-drag.t,1)*1000<0.75;
+    var step=STATE.fine?1:5;
+    STATE.mins=Math.round((STATE.mins+d/(2*Math.PI)*1440)/step)*step;
+    drag.last=a;drag.t=now;render();
+  });
+  ['pointerup','pointercancel','pointerleave'].forEach(function(ev){
+    sv.addEventListener(ev,function(){if(drag&&drag.sv===sv){drag=null;sv.classList.remove('drag');}});
+  });
+});
+render();
+</script>
+</body>
+</html>

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pando — the mark</title>
+<style>
+:root{--font:"Helvetica Neue",Helvetica,Arial,sans-serif;
+ --paper:#fbe9f4;--card:#fff;--ink:#14161a;--muted:#6e6874;--line:#e2d2dc;--night:#0d21a5;}
+*{box-sizing:border-box}html,body{margin:0;padding:0}
+body{font-family:var(--font);font-weight:300;background:#f2eef1;color:var(--ink);
+ -webkit-font-smoothing:antialiased;padding:44px 20px 90px;font-size:18px;line-height:1.6}
+.wrap{max-width:1180px;margin:0 auto}
+h1{font-weight:200;font-size:54px;letter-spacing:-.02em;margin:0 0 10px}
+.sub{color:var(--muted);font-size:19px;max-width:68ch;margin:0 0 20px}
+.key{background:#fff;border:1px solid var(--line);border-radius:16px;padding:20px 24px;
+ font-size:17px;color:var(--muted);max-width:82ch;margin-bottom:12px}
+.key b{color:var(--ink);font-weight:400}
+.marks{display:flex;gap:22px;flex-wrap:wrap;margin-top:30px}
+.m{background:#fff;border:1px solid var(--line);border-radius:20px;padding:22px 20px 18px;width:262px}
+.m.win{border-color:var(--night);box-shadow:0 0 0 3px rgba(13,33,165,.10)}
+.m h3{font-weight:400;font-size:19px;margin:0 0 4px}
+.m .tag{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--night);margin-bottom:6px}
+.m p{font-size:15px;color:var(--muted);margin:0 0 16px;min-height:92px}
+.big{display:flex;justify-content:center;align-items:flex-end;gap:18px;
+ background:var(--paper);border-radius:14px;padding:20px 10px;margin-bottom:12px;min-height:104px}
+.ctx{background:var(--paper);border-radius:14px;padding:11px 14px;margin-bottom:7px}
+.hdr{display:flex;justify-content:space-between;align-items:center;
+ font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted)}
+.brand{display:inline-flex;align-items:center;gap:7px}
+.brand svg,.ctl svg{display:block}
+.ctl{display:inline-flex;align-items:center;gap:6px}
+.sizes{font-size:13px;color:var(--muted);text-align:center;margin-top:6px;letter-spacing:.05em}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>Not a candelabra</h1>
+<p class="sub">You diagnosed it precisely. A candelabra is <em>symmetric, vertical, evenly spaced, with flames on top</em> — and the root line hit all four at once. Each option below breaks at least two, though three of them break it by becoming something else instead.</p>
+<div class="key">
+  <b>The root line is the problem, not the idea.</b> Drawing a bar that joins three upright stems is drawing a candle holder, at any size. Three of the alternatives below solve that and immediately become an anchor, a clover, or falling rain — labelled, because a mark that reads as the wrong object is worse than one that reads as nothing. <b>Asymmetry turned out to be the cheap fix:</b> keep the uprights, remove the regularity. Header rows show 12px and 16px.
+</div>
+<div class="marks" id="marks"></div>
+</div>
+
+<script>
+var CHEV='<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9.5l6 6 6-6"/></svg>';
+var BLADE='M8 1.4 C10.9 4.4 13.1 6.9 13.1 9.3 C13.1 11.9 10.9 13.6 8 13.6 C5.1 13.6 2.9 11.9 2.9 9.3 C2.9 6.9 5.1 4.4 8 1.4 Z';
+var BH=12.2;
+function leaf(cx,topY,h,col){
+ var s=h/BH;
+ return '<g transform="translate('+(cx-8*s).toFixed(2)+','+(topY-1.4*s).toFixed(2)+') scale('+s.toFixed(3)+')">'+
+  '<path d="'+BLADE+'" fill="'+col+'"/></g>';
+}
+function svgOpen(sz,W,H){return '<svg viewBox="0 0 '+W+' '+H+'" width="'+(sz*W/H).toFixed(1)+'" height="'+sz+'">';}
+
+/* every variant: [x, leafHeight, leafTopY] */
+function draw(sz,col,mode){
+ var W=20,H=18,base=17.2,o=svgOpen(sz,W,H),sw=0.95;
+ var st;
+ if(mode==='straight'){                       // C as it stands
+  st=[{x:4.2,lh:5.6,top:7.4},{x:10,lh:6.6,top:2.6},{x:15.8,lh:5.0,top:9.4}];
+  st.forEach(function(s){o+='<path d="M'+s.x+' '+(s.top+s.lh).toFixed(2)+' L'+s.x+' '+base+'" stroke="'+col+'" stroke-width="'+sw+'" stroke-linecap="round" fill="none"/>';});
+ } else if(mode==='splay'){                   // stems fan from one point - convergence, not a bar
+  st=[{x:3.4,lh:5.2,top:8.2},{x:10.2,lh:6.6,top:2.4},{x:16.6,lh:4.8,top:10.0}];
+  st.forEach(function(s){o+='<path d="M'+s.x+' '+(s.top+s.lh).toFixed(2)+' Q'+((s.x+10)/2).toFixed(1)+' '+(base-2.4)+' 10 '+base+'" stroke="'+col+'" stroke-width="'+sw+'" stroke-linecap="round" fill="none"/>';});
+ } else if(mode==='fork'){                    // one trunk that branches
+  st=[{x:4.0,lh:5.0,top:8.6},{x:10,lh:6.4,top:2.4},{x:16.0,lh:4.6,top:10.2}];
+  o+='<path d="M10 '+base+' L10 12.4" stroke="'+col+'" stroke-width="'+(sw+0.25)+'" stroke-linecap="round" fill="none"/>';
+  o+='<path d="M10 12.4 Q6.6 11.8 4 '+(st[0].top+st[0].lh).toFixed(2)+'" stroke="'+col+'" stroke-width="'+sw+'" fill="none" stroke-linecap="round"/>';
+  o+='<path d="M10 12.4 L10 '+(st[1].top+st[1].lh).toFixed(2)+'" stroke="'+col+'" stroke-width="'+sw+'" fill="none" stroke-linecap="round"/>';
+  o+='<path d="M10 12.4 Q13.4 12.2 16 '+(st[2].top+st[2].lh).toFixed(2)+'" stroke="'+col+'" stroke-width="'+sw+'" fill="none" stroke-linecap="round"/>';
+ } else if(mode==='leaves'){                  // no stems at all
+  st=[{x:4.0,lh:5.4,top:9.2},{x:10.2,lh:7.0,top:3.0},{x:16.2,lh:4.8,top:11.0}];
+ } else if(mode==='irregular'){               // uneven spacing AND uneven leaf sizes
+  st=[{x:3.6,lh:4.6,top:9.8},{x:8.8,lh:7.0,top:2.4},{x:16.4,lh:5.6,top:7.2}];
+  st.forEach(function(s){o+='<path d="M'+s.x+' '+(s.top+s.lh).toFixed(2)+' L'+(s.x+(s.x<10?0.5:-0.5))+' '+base+'" stroke="'+col+'" stroke-width="'+sw+'" stroke-linecap="round" fill="none"/>';});
+ } else if(mode==='soil'){                    // stems stop at a broken ground line
+  st=[{x:4.2,lh:5.4,top:8.0},{x:10,lh:6.6,top:2.6},{x:15.8,lh:5.0,top:9.6}];
+  st.forEach(function(s){o+='<path d="M'+s.x+' '+(s.top+s.lh).toFixed(2)+' L'+s.x+' '+(base-0.8)+'" stroke="'+col+'" stroke-width="'+sw+'" stroke-linecap="round" fill="none"/>';});
+  o+='<path d="M2.2 '+base+' L7 '+base+' M9 '+base+' L11.6 '+base+' M13.6 '+base+' L18 '+base+'" stroke="'+col+'" stroke-width="0.85" stroke-linecap="round" opacity=".55"/>';
+ }
+ st.forEach(function(s){o+=leaf(s.x,s.top,s.lh,col);});
+ return o+'</svg>';
+}
+
+var OPTS=[
+ {id:'straight',t:'C — as it stands',tag:'your lean',
+  d:'Three uprights, hairline stalks. Reads as a candelabra mainly <em>because</em> of the root line — without it, the uneven heights already do most of the work.'},
+ {id:'splay',t:'F — Splayed',tag:'reads as an anchor',
+  d:'The stalks fan out from a single point. Convergence <em>does</em> say “one organism” without a bar — but the downward sweep makes an <b>anchor</b>. Swapped one wrong object for another.'},
+ {id:'fork',t:'G — Forked trunk',tag:'reads as a clover',
+  d:'One trunk splitting into three. Not a candelabra, but the branches sit too horizontal and it lands on a <b>club / clover</b> instead. Busiest of the set at 12px.'},
+ {id:'leaves',t:'H — Leaves only',tag:'reads as raindrops',
+  d:'No stems at all. Cannot be a candelabra because there is nothing to hold — but with the stalks gone the blades become <b>three falling drops</b>.'},
+ {id:'irregular',t:'I — Irregular',tag:'recommended',win:true,
+  d:'Your C, with the symmetry taken out: uneven spacing, uneven leaf sizes, stalks slightly askew. <b>Symmetry is what makes an object look manufactured</b> — remove it and three uprights read as a stand of trees, with no base needed.'},
+ {id:'soil',t:'J — Broken soil line',
+  d:'Keeps a ground line but breaks it into three dashes the stems do not touch. Implies below-ground without a solid base — the closest to B that survives.'}
+];
+
+document.getElementById('marks').innerHTML=OPTS.map(function(o){
+ return '<div class="m'+(o.win?' win':'')+'">'+(o.tag?'<div class="tag">'+o.tag+'</div>':'')+
+  '<h3>'+o.t+'</h3><p>'+o.d+'</p>'+
+  '<div class="big">'+draw(64,'#14161a',o.id)+draw(24,'#6e6874',o.id)+'</div>'+
+  '<div class="ctx"><div class="hdr"><span class="brand">'+draw(12,'#6e6874',o.id)+'Pando</span>'+
+   '<span class="ctl">now'+CHEV+'</span></div></div>'+
+  '<div class="ctx"><div class="hdr"><span class="brand">'+draw(16,'#6e6874',o.id)+'Pando</span>'+
+   '<span class="ctl">now'+CHEV+'</span></div></div>'+
+  '<div class="sizes">64 · 24 &nbsp;|&nbsp; header 12px, then 16px</div></div>';
+}).join('');
+</script>
+</body>
+</html>

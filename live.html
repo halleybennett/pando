@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pando — A vs D, live</title>
+<style>
+:root{--font:"Helvetica Neue",Helvetica,Arial,sans-serif;
+ --paper:#fbe9f4;--card:#fff;--ink:#14161a;--muted:#6e6874;--line:#e2d2dc;
+ --night:#0d21a5;--dawn:#8ba2f0;--noon:#f7c948;--amber:#a97103;}
+*{box-sizing:border-box}html,body{margin:0;padding:0}
+body{font-family:var(--font);font-weight:300;background:#f2eef1;color:var(--ink);
+ -webkit-font-smoothing:antialiased;padding:44px 20px 90px;font-size:18px;line-height:1.6}
+.wrap{max-width:1180px;margin:0 auto}
+h1{font-weight:200;font-size:54px;letter-spacing:-.02em;margin:0 0 10px}
+.sub{color:var(--muted);font-size:19px;max-width:66ch;margin:0 0 18px}
+.key{background:#fff;border:1px solid var(--line);border-radius:16px;padding:20px 24px;
+ font-size:17px;color:var(--muted);max-width:80ch;margin-bottom:12px}
+.key b{color:var(--ink);font-weight:400}
+.state{font-size:15px;color:var(--muted);margin:14px 0 26px;font-variant-numeric:tabular-nums}
+.state b{color:var(--ink);font-weight:400}
+.row2{display:flex;gap:44px;flex-wrap:wrap}
+.col h3{font-weight:400;font-size:21px;margin:0 0 4px}
+.col p{font-size:15.5px;color:var(--muted);margin:0 0 14px;max-width:330px;min-height:50px}
+
+.phone{width:375px;height:812px;background:var(--paper);border-radius:44px;border:1px solid var(--line);
+ box-shadow:0 22px 60px rgba(20,20,26,.16);overflow:hidden;display:flex;flex-direction:column;position:relative}
+.safe{flex:none;background:repeating-linear-gradient(45deg,#efe2ea,#efe2ea 6px,#f6eaf1 6px,#f6eaf1 12px);
+ font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:#b09aa6;display:flex;align-items:center;justify-content:center}
+.safe.top{height:47px}.safe.bot{height:34px}
+.body{flex:1;display:flex;flex-direction:column;overflow:hidden;position:relative}
+
+.hdr{flex:none;display:flex;justify-content:space-between;align-items:center;
+ padding:4px 20px;font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted)}
+.brand{display:inline-flex;align-items:center;gap:7px}
+.month-btn{border:0;background:none;font-family:var(--font);font-weight:300;font-size:12px;
+ letter-spacing:.2em;text-transform:uppercase;color:var(--muted);cursor:pointer;
+ display:inline-flex;align-items:center;gap:6px;padding:6px 0}
+.month-btn.set{color:var(--night)}
+.picker{position:absolute;top:30px;right:16px;z-index:6;background:#fff;border:1px solid var(--line);
+ border-radius:14px;box-shadow:0 14px 40px rgba(20,20,26,.18);padding:6px;width:154px;
+ max-height:320px;overflow-y:auto}
+.picker[hidden]{display:none}
+.picker button{display:block;width:100%;text-align:left;border:0;background:none;cursor:pointer;
+ font-family:var(--font);font-weight:300;font-size:14px;color:var(--ink);padding:9px 10px;border-radius:9px}
+.picker button.on{background:var(--dawn)}
+
+.dialwrap{flex:none;position:relative;width:375px;height:300px}
+.dialwrap svg.dial{position:absolute;left:37.5px;top:0;touch-action:none;cursor:grab;user-select:none;-webkit-user-select:none}
+.dialwrap svg.dial.drag{cursor:grabbing}
+.tog{position:absolute;left:0;right:0;top:180px;display:flex;justify-content:center;z-index:3}
+.tg{display:inline-flex;align-items:center;gap:9px;font-size:11px;letter-spacing:.18em;
+ text-transform:uppercase;cursor:pointer;padding:6px 8px}
+.tg .sep{opacity:.45}
+.tg.a{color:var(--muted)} .tg.a b{font-weight:400;color:var(--ink)}
+.tg.d{color:rgba(20,22,26,.32)} .tg.d b{font-weight:400;color:var(--night)}
+.mode{position:absolute;left:0;right:0;top:264px;text-align:center;font-size:10px;
+ letter-spacing:.14em;text-transform:uppercase;color:var(--muted);z-index:3}
+.mode.fine{color:var(--night)}
+
+.list{list-style:none;margin:4px 20px 0;padding:0;background:#fff;border:1px solid var(--line);
+ border-radius:20px;overflow:hidden;flex:none}
+.r{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 18px;
+ border-bottom:1px solid var(--line)}
+.r:last-child{border-bottom:none}
+.nm{flex:1;min-width:0;display:flex;flex-direction:column}
+.n1{display:flex;align-items:center;gap:9px;height:28px;font-size:17px}
+.chip{font-size:11px;letter-spacing:.13em;text-transform:uppercase;background:var(--dawn);
+ color:var(--ink);border-radius:99px;padding:3px 9px}
+.co{height:13px;line-height:13px;margin-top:3px;font-size:11px;letter-spacing:.1em;
+ text-transform:uppercase;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rt{display:flex;align-items:center;gap:11px;flex:none}
+.stk{display:flex;flex-direction:column;align-items:flex-end}
+.t{height:28px;line-height:28px;font-weight:200;font-size:25px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.t i{font-style:normal;font-size:17px;margin-left:5px;color:var(--muted)}
+.sh{height:13px;line-height:13px;margin-top:3px;font-size:10.5px;letter-spacing:.12em;
+ text-transform:uppercase;color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>All of it, working</h1>
+<p class="sub">Dial, 12/24 and the month picker, live in both treatments. The two phones share one state, so whatever you do to one happens to both — the only difference is the toggle.</p>
+<div class="key">
+  <b>Try:</b> drag the dial (slow right down and it drops to single minutes — the ticks turn Klein). Tap <b>12H / 24H</b>. Open the month control and pick <b>1 January</b>, then <b>1 July</b>: Lagos matches Madrid in winter and sits an hour behind in summer, and Auckland swings from +10 to +12. Real timezone rules, not fixed offsets.
+</div>
+<p class="state" id="state"></p>
+
+<div class="row2" id="row2"></div>
+</div>
+
+<script>
+/* ---------- palette ramp ---------- */
+var STOPS=[[0,'#0d21a5'],[4.5,'#3f57bd'],[6.5,'#8ba2f0'],[8,'#cfd3ee'],[9.5,'#f6e3b4'],
+ [11,'#f7c948'],[17.5,'#f7c948'],[19.5,'#f8dfa0'],[20.5,'#ecdcdd'],[21.5,'#a9b6ea'],[22.5,'#5d74d2'],[24,'#0d21a5']];
+function hx(c){c=c.replace('#','');return [parseInt(c.slice(0,2),16),parseInt(c.slice(2,4),16),parseInt(c.slice(4,6),16)];}
+function mix(a,b,t){var A=hx(a),B=hx(b);return '#'+[0,1,2].map(function(i){var v=Math.round(A[i]+(B[i]-A[i])*t).toString(16);return v.length<2?'0'+v:v;}).join('');}
+function rampAt(m){var h=((m%1440)+1440)%1440/60,col=STOPS[STOPS.length-1][1];
+ for(var i=1;i<STOPS.length;i++){if(h<=STOPS[i][0]){var a=STOPS[i-1],b=STOPS[i];col=mix(a[1],b[1],(h-a[0])/(b[0]-a[0]));break;}}
+ return mix(col,'#ffffff',0.46);}
+
+/* ---------- time ---------- */
+function pad(n){return n<10?'0'+n:''+n;}
+var use24=true, mins=14*60+30, selMonth=null, fine=false;
+var YEAR=new Date().getFullYear();
+var MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
+var MON3=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+var CITIES=[
+ {n:'Madrid',co:'Spain',tz:'Europe/Madrid',home:true},
+ {n:'Aspen',co:'United States',tz:'America/Denver'},
+ {n:'Tokyo',co:'Japan',tz:'Asia/Tokyo'},
+ {n:'Auckland',co:'New Zealand',tz:'Pacific/Auckland'},
+ {n:'Honolulu',co:'United States',tz:'Pacific/Honolulu'},
+ {n:'Lagos',co:'Nigeria',tz:'Africa/Lagos'}];
+
+var _f={};
+function zf(tz){if(!_f[tz])_f[tz]=new Intl.DateTimeFormat('en-GB',{timeZone:tz,hour12:false,
+ year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'});return _f[tz];}
+function wall(d,tz){var o={};zf(tz).formatToParts(d).forEach(function(p){if(p.type!=='literal')o[p.type]=p.value;});
+ if(o.hour==='24')o.hour='00';return {y:+o.year,mo:+o.month,d:+o.day,h:+o.hour,mi:+o.minute};}
+function offMin(d,tz){var p=wall(d,tz);
+ return Math.round((Date.UTC(p.y,p.mo-1,p.d,p.h,p.mi)-Math.floor(d.getTime()/60000)*60000)/60000);}
+function zonedToUtc(y,mo,d,h,mi,tz){var g=Date.UTC(y,mo,d,h,mi);
+ var o1=offMin(new Date(g),tz),t=g-o1*60000,o2=offMin(new Date(t),tz);
+ return o2===o1?t:g-o2*60000;}
+function homeTz(){return CITIES[0].tz;}
+function baseYMD(){if(selMonth===null){var p=wall(new Date(),homeTz());return [p.y,p.mo-1,p.d];}return [YEAR,selMonth,1];}
+function parts(m){m=((m%1440)+1440)%1440;var h=Math.floor(m/60),mi=m%60;
+ return use24?{num:pad(h)+':'+pad(mi),ap:''}:{num:(h%12||12)+':'+pad(mi),ap:h<12?'am':'pm'};}
+function tHTML(m){var p=parts(m);return p.num+(p.ap?'<i>'+p.ap+'</i>':'');}
+function monthLabel(){return selMonth===null?'now':'1 '+MON3[selMonth];}
+
+/* ---------- marks ---------- */
+var MOON='<svg width="19" height="19" viewBox="0 0 18 18"><path d="M13.4 11.6A5.6 5.6 0 0 1 6.4 4.6 5.8 5.8 0 1 0 13.4 11.6Z" fill="#0d21a5"/></svg>';
+var SUN='<svg width="19" height="19" viewBox="0 0 18 18"><circle cx="9" cy="9" r="4" fill="#f7c948" stroke="#a97103" stroke-width="1"/><g stroke="#a97103" stroke-width="1.4" stroke-linecap="round"><line x1="9" y1="1.2" x2="9" y2="2.8"/><line x1="9" y1="15.2" x2="9" y2="16.8"/><line x1="1.2" y1="9" x2="2.8" y2="9"/><line x1="15.2" y1="9" x2="16.8" y2="9"/><line x1="3.5" y1="3.5" x2="4.6" y2="4.6"/><line x1="13.4" y1="13.4" x2="14.5" y2="14.5"/><line x1="14.5" y1="3.5" x2="13.4" y2="4.6"/><line x1="4.6" y1="13.4" x2="3.5" y2="14.5"/></g></svg>';
+var CHEV='<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9.5l6 6 6-6"/></svg>';
+var MARK='<svg viewBox="0 0 14 14" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><path d="M3 11.5V5M7 11.5V2.5M11 11.5V6.5"/></svg>';
+
+/* ---------- dial geometry ---------- */
+var S=300,c=150,RC=78,RB=106,TI=126,TO=135,RN=144,ARC={r:116,w:10};
+function pt(r,a){return [c+r*Math.sin(a),c-r*Math.cos(a)];}
+function ring(){var o='',N=144,rm=(RC+RB)/2,w=RB-RC;
+ for(var i=0;i<N;i++){var m0=i/N*1440,m1=(i+1.02)/N*1440,p0=pt(rm,m0/1440*2*Math.PI),p1=pt(rm,m1/1440*2*Math.PI);
+ o+='<path d="M '+p0[0].toFixed(2)+' '+p0[1].toFixed(2)+' A '+rm+' '+rm+' 0 0 1 '+p1[0].toFixed(2)+' '+p1[1].toFixed(2)+'" fill="none" stroke="'+rampAt((m0+m1)/2)+'" stroke-width="'+w+'"/>';}
+ return o;}
+function ticks(){var t='',n='';
+ for(var i=0;i<48;i++){var a=i*7.5*Math.PI/180,mj=i%2===0,p1=pt(mj?TI:TI+4,a),p2=pt(TO,a);
+ t+='<line class="tk" data-maj="'+(mj?1:0)+'" x1="'+p1[0].toFixed(1)+'" y1="'+p1[1].toFixed(1)+'" x2="'+p2[0].toFixed(1)+'" y2="'+p2[1].toFixed(1)+'" stroke="'+(mj?'#8d8792':'#c2bcc6')+'" stroke-width="'+(mj?1.2:.7)+'"/>';}
+ for(var h=0;h<24;h+=6){var p=pt(RN,h*15*Math.PI/180);
+ n+='<text x="'+p[0].toFixed(1)+'" y="'+(p[1]+3.6).toFixed(1)+'" text-anchor="middle" font-family="Helvetica Neue,Helvetica,Arial" font-weight="300" font-size="10.5" fill="#6e6874">'+pad(h)+'</text>';}
+ return t+n;}
+
+var V=[{id:'a',t:'A — Whisper',d:'Live value in ink, the other in muted grey. No container.'},
+       {id:'d',t:'D — Whisper, Klein',d:'Same, but the live value is Klein and the inactive side drops to 32% ink.'}];
+
+document.getElementById('row2').innerHTML=V.map(function(v){
+ return '<div class="col"><h3>'+v.t+'</h3><p>'+v.d+'</p>'+
+  '<div class="phone"><div class="safe top">safe area</div><div class="body" data-v="'+v.id+'">'+
+   '<div class="hdr"><span class="brand">'+MARK+'Pando</span>'+
+     '<button class="month-btn" type="button"></button></div>'+
+   '<div class="picker" hidden><button type="button" data-m="now">Now</button>'+
+     MONTHS.map(function(m,i){return '<button type="button" data-m="'+i+'">1 '+m+'</button>';}).join('')+'</div>'+
+   '<div class="dialwrap">'+
+     '<div class="tog"><span class="tg '+v.id+'" data-tg></span></div>'+
+     '<div class="mode"></div>'+
+     '<svg class="dial" viewBox="0 0 300 300" width="300" height="300">'+
+       '<circle cx="150" cy="150" r="106" fill="#fff"/>'+ring()+
+       '<circle cx="150" cy="150" r="78" fill="#fff"/>'+ticks()+'<g class="arc"></g>'+
+       '<text class="big" x="150" y="144" text-anchor="middle" font-family="Helvetica Neue,Helvetica,Arial" font-weight="200" font-size="42" fill="#14161a"></text>'+
+       '<text class="hometag" x="150" y="166" text-anchor="middle" font-family="Helvetica Neue,Helvetica,Arial" font-weight="300" font-size="10" letter-spacing="2.4" fill="#6e6874"></text>'+
+     '</svg>'+
+   '</div>'+
+   '<ul class="list"></ul>'+
+  '</div><div class="safe bot">safe area</div></div></div>';
+}).join('');
+
+function drawArc(g,m){
+ if(m<2){g.innerHTML='';return;}
+ var o='',steps=Math.max(2,Math.round(m/1440*96));
+ for(var i=0;i<steps;i++){var m0=m*i/steps,m1=m*(i+1)/steps,p0=pt(ARC.r,m0/1440*2*Math.PI),p1=pt(ARC.r,m1/1440*2*Math.PI);
+  o+='<path d="M '+p0[0].toFixed(2)+' '+p0[1].toFixed(2)+' A '+ARC.r+' '+ARC.r+' 0 0 1 '+p1[0].toFixed(2)+' '+p1[1].toFixed(2)+'" fill="none" stroke="'+rampAt((m0+m1)/2)+'" stroke-width="'+ARC.w+'" stroke-linecap="'+((i===0||i===steps-1)?'round':'butt')+'"/>';}
+ g.innerHTML=o;}
+
+function render(){
+ var b=baseYMD();
+ var instant=new Date(zonedToUtc(b[0],b[1],b[2],Math.floor(mins/60),mins%60,homeTz()));
+ var hp=wall(instant,homeTz());
+ var rowsHTML=CITIES.map(function(ct){
+  var p=wall(instant,ct.tz);
+  var shift=Math.round((Date.UTC(p.y,p.mo-1,p.d)-Date.UTC(hp.y,hp.mo-1,hp.d))/86400000);
+  return '<li class="r"><div class="nm"><span class="n1">'+ct.n+(ct.home?'<span class="chip">home</span>':'')+'</span>'+
+   '<span class="co">'+ct.co+'</span></div>'+
+   '<div class="rt"><div class="stk"><span class="t">'+tHTML(p.h*60+p.mi)+'</span>'+
+   '<span class="sh">'+(shift>0?'next day':shift<0?'prev day':'')+'</span></div>'+
+   ((p.h>=21||p.h<7)?MOON:SUN)+'</div></li>';
+ }).join('');
+
+ document.querySelectorAll('.body').forEach(function(body){
+  var v=body.dataset.v;
+  body.querySelector('.list').innerHTML=rowsHTML;
+  drawArc(body.querySelector('.arc'),mins);
+  var pr=parts(mins);
+  body.querySelector('.big').innerHTML=pr.num+(pr.ap?'<tspan font-size="20" dx="6" fill="#6e6874">'+pr.ap+'</tspan>':'');
+  body.querySelector('.hometag').textContent=CITIES[0].n.toUpperCase();
+  body.querySelector('.tg').innerHTML = use24
+   ? '<span>12h</span><span class="sep">·</span><b>24h</b>'
+   : '<b>12h</b><span class="sep">·</span><span>24h</span>';
+  var mb=body.querySelector('.month-btn');
+  mb.innerHTML=monthLabel()+CHEV;
+  mb.classList.toggle('set',selMonth!==null);
+  body.querySelectorAll('.picker button').forEach(function(x){
+   x.classList.toggle('on', x.dataset.m==='now' ? selMonth===null : +x.dataset.m===selMonth);});
+  var md=body.querySelector('.mode');
+  md.textContent = fine?'fine · 1 minute':'';
+  md.className='mode'+(fine?' fine':'');
+  body.querySelectorAll('.tk').forEach(function(t){
+   var mj=t.dataset.maj==='1';
+   t.setAttribute('stroke-width',fine?(mj?2:1.3):(mj?1.2:.7));
+   t.setAttribute('stroke',fine?(mj?'#0d21a5':'#8ba2f0'):(mj?'#8d8792':'#c2bcc6'));});
+ });
+ document.getElementById('state').innerHTML='Home <b>'+CITIES[0].n+'</b> · dial <b>'+
+  parts(mins).num+(parts(mins).ap?' '+parts(mins).ap:'')+'</b> · date <b>'+
+  (selMonth===null?'now':'1 '+MONTHS[selMonth]+' '+YEAR)+'</b> · format <b>'+(use24?'24h':'12h')+'</b>';
+}
+
+/* ---------- dial drag ---------- */
+document.querySelectorAll('svg.dial').forEach(function(svg){
+ var drag=null;
+ function ang(e){var r=svg.getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height/2;
+  var a=Math.atan2(e.clientX-cx,-(e.clientY-cy));return a<0?a+2*Math.PI:a;}
+ svg.addEventListener('pointerdown',function(e){
+  try{svg.setPointerCapture(e.pointerId);}catch(_){}
+  svg.classList.add('drag');drag={last:ang(e),t:performance.now()};e.preventDefault();});
+ svg.addEventListener('pointermove',function(e){
+  if(!drag)return;
+  var a=ang(e),now=performance.now(),d=a-drag.last;
+  if(d>Math.PI)d-=2*Math.PI;if(d<-Math.PI)d+=2*Math.PI;
+  fine=Math.abs(d)/Math.max(now-drag.t,1)*1000<0.75;
+  var step=fine?1:5;
+  mins=Math.round((mins+d/(2*Math.PI)*1440)/step)*step;
+  drag.last=a;drag.t=now;render();});
+ ['pointerup','pointercancel','pointerleave'].forEach(function(ev){
+  svg.addEventListener(ev,function(){if(drag){drag=null;svg.classList.remove('drag');
+   setTimeout(function(){fine=false;render();},900);}});});
+});
+
+/* ---------- toggle + picker ---------- */
+document.addEventListener('click',function(e){
+ if(e.target.closest('[data-tg]')){use24=!use24;render();return;}
+ var mb=e.target.closest('.month-btn');
+ if(mb){var body=mb.closest('.body'),pk=body.querySelector('.picker');var open=!pk.hidden;
+  document.querySelectorAll('.picker').forEach(function(p){p.hidden=true;});
+  pk.hidden=open;return;}
+ var opt=e.target.closest('.picker button');
+ if(opt){selMonth=opt.dataset.m==='now'?null:+opt.dataset.m;
+  document.querySelectorAll('.picker').forEach(function(p){p.hidden=true;});render();return;}
+ document.querySelectorAll('.picker').forEach(function(p){p.hidden=true;});
+});
+render();
+</script>
+</body>
+</html>

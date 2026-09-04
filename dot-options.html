@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pando — day-state markers</title>
+<style>
+:root{
+  --font:"Helvetica Neue",Helvetica,Arial,sans-serif;
+  --paper:#fbe9f4; --card:#fff; --ink:#14161a; --muted:#6e6874; --line:#e2d2dc;
+  --night:#0d21a5; --dawn:#8ba2f0; --noon:#f7c948;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{font-family:var(--font);font-weight:300;background:var(--paper);color:var(--ink);
+  -webkit-font-smoothing:antialiased;padding:52px 22px 110px;line-height:1.6;font-size:18px}
+.wrap{max-width:1180px;margin:0 auto}
+h1{font-weight:200;font-size:56px;letter-spacing:-.02em;margin:0 0 10px}
+.sub{color:var(--muted);font-size:20px;margin:0 0 16px;max-width:60ch}
+.key{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px 26px;
+  font-size:17.5px;color:var(--muted);max-width:74ch;margin-bottom:20px}
+.key b{color:var(--ink);font-weight:400}
+.old{font-size:16px;color:var(--muted);margin:0 0 44px;max-width:74ch}
+h2{font-weight:300;font-size:17px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);
+  margin:58px 0 6px;padding-bottom:12px;border-bottom:1px solid var(--line)}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:26px;margin-top:30px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:26px 24px 24px;
+  display:flex;flex-direction:column}
+.card.win{border-color:var(--night);box-shadow:0 0 0 3px rgba(13,33,165,.10)}
+.count{font-size:13px;letter-spacing:.16em;text-transform:uppercase;color:var(--night);margin-bottom:8px}
+.card h3{font-weight:400;font-size:23px;margin:0 0 6px;letter-spacing:-.01em}
+.card .why{font-size:16.5px;color:var(--muted);margin:0 0 20px}
+
+.flav{font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:16px 0 8px}
+.demo{border:1px solid var(--line);border-radius:16px;padding:4px 16px}
+.demo.gray{filter:grayscale(1) contrast(.97)}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.pair .lab{font-size:12px;letter-spacing:.13em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.row{display:flex;justify-content:space-between;align-items:center;padding:11px 0;border-bottom:1px solid var(--line)}
+.row:last-child{border-bottom:none}
+.city{font-size:16.5px}
+.city small{display:block;font-size:11.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);margin-top:3px}
+.row.dim .city,.row.dim .tm b{color:var(--muted)}
+.tm{display:flex;align-items:center;gap:11px}
+.tm b{font-weight:200;font-size:23px;font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+.mk{display:flex;align-items:center;justify-content:center;width:20px;flex:none}
+
+ul{margin:auto 0 0;padding-left:20px;font-size:16px;color:var(--muted);padding-top:18px}
+li{margin-bottom:7px}
+li b{color:var(--ink);font-weight:400}
+.rec{background:var(--card);border:1px solid var(--night);box-shadow:0 0 0 3px rgba(13,33,165,.10);
+  border-radius:22px;padding:28px 26px;margin-top:30px}
+.rec h3{font-weight:400;font-size:25px;margin:0 0 8px}
+.rec p{font-size:17px;color:var(--muted);margin:0 0 14px;max-width:78ch}
+.rec p b{color:var(--ink);font-weight:400}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>How few marks?</h1>
+<p class="sub">You liked B (fill state) and C (sun &amp; moon). Here’s the same idea at four levels of simplification — from three symbols down to none.</p>
+<div class="key">
+  <b>Every option is shown twice</b> — in color, then with color stripped out. The gray version is the test: if the three states are still distinguishable there, it works for people who can’t separate the hues, and in bright sun on a bad screen.
+</div>
+<p class="old">The earlier six-option sheet (A–F: color only, fill state, sun &amp; moon, mini dial, words, day bar) is superseded by this page — B and C are the only two carried forward.</p>
+
+<div class="key" style="border-color:#0d21a5;box-shadow:0 0 0 3px rgba(13,33,165,.10);margin-bottom:44px">
+  <b>Decided 3 Sept 2026 — Level 2, flavor C.</b> Sun and moon, binary, a mark on every row. Level 1 was rejected for a good reason: without a contrasting mark beside it, a lone symbol doesn’t explain itself. The rest of this page is kept as the record of what was considered.
+</div>
+
+<h2>The ladder</h2>
+<div class="grid" id="grid"></div>
+
+<h2>Where I’d land</h2>
+<div class="rec">
+  <h3>Level 1 — one symbol, on the night rows only</h3>
+  <p>The app answers exactly one question: <b>is this a bad moment to contact them?</b> For most cities most of the time, the answer is no — so there is nothing worth marking. Marking the <b>exception</b> rather than the state means a screen with six cities usually carries one or two marks total, not six.</p>
+  <p>It also survives the gray test on the strongest channel available: <b>presence versus absence</b>. There's no pair of similar shapes to tell apart, because there's only ever one shape.</p>
+  <p>And it's where <b>C keeps its charm without the cost</b> — a single moon against five unmarked rows is a nice touch. Five suns in a column was the thing that made C feel like a weather app, and at this level that can't happen.</p>
+  <p><b>What you give up:</b> the dawn/dusk middle state. You'd no longer see "they're up, but only just." If that distinction matters to you, Level 2 keeps it cheaply — but I'd argue "asleep or not" is the real question and the rest is decoration.</p>
+</div>
+
+</div>
+
+<script>
+var CITIES=[
+  {n:"London",     z:"BST · home",           t:"14:30", s:"day"},
+  {n:"Mexico City",z:"CST · −6h",            t:"08:30", s:"dawn"},
+  {n:"Lagos",      z:"WAT · +1h",            t:"15:30", s:"day"},
+  {n:"Sydney",     z:"AEDT · +10h",          t:"01:30", s:"night"},
+  {n:"Tokyo",      z:"JST · +8h · next day", t:"22:30", s:"night"}
+];
+var C={night:"#0d21a5",dawn:"#8ba2f0",day:"#f7c948"};
+var K="rgba(20,22,26,.30)";
+
+function ring(c){return '<svg width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6" fill="none" stroke="'+c+'" stroke-width="2.2"/></svg>';}
+function half(c){return '<svg width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6" fill="none" stroke="'+c+'" stroke-width="2.2"/><path d="M8 2 A6 6 0 0 1 8 14 Z" fill="'+c+'"/></svg>';}
+function solid(c){return '<svg width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" fill="'+c+'" stroke="'+K+'"/></svg>';}
+function moon(c){return '<svg width="17" height="17" viewBox="0 0 18 18"><path d="M13.4 11.6A5.6 5.6 0 0 1 6.4 4.6 5.8 5.8 0 1 0 13.4 11.6Z" fill="'+c+'" stroke="'+K+'" stroke-width=".7"/></svg>';}
+function horizon(c){return '<svg width="17" height="17" viewBox="0 0 18 18"><path d="M4 12.5a5 5 0 0 1 10 0Z" fill="'+c+'" stroke="'+K+'" stroke-width=".7"/><line x1="1.5" y1="12.5" x2="16.5" y2="12.5" stroke="#14161a" stroke-width="1.2" stroke-linecap="round"/></svg>';}
+function sun(c){return '<svg width="17" height="17" viewBox="0 0 18 18"><circle cx="9" cy="9" r="4" fill="'+c+'" stroke="'+K+'" stroke-width=".7"/><g stroke="'+c+'" stroke-width="1.5" stroke-linecap="round"><line x1="9" y1="1" x2="9" y2="2.6"/><line x1="9" y1="15.4" x2="9" y2="17"/><line x1="1" y1="9" x2="2.6" y2="9"/><line x1="15.4" y1="9" x2="17" y2="9"/><line x1="3.3" y1="3.3" x2="4.4" y2="4.4"/><line x1="13.6" y1="13.6" x2="14.7" y2="14.7"/><line x1="14.7" y1="3.3" x2="13.6" y2="4.4"/><line x1="4.4" y1="13.6" x2="3.3" y2="14.7"/></g></svg>';}
+
+// level -> flavor -> state -> markup ("" = no mark)
+var SETS={
+  3:{ B:{night:ring(C.night),  dawn:half(C.dawn),     day:solid(C.day)},
+      C:{night:moon(C.night),  dawn:horizon(C.dawn),  day:sun(C.day)} },
+  2:{ B:{night:ring(C.night),  dawn:solid(C.day),     day:solid(C.day)},
+      C:{night:moon(C.night),  dawn:sun(C.day),       day:sun(C.day)} },
+  1:{ B:{night:ring(C.night),  dawn:"",               day:""},
+      C:{night:moon(C.night),  dawn:"",               day:""} },
+  0:{ B:{night:"",dawn:"",day:""}, C:{night:"",dawn:"",day:""} }
+};
+
+function rows(level,flav){
+  var set=SETS[level][flav];
+  return CITIES.map(function(c){
+    var dim=(level===0&&c.s==="night")?" dim":"";
+    return '<div class="row'+dim+'"><div class="city">'+c.n+'<small>'+c.z+
+      (level===0&&c.s==="night"?" · asleep":"")+'</small></div>'+
+      '<div class="tm"><b>'+c.t+'</b>'+(set[c.s]?'<span class="mk">'+set[c.s]+'</span>':'')+'</div></div>';
+  }).join("");
+}
+
+var LEVELS=[
+ [3,"Three symbols","Night, dawn/dusk, midday — the full picture, as drawn last round.",
+   ["<b>Most information.</b> You can see who's just waking up.",
+    "<b>Three shapes to learn</b>, and in C's case, five suns stacked up on a normal screen.",
+    "Survives the gray test, but you're comparing shapes against each other to do it."],false],
+ [2,"Two symbols","Asleep or awake. The twilight middle folds into 'awake'.",
+   ["<b>Binary, so nothing to compare</b> — it's one shape or the other.",
+    "<b>Still a mark on every row</b>, which is a lot of ink for a mostly-uninteresting answer.",
+    "Loses 'they're only just up', which is the one nuance worth mourning."],false],
+ [1,"One symbol, exceptions only","Nothing at all on most rows. A single mark where it's night.",
+   ["<b>Fewest marks possible</b> while still saying something — usually one or two per screen.",
+    "<b>Presence vs absence</b> is the strongest non-color signal there is. Nothing to tell apart.",
+    "<b>C works here.</b> One moon is charming; five suns were not."],true],
+ [0,"No symbols","No marker at all — night rows just go quiet, with the word in the zone line.",
+   ["<b>Adds no new vocabulary.</b> Uses type color you already have.",
+    "<b>Dimming reads as 'less important'</b>, which isn't what you mean — Sydney at 1:30am is arguably the <em>most</em> important row.",
+    "The word does the real work here, not the dimming — so it's Option E wearing a disguise."],false]
+];
+
+document.getElementById('grid').innerHTML=LEVELS.map(function(L){
+  var lev=L[0], title=L[1], why=L[2], bullets=L[3], win=L[4];
+  var flavs = (lev===0) ? ["B"] : ["B","C"];
+  var body = flavs.map(function(f){
+    var head = (lev===0) ? "Dimmed rows" : (f==="B" ? "B \u2014 fill state" : "C \u2014 sun &amp; moon");
+    return '<div class="flav">'+head+'</div>'+
+      '<div class="pair">'+
+        '<div><div class="lab">In color</div><div class="demo">'+rows(lev,f)+'</div></div>'+
+        '<div><div class="lab">Color removed</div><div class="demo gray">'+rows(lev,f)+'</div></div>'+
+      '</div>';
+  }).join("");
+  var count = (lev===0) ? "no marks" : lev+(lev===1?" symbol":" symbols");
+  return '<div class="card'+(win?" win":"")+'">'+
+    '<div class="count">'+count+'</div>'+
+    '<h3>Level '+lev+' \u2014 '+title+'</h3>'+
+    '<p class="why">'+why+'</p>'+
+    body+
+    '<ul>'+bullets.map(function(b){return '<li>'+b+'</li>';}).join("")+'</ul>'+
+  '</div>';
+}).join("");
+</script>
+</body>
+</html>

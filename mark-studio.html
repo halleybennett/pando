@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pando — the mark</title>
+<style>
+  :root{--bg:#f2f0f7;--card:#fff;--ink:#14161a;--muted:#6e6874;--klein:#0d21a5;--line:#dedbd8}
+  *{box-sizing:border-box}
+  body{margin:0;padding:36px 24px 90px;background:var(--bg);color:var(--ink);
+    font:300 17.5px/1.55 "Helvetica Neue",Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1280px;margin:0 auto}
+  h1{font-weight:200;font-size:42px;letter-spacing:-.5px;margin:0 0 8px}
+  .sub{color:var(--muted);max-width:66ch;margin:0 0 4px}
+  h2{font-weight:300;font-size:25px;margin:44px 0 4px}
+  .note{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px 24px;margin:22px 0 0}
+  .note p{margin:0 0 11px}.note p:last-child{margin:0}.note b{font-weight:500}
+  .bar{display:flex;gap:18px;align-items:center;flex-wrap:wrap;position:sticky;top:0;z-index:20;
+    background:var(--card);border:1px solid var(--line);border-radius:18px;padding:12px 18px;margin:20px 0 0;
+    box-shadow:0 4px 18px rgba(20,22,26,.06)}
+  .bar label{font-size:11.5px;letter-spacing:1.6px;text-transform:uppercase;color:var(--muted);display:block}
+  .bar output{font-variant-numeric:tabular-nums;color:var(--klein)}
+  .bar input{width:130px;accent-color:var(--klein);display:block}
+  .bar button{font:inherit;font-size:14px;border:1px solid var(--line);background:none;color:var(--ink);
+    border-radius:999px;padding:7px 16px;cursor:pointer}
+  .grid{display:grid;gap:22px;margin-top:20px;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));align-items:start}
+  .cand{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:20px}
+  .cand.sel{outline:2.5px solid var(--klein);outline-offset:-2.5px}
+  .tag{font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--klein);font-weight:500}
+  .cand h3{font-weight:400;font-size:20px;margin:2px 0 6px}
+  .cand p{margin:0 0 14px;font-size:14.5px;color:var(--muted);line-height:1.5}
+  .hero{width:100%;border-radius:22.37%;overflow:hidden;cursor:pointer;
+    box-shadow:0 1px 4px rgba(20,22,26,.16)}
+  .hero svg{display:block;width:100%;height:auto}
+  .sizes{display:flex;gap:12px;align-items:flex-end;margin-top:14px;padding:10px 12px;
+    background:#eae7ef;border-radius:12px}
+  .sizes figure{margin:0;text-align:center}
+  .sizes .t{border-radius:22.37%;overflow:hidden;display:block}
+  .sizes .t svg{display:block;width:100%;height:100%}
+  .sizes figcaption{font-size:10.5px;color:var(--muted);margin-top:4px}
+  .hdr{display:flex;gap:22px;align-items:flex-end;margin-top:12px;padding:12px;
+    background:#fff;border:1px solid var(--line);border-radius:12px}
+  .hdrline{display:inline-flex;align-items:baseline;gap:8px;font-size:12px;letter-spacing:.2em;
+    text-transform:uppercase;color:var(--muted);font-weight:400}
+  .hdrline svg{display:block}
+</style>
+</head>
+<body>
+<div style="position:sticky;top:0;z-index:999;background:#0d21a5;color:#fff;font:400 15px/1.5 'Helvetica Neue',Helvetica,Arial,sans-serif;padding:12px 20px;text-align:center"><b>Superseded page.</b> The aspen-leaf exploration. &nbsp;→&nbsp; the current icon work is always at <a href="icon-current.html" style="color:#fbe29c">icon-current.html</a></div>
+<div class="wrap">
+
+<h1>The mark</h1>
+<p class="sub">A real aspen leaf, built parametrically rather than drawn — so the shape, the taper
+  of the veins and the fineness of the line are all knobs rather than commitments. Every treatment
+  is shown at icon sizes <b>and</b> at the 16px it has to survive in the header.</p>
+
+<div class="note">
+  <p><b>What the reference is actually doing.</b> The veins are <i>tapered</i> — fat where they
+    leave the base, drawn to a fine point at the margin — and they fan from a single origin rather
+    than branching off a midrib. That taper is most of the quality, and it is why a uniform-width
+    stroke never looks like it. Here the veins are built as filled spindles, so they can carry the
+    same weight variation.</p>
+  <p><b>Why the old mark read as childish.</b> A teardrop on a stick is a generic silhouette — it
+    belongs equally to a candle, a raindrop and a balloon, which is exactly the confusion you named.
+    An aspen leaf is not generic: broadly ovate, abruptly pointed, palmately veined from the base,
+    on a long slender stalk. The specificity <i>is</i> the sophistication.</p>
+  <p><b>The 16px row is the real test.</b> Fine veins will disappear there no matter how good they
+    look at 512. If nothing survives, the honest answer is two marks — a detailed one for the icon
+    and a reduced one for the header, which is ordinary practice — and that row will tell us.</p>
+</div>
+
+<div class="bar">
+  <div><label>Width <output id="oW">0.78</output></label><input id="w" type="range" min="0.55" max="1.0" step="0.01" value="0.78"></div>
+  <div><label>Widest at <output id="oY">0.56</output></label><input id="y" type="range" min="0.40" max="0.70" step="0.01" value="0.56"></div>
+  <div><label>Tip draw <output id="oT">0.30</output></label><input id="t" type="range" min="0.05" max="0.55" step="0.01" value="0.30"></div>
+  <div><label>Veins <output id="oN">4</output></label><input id="n" type="range" min="2" max="7" step="1" value="4"></div>
+  <div><label>Vein weight <output id="oV">1.00</output></label><input id="v" type="range" min="0.3" max="2.2" step="0.05" value="1.0"></div>
+  <div><label>Line <output id="oS">2.60</output></label><input id="s" type="range" min="1.0" max="6.0" step="0.1" value="2.6"></div>
+  <div><label>Stalk <output id="oP">0.42</output></label><input id="p" type="range" min="0.15" max="0.70" step="0.01" value="0.42"></div>
+  <div><button id="reset" type="button">Reset</button></div>
+</div>
+
+<h2>Treatments</h2>
+<div class="grid" id="grid"></div>
+
+</div>
+
+<script>
+/* ---------- geometry ----------
+   The leaf lives in a 100-wide box: y = 0 at the tip, 100 at the base of the blade, and the
+   stalk continues below. Everything is derived from the sliders. */
+function bez(p0,p1,p2,p3,t){
+  var m=1-t;
+  return [m*m*m*p0[0]+3*m*m*t*p1[0]+3*m*t*t*p2[0]+t*t*t*p3[0],
+          m*m*m*p0[1]+3*m*m*t*p1[1]+3*m*t*t*p2[1]+t*t*t*p3[1]];
+}
+/* The half-outline, sampled. Veins need to know how wide the blade actually is at a given
+   height - guessing put their tips in the middle of the leaf, which read as grass, not veins. */
+function profile(o){
+  var W=50*o.w, ty=100*o.t, wy=100*o.y, pts=[];
+  var A=[[0,0],[W*0.05,ty],[W*0.66,wy-26],[W,wy]];
+  var B=[[W,wy],[W,wy+24],[W*0.52,102],[W*0.07,100]];
+  for(var i=0;i<=60;i++) pts.push(bez(A[0],A[1],A[2],A[3],i/60));
+  for(var j=1;j<=40;j++) pts.push(bez(B[0],B[1],B[2],B[3],j/40));
+  return {W:W, wy:wy, pts:pts,
+    d:'M 0 0 C '+W*0.05+' '+ty+', '+W*0.66+' '+(wy-26)+', '+W+' '+wy+
+      ' C '+W+' '+(wy+24)+', '+W*0.52+' 102, '+W*0.07+' 100'+
+      ' L '+(-W*0.07)+' 100 C '+(-W*0.52)+' 102, '+(-W)+' '+(wy+24)+', '+(-W)+' '+wy+
+      ' C '+(-W)+' '+(wy-26)+', '+(-W*0.66)+' '+ty+', 0 0 Z'};
+}
+function halfWidthAt(pr, y){
+  var best=0;
+  for(var i=1;i<pr.pts.length;i++){
+    var a=pr.pts[i-1], b=pr.pts[i];
+    if((a[1]-y)*(b[1]-y)<=0 && a[1]!==b[1]){
+      var f=(y-a[1])/(b[1]-a[1]);
+      best=Math.max(best, a[0]+f*(b[0]-a[0]));
+    }
+  }
+  return best;
+}
+/* A vein as a filled spindle: sample a quadratic and offset by a width that is fat where it
+   leaves the base and comes to a point at the margin. That taper is what the reference lives on. */
+function vein(x0,y0,x1,y1,cx,cy,w0,N){
+  N=N||30; var L=[],R=[];
+  for(var i=0;i<=N;i++){
+    var t=i/N, mt=1-t;
+    var x=mt*mt*x0+2*mt*t*cx+t*t*x1, y=mt*mt*y0+2*mt*t*cy+t*t*y1;
+    var dx=2*mt*(cx-x0)+2*t*(x1-cx), dy=2*mt*(cy-y0)+2*t*(y1-cy);
+    var m=Math.hypot(dx,dy)||1, nx=-dy/m, ny=dx/m;
+    var w=w0*Math.pow(1-t,0.9)*Math.pow(Math.min(1,t*8),0.5);
+    L.push([x+nx*w,y+ny*w]); R.push([x-nx*w,y-ny*w]);
+  }
+  R.reverse();
+  return 'M '+L.concat(R).map(function(q){return q[0].toFixed(2)+' '+q[1].toFixed(2);}).join(' L ')+' Z';
+}
+function veinSet(o){
+  var pr=profile(o), out=[], n=+o.n, w0=2.1*o.v, baseY=97;
+  out.push(vein(0,baseY, 0,5, 0,50, w0));                       /* midrib to the tip */
+  for(var i=1;i<=n;i++){
+    var f=i/(n+0.5);
+    var yEnd = 100 - (0.26 + 0.58*f)*100;                        /* spread up the blade */
+    var xEnd = halfWidthAt(pr, yEnd)*0.84;                       /* stop just inside the margin */
+    var cx = xEnd*0.34, cy = (baseY+yEnd)/2 + 10;                /* bow out low, then rise */
+    [1,-1].forEach(function(sgn){
+      out.push(vein(0,baseY, sgn*xEnd, yEnd, sgn*cx, cy, w0*(0.92-0.10*i)));
+    });
+  }
+  return out;
+}
+function stalk(o){
+  var len=100*o.p;
+  return vein(0,98, 0,100+len, 0.5,100+len*0.5, 1.6*o.v, 20);
+}
+
+/* ---------- the wheel ---------- */
+var STOPS=[[0,'#0d21a5'],[4.5,'#3f57bd'],[6.5,'#8ba2f0'],[8,'#cfd3ee'],[9.5,'#f6e3b4'],
+  [11,'#f7c948'],[17.5,'#f7c948'],[19.5,'#f8dfa0'],[20.5,'#ecdcdd'],[21.5,'#a9b6ea'],
+  [22.5,'#5d74d2'],[24,'#0d21a5']];
+function hx2(c){c=c.replace('#','');return [0,2,4].map(function(i){return parseInt(c.slice(i,i+2),16);});}
+function h2s(v){v=v.toString(16);return v.length<2?'0'+v:v;}
+function mixw(a,b,t){var A=hx2(a),B=hx2(b);return '#'+[0,1,2].map(function(i){
+  return h2s(Math.round(A[i]+(B[i]-A[i])*t));}).join('');}
+function rampAt(h){
+  var col=STOPS[STOPS.length-1][1];
+  for(var i=1;i<STOPS.length;i++){
+    if(h<=STOPS[i][0]){var a=STOPS[i-1],b=STOPS[i];
+      col=mixw(a[1],b[1],(h-a[0])/(b[0]-a[0])); break;}
+  }
+  return mixw(col,'#ffffff',0.46);          /* the soft wheel, as shipped */
+}
+/* midnight at the top, noon at the bottom - the same orientation as the app */
+function ring(cx,cy,r,bw,seg){
+  seg=seg||96; var o='';
+  for(var i=0;i<seg;i++){
+    var h0=i/seg*24, h1=(i+1.03)/seg*24;
+    var a0=h0/24*2*Math.PI, a1=h1/24*2*Math.PI;
+    var p0=[cx+r*Math.sin(a0), cy-r*Math.cos(a0)], p1=[cx+r*Math.sin(a1), cy-r*Math.cos(a1)];
+    o+='<path d="M '+p0[0].toFixed(2)+' '+p0[1].toFixed(2)+' A '+r+' '+r+' 0 0 1 '+
+       p1[0].toFixed(2)+' '+p1[1].toFixed(2)+'" fill="none" stroke="'+rampAt((h0+h1)/2)+
+       '" stroke-width="'+bw+'" stroke-linecap="butt"/>';
+  }
+  return o;
+}
+
+/* ---------- rendering ---------- */
+function mark(o, mode, fg, bg){
+  var pr=profile(o), vs=veinSet(o).join(' '), st=stalk(o), s='';
+  if(mode==='line'){
+    s+='<path d="'+pr.d+'" fill="none" stroke="'+fg+'" stroke-width="'+o.s+'" stroke-linejoin="round"/>';
+    s+='<path d="'+vs+'" fill="'+fg+'"/><path d="'+st+'" fill="'+fg+'"/>';
+  } else if(mode==='solid'){
+    s+='<path d="'+pr.d+'" fill="'+fg+'"/><path d="'+vs+'" fill="'+bg+'"/><path d="'+st+'" fill="'+fg+'"/>';
+  } else if(mode==='silhouette'){
+    s+='<path d="'+pr.d+'" fill="'+fg+'"/><path d="'+st+'" fill="'+fg+'"/>';
+  } else {
+    s+='<path d="'+pr.d+'" fill="none" stroke="'+fg+'" stroke-width="'+o.s+'" stroke-linejoin="round"/>';
+    s+='<path d="'+st+'" fill="'+fg+'"/>';
+  }
+  return s;
+}
+/* the drawn extent, so every treatment centres on what it actually draws */
+function extent(o){
+  var pr=profile(o); return {x:-pr.W-o.s, y:-o.s, w:2*(pr.W+o.s), h:100+100*o.p+o.s};
+}
+var UID=0;
+function tile(o, mode, px, fill, ground, withRing){
+  /* With the wheel present the leaf sits inside it, so it scales to the ring's inner circle
+     rather than to the tile. */
+  var e=extent(o), k=px*(withRing?fill*0.50:fill)/Math.max(e.w, e.h*0.94);
+  var tx=(px-e.w*k)/2-e.x*k, ty=(px-e.h*k)/2-e.y*k;
+  var id='lg'+(UID++);
+  var defs = ground.grad ? '<defs><linearGradient id="'+id+'" x1="0" y1="0" x2="1" y2="1">'+
+    ground.grad.map(function(c,i){return '<stop offset="'+(i/(ground.grad.length-1)*100)+'%" stop-color="'+c+'"/>';}).join('')+
+    '</linearGradient></defs>' : '';
+  var bgFill = ground.grad ? 'url(#'+id+')' : ground.bg;
+  var solidBg = withRing ? '#ffffff' : (ground.grad ? ground.grad[ground.grad.length-1] : ground.bg);
+  return '<svg viewBox="0 0 '+px+' '+px+'" width="'+px+'" height="'+px+'">'+defs+
+    '<rect width="'+px+'" height="'+px+'" fill="'+bgFill+'"/>'+
+    (withRing ? ring(px/2,px/2,px*0.335,px*0.105)+
+      '<circle cx="'+px/2+'" cy="'+px/2+'" r="'+(px*0.283)+'" fill="#ffffff"/>' : '')+
+    '<g transform="translate('+tx.toFixed(2)+','+ty.toFixed(2)+') scale('+k.toFixed(4)+')">'+
+      mark(o, mode, withRing?'#14161a':ground.fg, solidBg)+'</g></svg>';
+}
+/* the bare mark at header size, no tile */
+function headerMark(o, mode, h, fg){
+  var e=extent(o), k=h/e.h, w=e.w*k;
+  return '<svg viewBox="0 0 '+w.toFixed(1)+' '+h+'" width="'+w.toFixed(1)+'" height="'+h+'">'+
+    '<g transform="translate('+(-e.x*k).toFixed(2)+','+(-e.y*k).toFixed(2)+') scale('+k.toFixed(4)+')">'+
+    mark(o, mode, fg, '#ffffff')+'</g></svg>';
+}
+
+var SKY={grad:['#eaeefb','#eff0f9','#f6edf0','#fbf0d2'], fg:'#14161a'};
+var NIGHT={grad:['#080c26','#241a33'], fg:'#fbe29c'};
+var SWEEP={grad:['#8ba2f0','#cfd3ee','#f6e3b4','#f7c948'], fg:'#14161a'};
+
+var CARD={bg:'#ffffff', fg:'#14161a'};
+var TREATMENTS=[
+  {id:'R1', mode:'solid', ground:CARD, ring:true, name:'The wheel, leaf inside',
+   why:'Your idea, and it may be the strongest thing here. The ring is the app’s single most recognisable object — nobody else’s icon looks like this — and the leaf sits in the white face exactly where the readout does. The tile becomes a tiny Pando rather than a badge about Pando.'},
+  {id:'R2', mode:'solid', ground:NIGHT, ring:true, name:'The wheel on night',
+   why:'The same ring on the dark ground. The wheel carries its own colour either way, so the ground only changes what sits behind it.'},
+  {id:'R3', mode:'line', ground:CARD, ring:true, name:'Wheel, fine-line leaf',
+   why:'The ring with the stroked leaf instead of the solid one. More delicate at 512, and the first thing to give way as the tile shrinks.'},
+  {id:'L', mode:'line', ground:SKY, name:'Fine line, no wheel',
+   why:'Outline stroked, veins as tapered spindles. Closest to the reference art — the line stays thin and even, the veins carry the weight.'},
+  {id:'S', mode:'solid', ground:SKY, name:'Solid, veins cut out',
+   why:'The blade filled, veins reversed out of it. Holds together far smaller than a stroked outline can.'},
+  {id:'H', mode:'silhouette', ground:SKY, name:'Silhouette',
+   why:'Blade and stalk only. The most reduced version — and what the others collapse into at 16px anyway.'}
+];
+
+var picked=null, grid=document.getElementById('grid');
+function opts(){
+  return {w:+w.value, y:+y.value, t:+t.value, n:+n.value, v:+v.value, s:+s.value, p:+p.value};
+}
+function draw(){
+  var o=opts();
+  oW.value=o.w.toFixed(2); oY.value=o.y.toFixed(2); oT.value=o.t.toFixed(2);
+  oN.value=o.n; oV.value=o.v.toFixed(2); oS.value=o.s.toFixed(2); oP.value=o.p.toFixed(2);
+  grid.innerHTML=TREATMENTS.map(function(c){
+    var sizes=[120,60,40].map(function(px){
+      return '<figure><span class="t" style="width:'+px/1.4+'px;height:'+px/1.4+'px">'+
+        tile(o,c.mode,px,0.72,c.ground,c.ring)+'</span><figcaption>'+px+'</figcaption></figure>';
+    }).join('');
+    var hdr='<div class="hdr">'+[16,20,26].map(function(h){
+      return '<span class="hdrline">'+headerMark(o,c.mode,h,'#6e6874')+'Pando</span>';
+    }).join('')+'</div>';
+    return '<div class="cand'+(picked===c.id?' sel':'')+'" data-cand="'+c.id+'">'+
+      '<span class="tag">'+c.id+'</span><h3>'+c.name+'</h3><p>'+c.why+'</p>'+
+      '<span class="hero">'+tile(o,c.mode,512,0.72,c.ground,c.ring)+'</span>'+
+      '<div class="sizes">'+sizes+'</div>'+hdr+'</div>';
+  }).join('');
+}
+['w','y','t','n','v','s','p'].forEach(function(id){document.getElementById(id).addEventListener('input',draw);});
+document.getElementById('reset').addEventListener('click',function(){
+  var d={w:0.78,y:0.56,t:0.30,n:4,v:1.0,s:2.6,p:0.42};
+  for(var k in d) document.getElementById(k).value=d[k];
+  draw();
+});
+grid.addEventListener('click',function(e){
+  var c=e.target.closest('.cand'); if(!c) return;
+  picked = picked===c.dataset.cand ? null : c.dataset.cand;
+  document.querySelectorAll('.cand').forEach(function(x){x.classList.toggle('sel',x.dataset.cand===picked);});
+});
+draw();
+</script>
+</body>
+</html>

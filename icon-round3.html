@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pando — icon, round three</title>
+<style>
+  :root{--bg:#f2f0f7;--card:#fff;--ink:#14161a;--muted:#6e6874;--klein:#0d21a5;--line:#dedbd8}
+  *{box-sizing:border-box}
+  body{margin:0;padding:36px 24px 80px;background:var(--bg);color:var(--ink);
+    font:300 17.5px/1.55 "Helvetica Neue",Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1180px;margin:0 auto}
+  h1{font-weight:200;font-size:40px;letter-spacing:-.5px;margin:0 0 8px}
+  .sub{color:var(--muted);max-width:64ch;margin:0 0 4px}
+  h2{font-weight:300;font-size:24px;margin:42px 0 10px}
+  .note{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px 22px;margin:20px 0 0}
+  .note p{margin:0 0 10px}.note p:last-child{margin:0}.note b{font-weight:500}
+  code{font:500 14.5px/1 ui-monospace,Menlo,monospace;background:#eae7ef;padding:2px 6px;border-radius:5px}
+  .bar{display:flex;gap:18px;align-items:center;flex-wrap:wrap;position:sticky;top:0;z-index:20;
+    background:var(--card);border:1px solid var(--line);border-radius:16px;padding:12px 18px;margin:20px 0 0;
+    box-shadow:0 4px 18px rgba(20,22,26,.06)}
+  .bar label{font-size:11.5px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);display:block}
+  .bar output{font-variant-numeric:tabular-nums;color:var(--klein)}
+  .bar input{width:110px;accent-color:var(--klein);display:block}
+  .grid{display:grid;gap:20px;margin-top:18px;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));align-items:start}
+  .cand{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px}
+  .tag{font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--klein);font-weight:500}
+  .cand h3{font-weight:400;font-size:18px;margin:2px 0 6px}
+  .cand p{margin:0 0 12px;font-size:14px;color:var(--muted);line-height:1.5}
+  .hero{width:100%;border-radius:22.37%;overflow:hidden;box-shadow:0 1px 3px rgba(20,22,26,.18)}
+  .hero svg{display:block;width:100%;height:auto}
+  .small{display:flex;gap:14px;align-items:flex-end;margin-top:12px}
+  .small figure{margin:0;text-align:center}
+  .small .t{border-radius:22.37%;overflow:hidden;display:block;box-shadow:0 1px 2px rgba(20,22,26,.2)}
+  .small .t svg{display:block;width:100%;height:100%}
+  .small figcaption{font-size:10.5px;color:var(--muted);margin-top:5px}
+  .home{border-radius:20px;padding:26px 24px 18px;margin-top:16px;
+    background:linear-gradient(160deg,#2b3a6b,#6d5a86 45%,#c98f79)}
+  .home.light{background:linear-gradient(160deg,#dfe6f6,#f2e6ee 45%,#f8e7cf)}
+  .apps{display:grid;grid-template-columns:repeat(6,60px);gap:24px 28px;justify-content:start}
+  .app{text-align:center}
+  .app .t{width:60px;height:60px;border-radius:22.37%;overflow:hidden;display:block;box-shadow:0 1px 3px rgba(0,0,0,.25)}
+  .app .t svg{display:block;width:100%;height:100%}
+  .app .filler{width:60px;height:60px;border-radius:22.37%;display:block}
+  .app span{display:block;font-size:10px;margin-top:5px;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.45)}
+  .home.light .app span{color:#22202a;text-shadow:none}
+  .swatch{display:flex;gap:0;margin-top:10px;border-radius:8px;overflow:hidden;height:26px}
+  .swatch i{flex:1}
+</style>
+</head>
+<body>
+<div style="position:sticky;top:0;z-index:999;background:#0d21a5;color:#fff;font:400 15px/1.5 'Helvetica Neue',Helvetica,Arial,sans-serif;padding:12px 20px;text-align:center"><b>Superseded page.</b> Round 3 — grove vs original, cutout vs ring. &nbsp;→&nbsp; the current icon work is always at <a href="icon-current.html" style="color:#fbe29c">icon-current.html</a></div>
+<div class="wrap">
+
+<h1>Icon, round three</h1>
+<p class="sub">Your grove with a root system, against the original mark, in both the cutout and
+  the ring.</p>
+
+<div class="note">
+  <p><b>I misread the last sketch and you were right to redraw it.</b> This is the grove kept
+    intact — three leaves at uneven heights, side by side — with each outer stem turning into a
+    lateral root that points at the circle's edge without touching it, and the centre stem running
+    deeper before forking into a root that spreads beneath the other two. Which is Pando: the
+    shared root is the whole organism, and the trees are just what you can see of it.</p>
+  <p><b>You were right about the gradient too.</b> I had been filling the cutout tiles with the
+    <i>page</i> tint — <code>#eaeefb → #fbf0d2</code>, which is Sky whitened for use behind text.
+    The wheel is much stronger: it starts at <code>#7c87ce</code>. The tiles now sample the wheel
+    itself, midnight through noon, so the tile and the ring are the same colours.</p>
+  <div class="swatch">
+    <i style="background:#eaeefb"></i><i style="background:#eff0f9"></i><i style="background:#f6edf0"></i><i style="background:#fbf0d2"></i>
+  </div>
+  <p style="font-size:13.5px;margin-top:4px">the old page tint</p>
+  <div class="swatch">
+    <i style="background:#7c87ce"></i><i style="background:#94a1da"></i><i style="background:#cdd5f6"></i><i style="background:#f3ede1"></i><i style="background:#fbe29c"></i>
+  </div>
+  <p style="font-size:13.5px;margin-top:4px">the wheel, as it is actually painted</p>
+  <p style="margin-top:12px"><b>Leaves are asymmetric now, with only the midrib showing.</b> You
+    were right that at 60px the full vein fan is noise — only the centre line survives, so that is
+    all that is drawn. The blade leans slightly, as a real one does.</p>
+</div>
+
+<div class="bar">
+  <div><label>Cutout ⌀ <output id="oR">0.40</output></label><input id="r" type="range" min="0.30" max="0.48" step="0.01" value="0.40"></div>
+  <div><label>Mark size <output id="oM">0.72</output></label><input id="m" type="range" min="0.50" max="0.92" step="0.01" value="0.72"></div>
+  <div><label>Leaf width <output id="oW">12</output></label><input id="w" type="range" min="8" max="17" step="0.5" value="12"></div>
+  <div><label>Leaf height <output id="oH">30</output></label><input id="h" type="range" min="22" max="40" step="1" value="30"></div>
+  <div><label>Lean <output id="oK">0.10</output></label><input id="k" type="range" min="0" max="0.28" step="0.01" value="0.10"></div>
+</div>
+
+<h2>The four, plus the single leaf</h2>
+<div class="grid" id="grid"></div>
+
+<h2>At 60px, on a phone</h2>
+<div id="homes"></div>
+
+</div>
+
+<script>
+var STOPS=[[0,'#0d21a5'],[4.5,'#3f57bd'],[6.5,'#8ba2f0'],[8,'#cfd3ee'],[9.5,'#f6e3b4'],
+  [11,'#f7c948'],[17.5,'#f7c948'],[19.5,'#f8dfa0'],[20.5,'#ecdcdd'],[21.5,'#a9b6ea'],
+  [22.5,'#5d74d2'],[24,'#0d21a5']];
+function hx(c){c=c.replace('#','');return [0,2,4].map(function(i){return parseInt(c.slice(i,i+2),16);});}
+function h2(v){v=v.toString(16);return v.length<2?'0'+v:v;}
+function mix(a,b,t){var A=hx(a),B=hx(b);return '#'+[0,1,2].map(function(i){
+  return h2(Math.round(A[i]+(B[i]-A[i])*t));}).join('');}
+function rampAt(h){var col=STOPS[STOPS.length-1][1];
+  for(var i=1;i<STOPS.length;i++){if(h<=STOPS[i][0]){var a=STOPS[i-1],b=STOPS[i];
+    col=mix(a[1],b[1],(h-a[0])/(b[0]-a[0]));break;}}
+  return mix(col,'#ffffff',0.46);}
+/* The tile gradient is the wheel itself, sampled midnight -> noon, so the flat fill and the
+   ring are literally the same colours rather than a paler cousin of them. */
+var WHEEL_RUN=[0,3,6,8,10,12].map(rampAt);
+function ring(cx,cy,r,bw){var o='',seg=96;
+  for(var i=0;i<seg;i++){var h0=i/seg*24,h1=(i+1.04)/seg*24;
+    var a0=h0/24*2*Math.PI,a1=h1/24*2*Math.PI;
+    var p0=[cx+r*Math.sin(a0),cy-r*Math.cos(a0)],p1=[cx+r*Math.sin(a1),cy-r*Math.cos(a1)];
+    o+='<path d="M '+p0[0].toFixed(2)+' '+p0[1].toFixed(2)+' A '+r+' '+r+' 0 0 1 '+
+       p1[0].toFixed(2)+' '+p1[1].toFixed(2)+'" fill="none" stroke="'+rampAt((h0+h1)/2)+
+       '" stroke-width="'+bw+'"/>';}
+  return o;}
+
+/* ---------- one leaf: asymmetric blade, midrib only ---------- */
+function leafPath(W,H,lean){
+  /* tip at (0,0), base at (0,H). The right flank is fuller and the tip leans, so it reads as
+     something grown rather than something constructed. */
+  var Wl=W*(1-lean*0.5), Wr=W*(1+lean*0.5), tx=-W*lean*0.35, wy=H*0.58;
+  return 'M '+tx+' 0'+
+    ' C '+(Wr*0.10)+' '+(H*0.24)+', '+(Wr*0.78)+' '+(wy-H*0.26)+', '+Wr+' '+wy+
+    ' C '+Wr+' '+(wy+H*0.24)+', '+(Wr*0.55)+' '+(H*1.02)+', '+(W*0.06)+' '+H+
+    ' L '+(-W*0.06)+' '+H+
+    ' C '+(-Wl*0.55)+' '+(H*1.02)+', '+(-Wl)+' '+(wy+H*0.24)+', '+(-Wl)+' '+wy+
+    ' C '+(-Wl)+' '+(wy-H*0.26)+', '+(-Wl*0.10)+' '+(H*0.24)+', '+tx+' 0 Z';
+}
+function spindle(x0,y0,x1,y1,w0,N){N=N||22;var L=[],R=[];
+  for(var i=0;i<=N;i++){var t=i/N;
+    var x=x0+(x1-x0)*t, y=y0+(y1-y0)*t;
+    var dx=x1-x0, dy=y1-y0, m=Math.hypot(dx,dy)||1, nx=-dy/m, ny=dx/m;
+    var w=w0*Math.sin(Math.PI*Math.pow(t,0.72));
+    L.push([x+nx*w,y+ny*w]);R.push([x-nx*w,y-ny*w]);}
+  R.reverse();
+  return 'M '+L.concat(R).map(function(q){return q[0].toFixed(2)+' '+q[1].toFixed(2);}).join(' L ')+' Z';}
+
+/* ---------- the grove, with the root system ---------- */
+function grove(fg,bg,o){
+  var W=o.w, H=o.h, lean=o.k;
+  var xs=[24,50,76], tips=[16,2,22];
+  var stemW=1.7, rootW=1.6;
+  var stemBot=[64,80,64];                  /* outer stems stop high, the centre runs deeper */
+  var s='';
+  /* roots first, so the stems sit over them */
+  s+='<path d="M 7 64 L 24 64" stroke="'+fg+'" stroke-width="'+rootW+'" stroke-linecap="round" fill="none"/>';
+  s+='<path d="M 76 64 L 93 64" stroke="'+fg+'" stroke-width="'+rootW+'" stroke-linecap="round" fill="none"/>';
+  s+='<path d="M 16 80 L 84 80" stroke="'+fg+'" stroke-width="'+rootW+'" stroke-linecap="round" fill="none"/>';
+  xs.forEach(function(cx,i){
+    var base=tips[i]+H;
+    s+='<path d="M '+cx+' '+base.toFixed(1)+' L '+cx+' '+stemBot[i]+'" stroke="'+fg+
+       '" stroke-width="'+stemW+'" stroke-linecap="round" fill="none"/>';
+    s+='<g transform="translate('+cx+','+tips[i]+')">'+
+       '<path d="'+leafPath(W,H,lean)+'" fill="'+fg+'"/>'+
+       '<path d="'+spindle(0,H*0.90,0,H*0.12,W*0.115)+'" fill="'+bg+'"/></g>';
+  });
+  return s;
+}
+function groveExt(){return {x:5,y:0,w:90,h:82};}
+
+/* ---------- the original mark ---------- */
+var BLADE='M8 1.4 C10.9 4.4 13.1 6.9 13.1 9.3 C13.1 11.9 10.9 13.6 8 13.6 C5.1 13.6 2.9 11.9 2.9 9.3 C2.9 6.9 5.1 4.4 8 1.4 Z';
+var ST=[[4.2,5.4,8.0],[10,6.6,2.6],[15.8,5.0,9.6]],BASE=17.2,SW=0.95,SOILW=1.05;
+function stalksMark(fg){
+  var gap=SW/2+SOILW/2+0.35,end=BASE-gap,o='';
+  ST.forEach(function(s){o+='<path d="M'+s[0]+' '+(s[2]+s[1]).toFixed(2)+' L'+s[0]+' '+end.toFixed(2)+
+    '" stroke="'+fg+'" stroke-width="'+SW+'" stroke-linecap="round" fill="none"/>';});
+  o+='<path d="M2.2 '+BASE+' L7 '+BASE+' M9 '+BASE+' L11.6 '+BASE+' M13.6 '+BASE+' L18 '+BASE+
+     '" stroke="'+fg+'" stroke-width="'+SOILW+'" stroke-linecap="round"/>';
+  ST.forEach(function(s){var k=s[1]/12.2;
+    o+='<g transform="translate('+(s[0]-8*k).toFixed(3)+','+(s[2]-1.4*k).toFixed(3)+') scale('+k.toFixed(4)+')">'+
+       '<path d="'+BLADE+'" fill="'+fg+'"/></g>';});
+  return o;}
+var STALK_EXT={x:1.7,y:2.6,w:16.9,h:15.1};
+
+/* ---------- one big leaf, same treatment ---------- */
+function oneLeaf(fg,bg,o){
+  var W=o.w*2.3,H=o.h*2.1;
+  return '<g transform="translate(50,4)"><path d="'+leafPath(W,H,o.k)+'" fill="'+fg+'"/>'+
+    '<path d="'+spindle(0,H*0.92,0,H*0.10,W*0.10)+'" fill="'+bg+'"/></g>'+
+    '<path d="M 50 '+(4+H)+' L 50 '+(4+H*1.42)+'" stroke="'+fg+'" stroke-width="2" stroke-linecap="round" fill="none"/>';
+}
+function oneLeafExt(o){var W=o.w*2.3,H=o.h*2.1;return {x:50-W*1.1,y:0,w:W*2.2,h:4+H*1.42};}
+
+/* ---------- tiles ---------- */
+var UID=0;
+function bodyOf(kind,fg,bg,o){
+  if(kind==='grove') return {b:grove(fg,bg,o), e:groveExt()};
+  if(kind==='orig')  return {b:stalksMark(fg), e:STALK_EXT};
+  return {b:oneLeaf(fg,bg,o), e:oneLeafExt(o)};
+}
+function tile(c,px,o){
+  var id='g'+(UID++), r, bgPart;
+  if(c.style==='ring'){
+    bgPart='<rect width="'+px+'" height="'+px+'" fill="#ffffff"/>'+
+      ring(px/2,px/2,px*0.335,px*0.105)+
+      '<circle cx="'+px/2+'" cy="'+px/2+'" r="'+(px*0.283)+'" fill="#ffffff"/>';
+    r=px*0.283;
+  } else {
+    r=px*o.r;
+    bgPart='<defs><linearGradient id="'+id+'" x1="0" y1="0" x2="1" y2="1">'+
+      WHEEL_RUN.map(function(x,i){return '<stop offset="'+(i/(WHEEL_RUN.length-1)*100)+'%" stop-color="'+x+'"/>';}).join('')+
+      '</linearGradient></defs>'+
+      '<rect width="'+px+'" height="'+px+'" fill="url(#'+id+')"/>'+
+      '<circle cx="'+px/2+'" cy="'+px/2+'" r="'+r+'" fill="#ffffff"/>';
+  }
+  var m=bodyOf(c.mark,'#14161a','#ffffff',o), e=m.e;
+  var k=(2*r*o.m)/Math.max(e.w,e.h);
+  var tx=px/2-(e.x+e.w/2)*k, ty=px/2-(e.y+e.h/2)*k;
+  return '<svg viewBox="0 0 '+px+' '+px+'" width="'+px+'" height="'+px+'">'+bgPart+
+    '<g transform="translate('+tx.toFixed(2)+','+ty.toFixed(2)+') scale('+k.toFixed(4)+')">'+m.b+'</g></svg>';
+}
+
+var CANDS=[
+  {id:'G1',style:'cutout',mark:'grove',name:'Cutout + the new grove',
+   why:'Your sketch: three leaves at uneven heights, outer stems turning into lateral roots that reach for the edge, the centre running deeper and forking beneath them.'},
+  {id:'G2',style:'ring',  mark:'grove',name:'Ring + the new grove',
+   why:'The same mark inside the wheel instead of the cutout.'},
+  {id:'O1',style:'cutout',mark:'orig', name:'Cutout + the original',
+   why:'The three-stalk mark in the same cutout, for the comparison.'},
+  {id:'O2',style:'ring',  mark:'orig', name:'Ring + the original',
+   why:'And in the ring.'},
+  {id:'L1',style:'cutout',mark:'leaf', name:'Cutout + single leaf',
+   why:'Last round’s leader, rebuilt with the asymmetric blade and midrib only.'}
+];
+
+function opts(){return {r:+r.value,m:+m.value,w:+w.value,h:+h.value,k:+k.value};}
+function draw(){
+  var o=opts();
+  oR.value=o.r.toFixed(2); oM.value=o.m.toFixed(2); oW.value=o.w; oH.value=o.h; oK.value=o.k.toFixed(2);
+  document.getElementById('grid').innerHTML=CANDS.map(function(c){
+    return '<div class="cand"><span class="tag">'+c.id+'</span><h3>'+c.name+'</h3><p>'+c.why+'</p>'+
+      '<span class="hero">'+tile(c,512,o)+'</span><div class="small">'+
+      [[76,'76'],[60,'60']].map(function(s){
+        return '<figure><span class="t" style="width:'+s[0]+'px;height:'+s[0]+'px">'+tile(c,s[0]*3,o)+
+          '</span><figcaption>'+s[1]+'px</figcaption></figure>';}).join('')+'</div></div>';
+  }).join('');
+  document.getElementById('homes').innerHTML=['','light'].map(function(wl){
+    return '<div class="home '+wl+'"><div class="apps">'+
+      CANDS.map(function(c){return '<div class="app"><span class="t">'+tile(c,180,o)+
+        '</span><span>'+c.id+'</span></div>';}).join('')+
+      '<div class="app"><span class="filler" style="background:#c9d0e8"></span><span>Weather</span></div>'+
+      '</div></div>';}).join('');
+}
+['r','m','w','h','k'].forEach(function(id){document.getElementById(id).addEventListener('input',draw);});
+draw();
+</script>
+</body>
+</html>

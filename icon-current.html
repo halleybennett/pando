@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pando — V2, aligned roots, and the header</title>
+<style>
+  :root{--bg:#f2f0f7;--card:#fff;--ink:#14161a;--muted:#6e6874;--klein:#0d21a5;--line:#dedbd8}
+  *{box-sizing:border-box}
+  body{margin:0;padding:36px 24px 80px;background:var(--bg);color:var(--ink);
+    font:300 17.5px/1.55 "Helvetica Neue",Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1080px;margin:0 auto}
+  h1{font-weight:200;font-size:40px;letter-spacing:-.5px;margin:0 0 8px}
+  .sub{color:var(--muted);max-width:64ch;margin:0 0 4px}
+  h2{font-weight:300;font-size:24px;margin:42px 0 10px}
+  .note{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px 22px;margin:18px 0 0}
+  .note p{margin:0 0 10px}.note p:last-child{margin:0}.note b{font-weight:500}
+  .grid{display:grid;gap:22px;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));align-items:start;margin-top:16px}
+  .cand{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px}
+  .tag{font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--klein);font-weight:500}
+  .cand h3{font-weight:400;font-size:18px;margin:2px 0 6px}
+  .cand p{margin:0 0 12px;font-size:14px;color:var(--muted);line-height:1.5}
+  .hero{width:100%;border-radius:22.37%;overflow:hidden;box-shadow:0 1px 3px rgba(20,22,26,.18)}
+  .hero svg{display:block;width:100%;height:auto}
+  .small{display:flex;gap:14px;align-items:flex-end;margin-top:12px}
+  .small figure{margin:0;text-align:center}
+  .small .t{border-radius:22.37%;overflow:hidden;display:block;box-shadow:0 1px 2px rgba(20,22,26,.2)}
+  .small .t svg{display:block;width:100%;height:100%}
+  .small figcaption{font-size:10.5px;color:var(--muted);margin-top:5px}
+
+  /* a real slice of the app: 390pt wide, the shipped Sky gradient, the shipped header */
+  .phone{width:390px;border-radius:20px;overflow:hidden;border:1px solid var(--line);
+    background:linear-gradient(135deg,#eaeefb,#eff0f9 44%,#f6edf0 68%,#fbf0d2);
+    padding:14px 20px 22px}
+  .top{display:flex;justify-content:space-between;align-items:center;
+    font:400 12px/1 "Helvetica Neue",Helvetica,Arial,sans-serif;
+    letter-spacing:.2em;text-transform:uppercase;color:#6e6874;padding:2px 0 4px}
+  .brand{display:inline-flex;align-items:baseline;gap:8px}
+  .brand svg{display:block}
+  .datebtn{display:inline-flex;align-items:center;gap:6px}
+  .phones{display:flex;gap:22px;flex-wrap:wrap;margin-top:16px}
+  .phonewrap{text-align:center}
+  .phonewrap figcaption{font-size:12px;color:var(--muted);margin-top:8px}
+  .zoom{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px 18px;margin-top:10px;
+    display:flex;gap:26px;align-items:flex-end}
+  .zoom .z{display:inline-flex;align-items:baseline;gap:8px;
+    font:400 12px/1 "Helvetica Neue",Helvetica,Arial,sans-serif;
+    letter-spacing:.2em;text-transform:uppercase;color:#6e6874}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>V2, and the mark in the app</h1>
+
+<div class="note" style="margin:0 0 6px">
+  <p><b>Centre root length</b>
+    <output id="oCH" style="color:#0d21a5;font-variant-numeric:tabular-nums">26</output>
+    <input id="ch" type="range" min="16" max="40" step="1" value="26"
+      style="width:180px;accent-color:#0d21a5;vertical-align:middle;margin-left:10px">
+    <span style="color:#6e6874;font-size:14.5px">— shorter means more overhang</span></p>
+</div>
+<h2>Roots: how far the centre one runs</h2>
+<div class="grid" id="grid"></div>
+
+<div class="note">
+  <p><b>Why shortening the centre root helps at small sizes.</b> Once the two root lines converge
+    the only thing telling them apart is that they are different lengths. The bigger that
+    difference, the longer the eye can still see two levels rather than one bar — so a shorter
+    centre root buys back some of what the tight gap gives away.</p>
+</div>
+
+<h2>The mark in the header, at real size</h2>
+<div class="note" style="margin-top:0">
+  <p><b>The header is 16px, and it is unforgiving.</b> The grove's roots are drawn at 1.9 units in
+    a 82-unit box — at 16px tall that is a <b>0.37px</b> stroke. Sub-pixel. They will not survive,
+    and pretending otherwise would be dishonest, so all three options are shown side by side at the
+    size they actually appear.</p>
+  <p>Rendered here without the midrib cut-outs, because at 16px those close up too.</p>
+</div>
+<div class="phones" id="phones"></div>
+<div class="zoom" id="zoom"></div>
+
+</div>
+
+<script>
+var STOPS=[[0,'#0d21a5'],[4.5,'#3f57bd'],[6.5,'#8ba2f0'],[8,'#cfd3ee'],[9.5,'#f6e3b4'],
+  [11,'#f7c948'],[17.5,'#f7c948'],[19.5,'#f8dfa0'],[20.5,'#ecdcdd'],[21.5,'#a9b6ea'],
+  [22.5,'#5d74d2'],[24,'#0d21a5']];
+function hx(c){c=c.replace('#','');return [0,2,4].map(function(i){return parseInt(c.slice(i,i+2),16);});}
+function h2(v){v=v.toString(16);return v.length<2?'0'+v:v;}
+function mix(a,b,t){var A=hx(a),B=hx(b);return '#'+[0,1,2].map(function(i){
+  return h2(Math.round(A[i]+(B[i]-A[i])*t));}).join('');}
+function rampAt(h){var col=STOPS[STOPS.length-1][1];
+  for(var i=1;i<STOPS.length;i++){if(h<=STOPS[i][0]){var a=STOPS[i-1],b=STOPS[i];
+    col=mix(a[1],b[1],(h-a[0])/(b[0]-a[0]));break;}}
+  return mix(col,'#ffffff',0.46);}
+var WHEEL_RUN=[0,3,6,8,10,12].map(rampAt);
+
+var O={r:0.43,m:0.69,w:13.5,h:34,k:0.22,g:6,c:6.5,s:17};
+function leafPath(W,H,lean){
+  var Wl=W*(1-lean*0.5),Wr=W*(1+lean*0.5),tx=-W*lean*0.35,wy=H*0.58;
+  return 'M '+tx+' 0 C '+(Wr*0.10)+' '+(H*0.24)+', '+(Wr*0.78)+' '+(wy-H*0.26)+', '+Wr+' '+wy+
+    ' C '+Wr+' '+(wy+H*0.24)+', '+(Wr*0.55)+' '+(H*1.02)+', '+(W*0.06)+' '+H+
+    ' L '+(-W*0.06)+' '+H+' C '+(-Wl*0.55)+' '+(H*1.02)+', '+(-Wl)+' '+(wy+H*0.24)+', '+(-Wl)+' '+wy+
+    ' C '+(-Wl)+' '+(wy-H*0.26)+', '+(-Wl*0.10)+' '+(H*0.24)+', '+tx+' 0 Z';}
+function spindle(x0,y0,x1,y1,w0,N){N=N||22;var L=[],R=[];
+  for(var i=0;i<=N;i++){var t=i/N,x=x0+(x1-x0)*t,y=y0+(y1-y0)*t;
+    var dx=x1-x0,dy=y1-y0,m=Math.hypot(dx,dy)||1,nx=-dy/m,ny=dx/m;
+    var w=w0*Math.sin(Math.PI*Math.pow(t,0.72));
+    L.push([x+nx*w,y+ny*w]);R.push([x-nx*w,y-ny*w]);}
+  R.reverse();
+  return 'M '+L.concat(R).map(function(q){return q[0].toFixed(2)+' '+q[1].toFixed(2);}).join(' L ')+' Z';}
+
+var ROOT_BOT=82;
+/* opts.align: make the centre root end exactly where the outer roots do, instead of short of them.
+   opts.roots: 'full' | 'ground' | 'none' - for the header, where the two-line system cannot survive. */
+function grove(fg,bg,o){
+  var W=o.w,H=o.h,R=o.c,reach=o.s,SW=o.sw||1.9;
+  var xs=[24,50,76],tips=[16,2,22];
+  var ry=ROOT_BOT-o.g, cy=ROOT_BOT;
+  var outerEnd=reach, half=(o.ch!==undefined)?o.ch:(reach+26-8);
+  var s='', stroke=' stroke="'+fg+'" stroke-width="'+SW+
+    '" stroke-linecap="round" stroke-linejoin="round" fill="none"';
+  var mode=o.roots||'full';
+  if(mode==='full'){
+    [[24,-1,0],[76,1,2]].forEach(function(p){
+      var cx=p[0],dir=p[1],base=tips[p[2]]+H;
+      s+='<path d="M '+cx+' '+base.toFixed(1)+' L '+cx+' '+(ry-R).toFixed(1)+
+         ' Q '+cx+' '+ry+' '+(cx+dir*R)+' '+ry+' L '+(cx+dir*outerEnd)+' '+ry+'"'+stroke+'/>';});
+    var cbase=tips[1]+H;
+    s+='<path d="M 50 '+cbase.toFixed(1)+' L 50 '+(cy-R).toFixed(1)+
+       ' Q 50 '+cy+' '+(50-R)+' '+cy+' L '+(50-half)+' '+cy+'"'+stroke+'/>';
+    s+='<path d="M 50 '+(cy-R).toFixed(1)+' Q 50 '+cy+' '+(50+R)+' '+cy+' L '+(50+half)+' '+cy+'"'+stroke+'/>';
+  } else if(mode==='centreFork'){
+    /* the outer stems just stop; only the centre puts down a root, and it runs beneath them */
+    var above=(o.fgap!==undefined)?o.fgap:5;
+    xs.forEach(function(cx,i){ if(i===1) return;
+      s+='<path d="M '+cx+' '+(tips[i]+H).toFixed(1)+' L '+cx+' '+(cy-above)+'"'+stroke+'/>';});
+    var cb2=tips[1]+H;
+    s+='<path d="M 50 '+cb2.toFixed(1)+' L 50 '+(cy-R).toFixed(1)+
+       ' Q 50 '+cy+' '+(50-R)+' '+cy+' L '+(50-half)+' '+cy+'"'+stroke+'/>';
+    s+='<path d="M 50 '+(cy-R).toFixed(1)+' Q 50 '+cy+' '+(50+R)+' '+cy+' L '+(50+half)+' '+cy+'"'+stroke+'/>';
+  } else if(mode==='ground'){
+    xs.forEach(function(cx,i){s+='<path d="M '+cx+' '+(tips[i]+H).toFixed(1)+' L '+cx+' '+cy+'"'+stroke+'/>';});
+    s+='<path d="M '+(50-half)+' '+cy+' L '+(50+half)+' '+cy+'"'+stroke+'/>';
+  } else {
+    xs.forEach(function(cx,i){s+='<path d="M '+cx+' '+(tips[i]+H).toFixed(1)+' L '+cx+' '+(cy-4)+'"'+stroke+'/>';});
+  }
+  xs.forEach(function(cx,i){
+    s+='<g transform="translate('+cx+','+tips[i]+')"><path d="'+leafPath(W,H,o.k)+'" fill="'+fg+'"/>'+
+       (o.midrib!==false?'<path d="'+spindle(0,H*0.90,0,H*0.12,W*0.105)+'" fill="'+bg+'"/>':'')+'</g>';});
+  return s;
+}
+function groveExt(o){
+  var half=(o.ch!==undefined)?o.ch:(o.s+26-8), mode=o.roots||'full', left, right;
+  if(mode==='none'){ left=24-o.w*1.2; right=76+o.w*1.2; }
+  else if(mode==='centreFork'){ left=Math.min(24-o.w*1.2,50-half); right=Math.max(76+o.w*1.2,50+half); }
+  else { left=Math.min(24-o.s,50-half); right=Math.max(76+o.s,50+half); }
+  return {x:left-1.5,y:0,w:(right-left)+3,h:ROOT_BOT+1.5};
+}
+var UID=0;
+function tile(px,o){
+  var id='t'+(UID++),r=px*o.r;
+  var s='<defs><linearGradient id="'+id+'" x1="0" y1="0" x2="1" y2="1">'+
+    WHEEL_RUN.map(function(x,i){return '<stop offset="'+(i/(WHEEL_RUN.length-1)*100)+'%" stop-color="'+x+'"/>';}).join('')+
+    '</linearGradient></defs><rect width="'+px+'" height="'+px+'" fill="url(#'+id+')"/>'+
+    '<circle cx="'+px/2+'" cy="'+px/2+'" r="'+r+'" fill="#ffffff"/>';
+  var e=groveExt(o),k=(2*r*o.m)/Math.max(e.w,e.h);
+  return '<svg viewBox="0 0 '+px+' '+px+'" width="'+px+'" height="'+px+'">'+s+
+    '<g transform="translate('+(px/2-(e.x+e.w/2)*k).toFixed(2)+','+(px/2-(e.y+e.h/2)*k).toFixed(2)+
+    ') scale('+k.toFixed(4)+')">'+grove('#14161a','#ffffff',o)+'</g></svg>';
+}
+function headerMark(o,hpx,fg){
+  var e=groveExt(o),k=hpx/e.h,w=e.w*k;
+  return '<svg viewBox="0 0 '+w.toFixed(1)+' '+hpx+'" width="'+w.toFixed(1)+'" height="'+hpx+'">'+
+    '<g transform="translate('+(-e.x*k).toFixed(2)+','+(-e.y*k).toFixed(2)+') scale('+k.toFixed(4)+')">'+
+    grove(fg,'#ffffff',o)+'</g></svg>';
+}
+/* the original mark, for the header comparison */
+var BLADE='M8 1.4 C10.9 4.4 13.1 6.9 13.1 9.3 C13.1 11.9 10.9 13.6 8 13.6 C5.1 13.6 2.9 11.9 2.9 9.3 C2.9 6.9 5.1 4.4 8 1.4 Z';
+function origMark(h,fg){
+  var st=[[4.2,5.4,8.0],[10,6.6,2.6],[15.8,5.0,9.6]],base=17.2,o='';
+  st.forEach(function(s){o+='<path d="M'+s[0]+' '+(s[2]+s[1]).toFixed(2)+' L'+s[0]+' '+(base-0.8)+
+    '" stroke="'+fg+'" stroke-width="0.95" stroke-linecap="round" fill="none"/>';});
+  o+='<path d="M2.2 '+base+' L7 '+base+' M9 '+base+' L11.6 '+base+' M13.6 '+base+' L18 '+base+
+     '" stroke="'+fg+'" stroke-width="1.05" stroke-linecap="round" opacity=".6"/>';
+  st.forEach(function(s){var k=s[1]/12.2;
+    o+='<g transform="translate('+(s[0]-8*k).toFixed(3)+','+(s[2]-1.4*k).toFixed(3)+') scale('+k.toFixed(4)+')">'+
+       '<path d="'+BLADE+'" fill="'+fg+'"/></g>';});
+  return '<svg viewBox="0 0 20 18" width="'+(h*20/18).toFixed(1)+'" height="'+h+'">'+o+'</svg>';
+}
+
+/* --- the two icon options --- */
+function icons(){
+  var ch=+document.getElementById('ch').value;
+  return [
+    {id:'V2',name:'V2 — as you picked it',o:Object.assign({},O,{ch:35}),
+     why:'The outer roots reach past the centre one, so the silhouette steps outward as it rises.'},
+    {id:'V2b',name:'V2b — centre root shortened',o:Object.assign({},O,{ch:ch}),
+     why:'The same, with the centre root pulled in to <b>'+ch+'</b> either side. The overhang is more pronounced, so the two levels stay separable further down the size range — which is exactly what was being lost at 60px.'}
+  ];
+}
+function drawIcons(){
+document.getElementById('grid').innerHTML=icons().map(function(c){
+  return '<div class="cand"><span class="tag">'+c.id+'</span><h3>'+c.name+'</h3><p>'+c.why+'</p>'+
+    '<span class="hero">'+tile(512,c.o)+'</span><div class="small">'+
+    [[76,'76'],[60,'60'],[40,'40']].map(function(z){
+      return '<figure><span class="t" style="width:'+z[0]+'px;height:'+z[0]+'px">'+tile(z[0]*3,c.o)+
+        '</span><figcaption>'+z[1]+'px</figcaption></figure>';}).join('')+'</div></div>';
+}).join('');
+}
+drawIcons();
+document.getElementById('ch').addEventListener('input',function(){
+  document.getElementById('oCH').textContent=this.value; drawIcons();});
+
+/* --- the header --- */
+var HEADERS=[
+  {name:'the mark shipping today',  svg:function(h){return origMark(h,'#6e6874');}},
+  {name:'new grove, full roots',    svg:function(h){return headerMark(Object.assign({},O,{ch:34,midrib:false,sw:2.6}),h,'#6e6874');}},
+  {name:'new grove, one ground line',svg:function(h){return headerMark(Object.assign({},O,{roots:'ground',ch:34,midrib:false,sw:2.8}),h,'#6e6874');}},
+  {name:'new grove, no ground',     svg:function(h){return headerMark(Object.assign({},O,{roots:'none',midrib:false,sw:2.8}),h,'#6e6874');}},
+  {name:'centre fork only, outer stems bare',
+   svg:function(h){return headerMark(Object.assign({},O,{roots:'centreFork',ch:34,fgap:5,midrib:false,sw:2.8}),h,'#6e6874');}}
+];
+document.getElementById('phones').innerHTML=HEADERS.map(function(H){
+  return '<div class="phonewrap"><div class="phone"><div class="top">'+
+    '<span class="brand">'+H.svg(16)+'Pando</span>'+
+    '<span class="datebtn">1 Apr'+
+    '<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.8" '+
+    'stroke-linecap="round" stroke-linejoin="round"><path d="M6 9.5l6 6 6-6"/></svg></span>'+
+    '</div></div><figcaption>'+H.name+'</figcaption></div>';
+}).join('');
+document.getElementById('zoom').innerHTML=HEADERS.map(function(H){
+  return '<div><div class="z">'+H.svg(26)+'Pando</div>'+
+    '<div class="z" style="margin-top:10px">'+H.svg(20)+'Pando</div>'+
+    '<div class="z" style="margin-top:10px">'+H.svg(16)+'Pando</div></div>';
+}).join('');
+</script>
+</body>
+</html>

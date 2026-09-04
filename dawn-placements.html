@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pando — where Dawn lives</title>
+<style>
+:root{
+  --font:"Helvetica Neue",Helvetica,Arial,sans-serif;
+  --paper:#fbe9f4; --card:#fff; --ink:#14161a; --muted:#6e6874; --line:#e2d2dc;
+  --night:#0d21a5; --dawn:#8ba2f0; --noon:#f7c948; --amber:#a97103;
+  --dawn-tint:#e8ecfc; --dawn-deep:#4c63b6;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{font-family:var(--font);font-weight:300;background:var(--paper);color:var(--ink);
+  -webkit-font-smoothing:antialiased;padding:52px 22px 110px;line-height:1.6;font-size:18px}
+.wrap{max-width:1180px;margin:0 auto}
+h1{font-weight:200;font-size:56px;letter-spacing:-.02em;margin:0 0 10px}
+.sub{color:var(--muted);font-size:20px;margin:0 0 18px;max-width:62ch}
+.key{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px 26px;
+  font-size:17.5px;color:var(--muted);max-width:76ch;margin-bottom:16px}
+.key b{color:var(--ink);font-weight:400}
+h2{font-weight:300;font-size:17px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);
+  margin:58px 0 6px;padding-bottom:12px;border-bottom:1px solid var(--line)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(350px,1fr));gap:26px;margin-top:30px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:26px 24px 24px;display:flex;flex-direction:column}
+.card.win{border-color:var(--night);box-shadow:0 0 0 3px rgba(13,33,165,.10)}
+.tagline{font-size:13px;letter-spacing:.16em;text-transform:uppercase;color:var(--night);margin-bottom:8px}
+.card h3{font-weight:400;font-size:23px;margin:0 0 6px;letter-spacing:-.01em}
+.card .why{font-size:16.5px;color:var(--muted);margin:0 0 20px}
+.stage{border:1px solid var(--line);border-radius:16px;padding:16px;background:#fff;margin-bottom:6px}
+ul{margin:auto 0 0;padding-left:20px;font-size:16px;color:var(--muted);padding-top:18px}
+li{margin-bottom:7px} li b{color:var(--ink);font-weight:400}
+
+/* shared app bits */
+.row{display:flex;justify-content:space-between;align-items:center;padding:11px 2px;border-bottom:1px solid var(--line)}
+.row:last-child{border-bottom:none}
+.city{font-size:16.5px}
+.city small{display:block;font-size:11.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);margin-top:3px}
+.tm{display:flex;align-items:center;gap:11px}
+.tm b{font-weight:200;font-size:23px;font-variant-numeric:tabular-nums}
+.chip{display:inline-block;font-size:11px;letter-spacing:.13em;text-transform:uppercase;
+  background:var(--dawn);color:var(--ink);border-radius:99px;padding:3px 9px;margin-left:8px;vertical-align:2px}
+.badge{font-size:11px;letter-spacing:.13em;text-transform:uppercase;background:var(--dawn);color:var(--ink);
+  border-radius:6px;padding:2px 7px}
+.banner{background:var(--dawn-tint);border:1px solid var(--dawn);border-radius:12px;padding:10px 14px;
+  display:flex;justify-content:space-between;align-items:center;font-size:15px;margin-bottom:12px}
+.banner em{font-style:normal;color:var(--dawn-deep);font-size:12px;letter-spacing:.13em;text-transform:uppercase}
+.sr{border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.sr div{padding:11px 14px;display:flex;justify-content:space-between;font-size:16px;border-top:1px solid var(--line)}
+.sr div:first-child{border-top:none}
+.sr div.on{background:var(--dawn-tint)}
+.sr em{font-style:normal;color:var(--muted);font-size:13.5px}
+.num{font-variant-numeric:tabular-nums}
+.chipdemo{display:flex;flex-wrap:wrap;gap:14px;margin-top:4px}
+.cd{border:1px solid var(--line);border-radius:14px;padding:16px 16px 13px;background:#fff;min-width:200px;flex:1}
+.cd .shot{padding:10px 2px;border-bottom:1px solid var(--line);margin-bottom:11px}
+.cd .nm{font-size:15.5px}
+.cd .ratio{font-size:14px;color:var(--muted);margin-top:3px;font-variant-numeric:tabular-nums}
+.cd .ratio b{font-weight:400}
+.cd.no .ratio b{color:#b3115c}
+.cd.yes .ratio b{color:var(--night)}
+.cd.yes{border-color:var(--night);box-shadow:0 0 0 3px rgba(13,33,165,.10)}
+.pill{display:inline-block;font-size:11px;letter-spacing:.13em;text-transform:uppercase;
+  border-radius:99px;padding:3px 9px;margin-left:8px;vertical-align:2px}
+
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>Where Dawn lives</h1>
+<p class="sub">Five places the blue could earn a job. Ranked by whether it’s <em>saying</em> something or just being pretty.</p>
+<div class="key">
+  <b>The constraint that shapes all of these.</b> Dawn on white measures <span class="num">2.46:1</span> — too low for text, and too low for a bare shape. But <b>Ink on solid Dawn is 7.35:1</b>, and ink on a 20% Dawn tint is <span class="num">15.4:1</span>. So Dawn works beautifully as a <b>surface with dark text on it</b>, and never as ink itself. Every option below respects that. Where a Dawn-colored <em>word</em> was wanted, it's deepened to <code>#4c63b6</code> (5.57:1).
+</div>
+
+<h2>The options</h2>
+<div class="grid">
+
+  <!-- 1 -->
+  <div class="card win">
+    <div class="tagline">recommendation</div>
+    <h3>1 — The not-now banner</h3>
+    <p class="why">Dawn appears only when you’ve left “Now” and are looking at a hypothetical month. Live mode stays entirely pink-and-white.</p>
+    <div class="stage">
+      <div class="banner"><span>Showing <b style="font-weight:400">1 March</b></span><em>not now</em></div>
+      <div class="row"><div class="city">London<small>GMT · home</small></div><div class="tm"><b>14:30</b></div></div>
+      <div class="row"><div class="city">Mexico City<small>CST · −6h</small></div><div class="tm"><b>08:30</b></div></div>
+    </div>
+    <ul>
+      <li><b>It means something.</b> Dawn becomes the app’s word for “this is simulated, not live” — the single most confusable state in the whole thing.</li>
+      <li><b>Genuinely minor.</b> Invisible most of the time, because most of the time you’re on Now.</li>
+      <li>Tint <code>#e8ecfc</code> with a Dawn hairline; the label deepens to <code>#4c63b6</code>.</li>
+    </ul>
+  </div>
+
+  <!-- 2 -->
+  <div class="card">
+    <h3>2 — The home chip</h3>
+    <p class="why">A small filled pill marking which city the dial is speaking for.</p>
+    <div class="stage">
+      <div class="row"><div class="city">London <span class="chip">home</span><small>BST</small></div><div class="tm"><b>14:30</b></div></div>
+      <div class="row"><div class="city">Mexico City<small>CST · −6h</small></div><div class="tm"><b>08:30</b></div></div>
+      <div class="row"><div class="city">Tokyo<small>JST · +8h</small></div><div class="tm"><b>22:30</b></div></div>
+    </div>
+    <ul>
+      <li><b>Solid Dawn with ink on it — 7.35:1.</b> Comfortably legible.</li>
+      <li><b>Always on screen</b>, which makes it less of a minor accent than a permanent one.</li>
+      <li>Competes a little with the sun/moon for the eye’s attention on the same row.</li>
+    </ul>
+  </div>
+
+  <!-- 3 -->
+  <div class="card">
+    <h3>3 — The day-shift badge</h3>
+    <p class="why">Replaces the muted “· next day” text with a small Dawn tag.</p>
+    <div class="stage">
+      <div class="row"><div class="city">Lagos<small>WAT · +1h</small></div><div class="tm"><b>15:30</b></div></div>
+      <div class="row"><div class="city">Tokyo<small>JST · +8h</small></div><div class="tm"><span class="badge">+1 day</span><b>22:30</b></div></div>
+      <div class="row"><div class="city">Honolulu<small>HST · −11h</small></div><div class="tm"><span class="badge">−1 day</span><b>03:30</b></div></div>
+    </div>
+    <ul>
+      <li><b>Rare by nature</b> — only shows on cities that have crossed midnight.</li>
+      <li><b>Real information</b>, currently buried in a small gray line where it’s easy to miss.</li>
+      <li>Slight risk: it’s the second badge in a row that already has a glyph.</li>
+    </ul>
+  </div>
+
+  <!-- 4 -->
+  <div class="card">
+    <h3>4 — Search highlight</h3>
+    <p class="why">The focused result in the city search sits on a Dawn tint.</p>
+    <div class="stage">
+      <div class="sr">
+        <div class="on"><span>Mexico City</span><em>GMT−6</em></div>
+        <div><span>Mexicali</span><em>GMT−7</em></div>
+        <div><span>Mexico, Missouri</span><em>GMT−6</em></div>
+      </div>
+    </div>
+    <ul>
+      <li><b>Conventional and invisible</b> — exactly what a selection state should be.</li>
+      <li><b>Only exists while typing</b>, so it’s the most fleeting option here.</li>
+      <li>Arguably too hidden to count as “featuring” the color at all.</li>
+    </ul>
+  </div>
+
+  <!-- 5 -->
+  <div class="card">
+    <h3>5 — The dial sweep</h3>
+    <p class="why">The arc from midnight round to the set time, drawn in Dawn.</p>
+    <div class="stage" style="display:flex;justify-content:center">
+      <svg width="210" height="210" viewBox="0 0 210 210">
+        <circle cx="105" cy="105" r="86" fill="none" stroke="#f0eef1" stroke-width="12"/>
+        <path d="M105 19 A86 86 0 1 1 46.6 148.2" fill="none" stroke="#8ba2f0" stroke-width="12" stroke-linecap="round"/>
+        <circle cx="105" cy="105" r="63" fill="#fff"/>
+        <text x="105" y="99" text-anchor="middle" font-family="Helvetica Neue,Helvetica,Arial" font-weight="200" font-size="34" fill="#14161a">14:30</text>
+        <text x="105" y="120" text-anchor="middle" font-family="Helvetica Neue,Helvetica,Arial" font-weight="300" font-size="10" letter-spacing="2.2" fill="#6e6874">LONDON</text>
+        <circle cx="46.6" cy="148.2" r="15" fill="#0d21a5"/><circle cx="46.6" cy="148.2" r="15" fill="none" stroke="#fff" stroke-width="2.5"/>
+      </svg>
+    </div>
+    <ul>
+      <li><b>The biggest, prettiest use</b> — a large decorative area, so the 2.46:1 doesn’t apply.</li>
+      <li><b>But it fights the day/night ramp</b>, which is the dial’s actual job. Two blues doing different things in one circle.</li>
+      <li>Would mean rethinking the ramp — bigger change than the brief.</li>
+    </ul>
+  </div>
+
+</div>
+
+
+<h2>The home chip — what color is the word?</h2>
+<p class="sub" style="margin-top:18px;max-width:70ch">White on Dawn is the instinct, and it's the one combination that doesn't work: contrast is symmetric, so white-on-Dawn is the same <span class="num">2.46:1</span> that ruled Dawn out as text in the first place. At 11px uppercase it needs 4.5:1. Four ways out:</p>
+<div class="chipdemo">
+
+  <div class="cd no">
+    <div class="shot"><span style="font-size:16.5px">London<span class="pill" style="background:#8ba2f0;color:#ffffff">home</span></span><div style="font-size:11.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);margin-top:3px">BST</div></div>
+    <div class="nm">White on Dawn</div>
+    <div class="ratio"><b>2.46:1 — fails</b><br>The look you want, the one ratio that can't have it.</div>
+  </div>
+
+  <div class="cd yes">
+    <div class="shot"><span style="font-size:16.5px">London<span class="pill" style="background:#8ba2f0;color:#14161a">home</span></span><div style="font-size:11.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);margin-top:3px">BST</div></div>
+    <div class="nm">Ink on Dawn</div>
+    <div class="ratio"><b>7.35:1 — passes</b><br>Keeps Dawn exactly as it is in the palette. Reads soft, almost pastel.</div>
+  </div>
+
+  <div class="cd yes">
+    <div class="shot"><span style="font-size:16.5px">London<span class="pill" style="background:#4c63b6;color:#ffffff">home</span></span><div style="font-size:11.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);margin-top:3px">BST</div></div>
+    <div class="nm">White on deepened Dawn</div>
+    <div class="ratio"><b>5.57:1 — passes</b><br><code>#4c63b6</code>. The white-on-blue you pictured. Same hue, more weight.</div>
+  </div>
+
+  <div class="cd yes">
+    <div class="shot"><span style="font-size:16.5px">London<span class="pill" style="background:#e8ecfc;color:#4c63b6">home</span></span><div style="font-size:11.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);margin-top:3px">BST</div></div>
+    <div class="nm">Deep Dawn on tint</div>
+    <div class="ratio"><b>5.31:1 — passes</b><br>Quietest of the four. Barely a chip at all.</div>
+  </div>
+
+</div>
+<div class="key" style="margin-top:26px;border-color:#0d21a5;box-shadow:0 0 0 3px rgba(13,33,165,.10);max-width:none">
+  <b>If you want white text, take the deepened Dawn <code>#4c63b6</code>.</b> It is unmistakably the same blue — just carrying enough weight to hold white on it. The trade is honest: the chip is then a <em>relative</em> of Dawn rather than Dawn itself, so the palette gains a seventh color. <b>Ink on true Dawn</b> is the alternative that adds nothing and keeps the swatch pure, but it reads softer and more pastel than what you described.
+</div>
+
+<h2>If you want one</h2>
+<div class="card win" style="margin-top:30px">
+  <h3>You picked 2 — the home chip</h3>
+  <p class="why" style="font-size:17px">Option 1 gives Dawn a <b style="color:var(--ink);font-weight:400">meaning</b> rather than a location, which is how the rest of this palette already works — Klein acts, Noon and the moon report, Amber exists only to make yellow legal. “Dawn means you’re not looking at live time” fits that logic, and it solves a real confusion: nothing else on screen currently distinguishes a simulated March from right now.</p>
+  <p class="why" style="font-size:17px;margin-bottom:0">Option 3 pairs with it cleanly because the two never collide — one is a banner at the top, the other a small tag on a row, and both are exceptions rather than furniture. Together Dawn shows up perhaps twice on a busy screen and not at all on a quiet one, which is what “minor accent” should mean.</p>
+</div>
+
+</div>
+</body>
+</html>

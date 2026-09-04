@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pando — quieter chrome</title>
+<style>
+:root{--font:"Helvetica Neue",Helvetica,Arial,sans-serif;
+ --paper:#fbe9f4;--card:#fff;--ink:#14161a;--muted:#6e6874;--line:#e2d2dc;
+ --night:#0d21a5;--dawn:#8ba2f0;--noon:#f7c948;--amber:#a97103;}
+*{box-sizing:border-box}html,body{margin:0;padding:0}
+body{font-family:var(--font);font-weight:300;background:#f2eef1;color:var(--ink);
+ -webkit-font-smoothing:antialiased;padding:44px 20px 90px;font-size:18px;line-height:1.6}
+.wrap{max-width:1320px;margin:0 auto}
+h1{font-weight:200;font-size:54px;letter-spacing:-.02em;margin:0 0 10px}
+.sub{color:var(--muted);font-size:19px;max-width:66ch;margin:0 0 20px}
+.key{background:#fff;border:1px solid var(--line);border-radius:16px;padding:20px 24px;
+ font-size:17px;color:var(--muted);max-width:80ch;margin-bottom:14px}
+.key b{color:var(--ink);font-weight:400}
+.switch{display:inline-flex;background:#e7e1e6;border-radius:99px;padding:4px;font-size:15px;margin:6px 0 28px}
+.switch button{border:0;background:none;font-family:var(--font);font-weight:300;font-size:15px;
+ padding:9px 18px;border-radius:99px;color:var(--muted);cursor:pointer}
+.switch button.on{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.14)}
+.grid{display:flex;gap:30px;flex-wrap:wrap}
+.col{width:305px}
+.col h3{font-weight:400;font-size:20px;margin:0 0 4px}
+.col p{font-size:15.5px;color:var(--muted);margin:0 0 14px;min-height:76px}
+.col p b{color:var(--ink);font-weight:400}
+
+.crop{background:var(--paper);border:1px solid var(--line);border-radius:30px;overflow:hidden;
+ box-shadow:0 16px 44px rgba(20,20,26,.13)}
+.hdr{display:flex;justify-content:space-between;align-items:center;padding:12px 18px 4px;
+ font-size:12px;letter-spacing:.2em;text-transform:uppercase}
+.brand{display:inline-flex;align-items:center;gap:7px}
+.brand svg{display:block}
+.ctl{display:inline-flex;align-items:center;gap:6px;cursor:pointer}
+.ctl svg{display:block}
+.dialwrap{position:relative;width:305px;height:290px}
+.dialwrap svg.dial{position:absolute;left:2.5px;top:-5px}
+.tog{position:absolute;left:0;right:0;top:178px;display:flex;justify-content:center;z-index:2}
+.list{list-style:none;margin:0 14px 14px;padding:0;background:#fff;border:1px solid var(--line);
+ border-radius:18px;overflow:hidden}
+.r{display:flex;justify-content:space-between;align-items:center;padding:10px 16px;border-bottom:1px solid var(--line)}
+.r:last-child{border-bottom:none}
+.nm{flex:1;min-width:0}
+.n1{display:flex;align-items:center;gap:8px;height:26px;font-size:16px}
+.chip{font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;background:var(--dawn);
+ color:var(--ink);border-radius:99px;padding:2px 8px}
+.co{height:13px;line-height:13px;margin-top:2px;font-size:10.5px;letter-spacing:.1em;
+ text-transform:uppercase;color:var(--muted)}
+.t{height:26px;line-height:26px;font-weight:200;font-size:23px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.t i{font-style:normal;font-size:16px;margin-left:5px;color:var(--muted)}
+
+/* ---------- the four toggle treatments ---------- */
+/* 1 · whisper: no container at all */
+.tg-whisper{display:inline-flex;align-items:center;gap:9px;font-size:11px;letter-spacing:.18em;
+ text-transform:uppercase;color:var(--muted);cursor:pointer}
+.tg-whisper b{font-weight:400;color:var(--ink)}
+.tg-whisper span.sep{opacity:.45}
+/* 2 · tonal: a track, but tinted rather than white */
+.tg-tonal{display:inline-flex;background:rgba(20,22,26,.045);border-radius:99px;padding:2px;
+ font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);cursor:pointer}
+.tg-tonal span{padding:3px 9px;border-radius:99px}
+.tg-tonal span.on{background:rgba(255,255,255,.9);color:var(--ink)}
+/* 3 · single: shows the current mode only, with a dotted underline */
+.tg-single{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);
+ border-bottom:1px dotted rgba(20,22,26,.35);padding-bottom:2px;cursor:pointer}
+/* 4 · klein: whisper, but the live value is the action colour */
+.tg-klein{display:inline-flex;align-items:center;gap:9px;font-size:11px;letter-spacing:.18em;
+ text-transform:uppercase;color:rgba(20,22,26,.32);cursor:pointer}
+.tg-klein b{font-weight:400;color:var(--night)}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>Quieter chrome</h1>
+<p class="sub">Four ways to take weight out of the 12/24 control without hiding it, each paired with a header where the app name and the month control stop disagreeing.</p>
+
+<div class="key">
+  <b>What changed in the header.</b> The name and the control were two slightly different greys, which read as a mistake rather than a distinction. Now they share <em>one</em> colour, and the difference in kind is carried by form instead: the name gets a small mark, the control keeps its chevron. The mark is three aspen trunks — one root system, many stems, which is what a pando is.
+</div>
+
+<div class="switch" id="sw">
+  <button data-h="24" class="on">24h</button><button data-h="12">12h</button>
+</div>
+
+<div class="grid" id="grid"></div>
+</div>
+
+<script>
+var STOPS=[[0,'#0d21a5'],[4.5,'#3f57bd'],[6.5,'#8ba2f0'],[8,'#cfd3ee'],[9.5,'#f6e3b4'],
+ [11,'#f7c948'],[17.5,'#f7c948'],[19.5,'#f8dfa0'],[20.5,'#ecdcdd'],[21.5,'#a9b6ea'],[22.5,'#5d74d2'],[24,'#0d21a5']];
+function hx(c){c=c.replace('#','');return [parseInt(c.slice(0,2),16),parseInt(c.slice(2,4),16),parseInt(c.slice(4,6),16)];}
+function mix(a,b,t){var A=hx(a),B=hx(b);return '#'+[0,1,2].map(function(i){var v=Math.round(A[i]+(B[i]-A[i])*t).toString(16);return v.length<2?'0'+v:v;}).join('');}
+function rampAt(m){var h=((m%1440)+1440)%1440/60,col=STOPS[STOPS.length-1][1];
+ for(var i=1;i<STOPS.length;i++){if(h<=STOPS[i][0]){var a=STOPS[i-1],b=STOPS[i];col=mix(a[1],b[1],(h-a[0])/(b[0]-a[0]));break;}}
+ return mix(col,'#ffffff',0.46);}
+function pad(n){return n<10?'0'+n:''+n;}
+var use24=true;
+function parts(m){m=((m%1440)+1440)%1440;var h=Math.floor(m/60),mi=m%60;
+ return use24?{num:pad(h)+':'+pad(mi),ap:''}:{num:(h%12||12)+':'+pad(mi),ap:h<12?'am':'pm'};}
+function tHTML(m){var p=parts(m);return p.num+(p.ap?'<i>'+p.ap+'</i>':'');}
+
+var MOON='<svg width="17" height="17" viewBox="0 0 18 18"><path d="M13.4 11.6A5.6 5.6 0 0 1 6.4 4.6 5.8 5.8 0 1 0 13.4 11.6Z" fill="#0d21a5"/></svg>';
+var SUN='<svg width="17" height="17" viewBox="0 0 18 18"><circle cx="9" cy="9" r="4" fill="#f7c948" stroke="#a97103" stroke-width="1"/><g stroke="#a97103" stroke-width="1.4" stroke-linecap="round"><line x1="9" y1="1.2" x2="9" y2="2.8"/><line x1="9" y1="15.2" x2="9" y2="16.8"/><line x1="1.2" y1="9" x2="2.8" y2="9"/><line x1="15.2" y1="9" x2="16.8" y2="9"/><line x1="3.5" y1="3.5" x2="4.6" y2="4.6"/><line x1="13.4" y1="13.4" x2="14.5" y2="14.5"/><line x1="14.5" y1="3.5" x2="13.4" y2="4.6"/><line x1="4.6" y1="13.4" x2="3.5" y2="14.5"/></g></svg>';
+var CHEV='<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9.5l6 6 6-6"/></svg>';
+/* one root, many stems */
+var MARK='<svg viewBox="0 0 14 14" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><path d="M3 11.5V5M7 11.5V2.5M11 11.5V6.5"/></svg>';
+
+var S=300,c=150,RC=78,RB=106,TI=126,TO=135,RN=144,ARC={r:116,w:10};
+function pt(r,a){return [c+r*Math.sin(a),c-r*Math.cos(a)];}
+function ring(){var o='',N=144,rm=(RC+RB)/2,w=RB-RC;
+ for(var i=0;i<N;i++){var m0=i/N*1440,m1=(i+1.02)/N*1440,p0=pt(rm,m0/1440*2*Math.PI),p1=pt(rm,m1/1440*2*Math.PI);
+ o+='<path d="M '+p0[0].toFixed(2)+' '+p0[1].toFixed(2)+' A '+rm+' '+rm+' 0 0 1 '+p1[0].toFixed(2)+' '+p1[1].toFixed(2)+'" fill="none" stroke="'+rampAt((m0+m1)/2)+'" stroke-width="'+w+'"/>';}
+ return o;}
+function ticks(){var t='',n='';
+ for(var i=0;i<48;i++){var a=i*7.5*Math.PI/180,mj=i%2===0,p1=pt(mj?TI:TI+4,a),p2=pt(TO,a);
+ t+='<line x1="'+p1[0].toFixed(1)+'" y1="'+p1[1].toFixed(1)+'" x2="'+p2[0].toFixed(1)+'" y2="'+p2[1].toFixed(1)+'" stroke="'+(mj?'#8d8792':'#c2bcc6')+'" stroke-width="'+(mj?1.2:.7)+'"/>';}
+ for(var h=0;h<24;h+=6){var p=pt(RN,h*15*Math.PI/180);
+ n+='<text x="'+p[0].toFixed(1)+'" y="'+(p[1]+3.6).toFixed(1)+'" text-anchor="middle" font-family="Helvetica Neue,Helvetica,Arial" font-weight="300" font-size="10.5" fill="#6e6874">'+pad(h)+'</text>';}
+ return t+n;}
+function arc(m){var o='',steps=96;
+ for(var i=0;i<steps;i++){var m0=m*i/steps,m1=m*(i+1)/steps,p0=pt(ARC.r,m0/1440*2*Math.PI),p1=pt(ARC.r,m1/1440*2*Math.PI);
+ o+='<path d="M '+p0[0].toFixed(2)+' '+p0[1].toFixed(2)+' A '+ARC.r+' '+ARC.r+' 0 0 1 '+p1[0].toFixed(2)+' '+p1[1].toFixed(2)+'" fill="none" stroke="'+rampAt((m0+m1)/2)+'" stroke-width="'+ARC.w+'" stroke-linecap="'+((i===0||i===steps-1)?'round':'butt')+'"/>';}
+ return o;}
+
+var MINS=14*60+30;
+var CITIES=[{n:'Madrid',co:'Spain',off:0,home:true},{n:'Aspen',co:'United States',off:-8},{n:'Tokyo',co:'Japan',off:7}];
+
+var V=[
+ {id:'whisper',t:'A — Whisper',
+  d:'No container at all. Two words, the live one in ink and the other in muted grey. <b>The lightest thing that still shows both options.</b>',
+  tog:function(){return '<span class="tg-whisper" data-tg>'+(use24?'<span>12h</span><span class="sep">·</span><b>24h</b>':'<b>12h</b><span class="sep">·</span><span>24h</span>')+'</span>';}},
+ {id:'tonal',t:'B — Tonal track',
+  d:'Keeps a track so it still reads as a switch, but tinted at 4.5% ink instead of a white capsule with a shadow. <b>Half the weight, same affordance.</b>',
+  tog:function(){return '<span class="tg-tonal" data-tg><span'+(use24?'':' class="on"')+'>12h</span><span'+(use24?' class="on"':'')+'>24h</span></span>';}},
+ {id:'single',t:'C — Current only',
+  d:'Shows just the mode you are in, dotted-underlined to say it is tappable. <b>Smallest possible</b> — but it never shows you the alternative exists.',
+  tog:function(){return '<span class="tg-single" data-tg>'+(use24?'24h':'12h')+'</span>';}},
+ {id:'klein',t:'D — Whisper, Klein',
+  d:'Same as A, but the live value is in Klein so it reads as a <em>setting</em> rather than a label. The inactive side drops to 32% ink.',
+  tog:function(){return '<span class="tg-klein" data-tg>'+(use24?'<span>12h</span><b>24h</b>':'<b>12h</b><span>24h</span>')+'</span>';}}
+];
+
+function rows(){
+ return CITIES.map(function(ct){
+  var t=MINS+ct.off*60,h=Math.floor(((t%1440)+1440)%1440/60);
+  return '<li class="r"><div class="nm"><span class="n1">'+ct.n+(ct.home?'<span class="chip">home</span>':'')+'</span>'+
+   '<span class="co">'+ct.co+'</span></div><div style="display:flex;align-items:center;gap:10px">'+
+   '<span class="t">'+tHTML(t)+'</span>'+(h>=21||h<7?MOON:SUN)+'</div></li>';
+ }).join('');
+}
+function draw(){
+ document.getElementById('grid').innerHTML=V.map(function(v){
+  var p=parts(MINS);
+  return '<div class="col"><h3>'+v.t+'</h3><p>'+v.d+'</p>'+
+   '<div class="crop">'+
+    '<div class="hdr"><span class="brand" style="color:var(--muted)">'+MARK+'Pando</span>'+
+      '<span class="ctl" style="color:var(--muted)">now'+CHEV+'</span></div>'+
+    '<div class="dialwrap">'+
+      '<div class="tog">'+v.tog()+'</div>'+
+      '<svg class="dial" viewBox="0 0 300 300" width="300" height="300">'+
+       '<circle cx="150" cy="150" r="106" fill="#fff"/>'+ring()+
+       '<circle cx="150" cy="150" r="78" fill="#fff"/>'+ticks()+arc(MINS)+
+       '<text x="150" y="144" text-anchor="middle" font-family="Helvetica Neue,Helvetica,Arial" font-weight="200" font-size="42" fill="#14161a">'+
+         p.num+(p.ap?'<tspan font-size="20" dx="6" fill="#6e6874">'+p.ap+'</tspan>':'')+'</text>'+
+       '<text x="150" y="166" text-anchor="middle" font-family="Helvetica Neue,Helvetica,Arial" font-weight="300" font-size="10" letter-spacing="2.4" fill="#6e6874">MADRID</text>'+
+      '</svg>'+
+    '</div>'+
+    '<ul class="list">'+rows()+'</ul>'+
+   '</div></div>';
+ }).join('');
+}
+document.addEventListener('click',function(e){
+ if(e.target.closest('[data-tg]')){use24=!use24;syncSwitch();draw();}
+ var b=e.target.closest('#sw button');
+ if(b){use24=b.dataset.h==='24';syncSwitch();draw();}
+});
+function syncSwitch(){[].forEach.call(document.querySelectorAll('#sw button'),function(b){
+ b.className=((b.dataset.h==='24')===use24)?'on':'';});}
+draw();
+</script>
+</body>
+</html>

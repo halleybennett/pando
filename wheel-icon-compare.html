@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pando — icon at real size</title>
+<style>
+  :root{--bg:#f2f0f7;--card:#fff;--ink:#14161a;--muted:#6e6874;--klein:#0d21a5;--line:#dedbd8}
+  *{box-sizing:border-box}
+  body{margin:0;padding:36px 24px 80px;background:var(--bg);color:var(--ink);
+    font:300 17.5px/1.55 "Helvetica Neue",Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1080px;margin:0 auto}
+  h1{font-weight:200;font-size:40px;letter-spacing:-.5px;margin:0 0 8px}
+  .sub{color:var(--muted);max-width:64ch;margin:0 0 4px}
+  h2{font-weight:300;font-size:23px;margin:40px 0 10px}
+  .note{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px 22px;margin:20px 0 0}
+  .note p{margin:0}.note b{font-weight:500}
+  .row{display:flex;gap:44px;align-items:flex-end;flex-wrap:wrap;margin-top:18px;
+    background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px 24px}
+  figure{margin:0;text-align:center}
+  .t{border-radius:22.37%;overflow:hidden;display:block;box-shadow:0 1px 3px rgba(20,22,26,.2)}
+  .t svg{display:block;width:100%;height:100%}
+  figcaption{font-size:11px;color:var(--muted);margin-top:7px;letter-spacing:.4px}
+  .name{font-size:13px;letter-spacing:2px;text-transform:uppercase;color:var(--klein);
+    font-weight:500;width:100%;margin-bottom:2px}
+  /* a real home screen: the icon next to neighbours, at true size, on a wallpaper */
+  .home{border-radius:22px;padding:26px 22px 20px;margin-top:16px;
+    background:linear-gradient(160deg,#2b3a6b,#6d5a86 45%,#c98f79);}
+  .home.lightwall{background:linear-gradient(160deg,#dfe6f6,#f2e6ee 45%,#f8e7cf)}
+  .apps{display:grid;grid-template-columns:repeat(4,60px);gap:26px 30px;justify-content:start}
+  .app{text-align:center}
+  .app .t{width:60px;height:60px}
+  .app span{display:block;font-size:10px;margin-top:5px;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.45)}
+  .home.lightwall .app span{color:#22202a;text-shadow:none}
+  .filler{width:60px;height:60px;border-radius:22.37%;display:block}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>The three, at real size</h1>
+<p class="sub">60px is what an iPhone actually draws on the home screen. Everything above that is
+  the App Store and the settings list; everything at or below is where an icon lives or dies.</p>
+
+<div id="out"></div>
+
+<div class="note" style="margin-top:30px">
+  <p><b>The home-screen rows are the honest test.</b> An icon in isolation always looks fine —
+    the question is whether you can pick it out of a grid at a glance, with neighbours competing
+    and a wallpaper behind it.</p>
+</div>
+
+</div>
+
+<script>
+/* ---------- the ramp ring, as the app paints it ---------- */
+var STOPS=[[0,'#0d21a5'],[4.5,'#3f57bd'],[6.5,'#8ba2f0'],[8,'#cfd3ee'],[9.5,'#f6e3b4'],
+  [11,'#f7c948'],[17.5,'#f7c948'],[19.5,'#f8dfa0'],[20.5,'#ecdcdd'],[21.5,'#a9b6ea'],
+  [22.5,'#5d74d2'],[24,'#0d21a5']];
+function hx(c){c=c.replace('#','');return [0,2,4].map(function(i){return parseInt(c.slice(i,i+2),16);});}
+function h2(v){v=v.toString(16);return v.length<2?'0'+v:v;}
+function mix(a,b,t){var A=hx(a),B=hx(b);return '#'+[0,1,2].map(function(i){
+  return h2(Math.round(A[i]+(B[i]-A[i])*t));}).join('');}
+function rampAt(h){var col=STOPS[STOPS.length-1][1];
+  for(var i=1;i<STOPS.length;i++){if(h<=STOPS[i][0]){var a=STOPS[i-1],b=STOPS[i];
+    col=mix(a[1],b[1],(h-a[0])/(b[0]-a[0]));break;}}
+  return mix(col,'#ffffff',0.46);}
+function ring(cx,cy,r,bw,seg){
+  seg=seg||96;var o='';
+  for(var i=0;i<seg;i++){
+    var h0=i/seg*24,h1=(i+1.04)/seg*24,a0=h0/24*2*Math.PI,a1=h1/24*2*Math.PI;
+    var p0=[cx+r*Math.sin(a0),cy-r*Math.cos(a0)],p1=[cx+r*Math.sin(a1),cy-r*Math.cos(a1)];
+    o+='<path d="M '+p0[0].toFixed(2)+' '+p0[1].toFixed(2)+' A '+r+' '+r+' 0 0 1 '+
+       p1[0].toFixed(2)+' '+p1[1].toFixed(2)+'" fill="none" stroke="'+rampAt((h0+h1)/2)+
+       '" stroke-width="'+bw+'"/>';
+  }
+  return o;
+}
+
+/* ---------- the aspen leaf ---------- */
+var O={w:0.78,y:0.56,t:0.30,n:4,v:1.0,s:2.6,p:0.42};
+function bez(p0,p1,p2,p3,t){var m=1-t;
+  return [m*m*m*p0[0]+3*m*m*t*p1[0]+3*m*t*t*p2[0]+t*t*t*p3[0],
+          m*m*m*p0[1]+3*m*m*t*p1[1]+3*m*t*t*p2[1]+t*t*t*p3[1]];}
+function profile(o){
+  var W=50*o.w,ty=100*o.t,wy=100*o.y,pts=[];
+  var A=[[0,0],[W*0.05,ty],[W*0.66,wy-26],[W,wy]], B=[[W,wy],[W,wy+24],[W*0.52,102],[W*0.07,100]];
+  for(var i=0;i<=60;i++)pts.push(bez(A[0],A[1],A[2],A[3],i/60));
+  for(var j=1;j<=40;j++)pts.push(bez(B[0],B[1],B[2],B[3],j/40));
+  return {W:W,pts:pts,d:'M 0 0 C '+W*0.05+' '+ty+', '+W*0.66+' '+(wy-26)+', '+W+' '+wy+
+    ' C '+W+' '+(wy+24)+', '+W*0.52+' 102, '+W*0.07+' 100 L '+(-W*0.07)+' 100'+
+    ' C '+(-W*0.52)+' 102, '+(-W)+' '+(wy+24)+', '+(-W)+' '+wy+
+    ' C '+(-W)+' '+(wy-26)+', '+(-W*0.66)+' '+ty+', 0 0 Z'};
+}
+function halfW(pr,y){var best=0;
+  for(var i=1;i<pr.pts.length;i++){var a=pr.pts[i-1],b=pr.pts[i];
+    if((a[1]-y)*(b[1]-y)<=0&&a[1]!==b[1]){var f=(y-a[1])/(b[1]-a[1]);
+      best=Math.max(best,a[0]+f*(b[0]-a[0]));}}
+  return best;}
+function vein(x0,y0,x1,y1,cx,cy,w0,N){N=N||30;var L=[],R=[];
+  for(var i=0;i<=N;i++){var t=i/N,mt=1-t;
+    var x=mt*mt*x0+2*mt*t*cx+t*t*x1,y=mt*mt*y0+2*mt*t*cy+t*t*y1;
+    var dx=2*mt*(cx-x0)+2*t*(x1-cx),dy=2*mt*(cy-y0)+2*t*(y1-cy);
+    var m=Math.hypot(dx,dy)||1,nx=-dy/m,ny=dx/m;
+    var w=w0*Math.pow(1-t,0.9)*Math.pow(Math.min(1,t*8),0.5);
+    L.push([x+nx*w,y+ny*w]);R.push([x-nx*w,y-ny*w]);}
+  R.reverse();
+  return 'M '+L.concat(R).map(function(q){return q[0].toFixed(2)+' '+q[1].toFixed(2);}).join(' L ')+' Z';}
+function leaf(o,mode,fg,bg){
+  var pr=profile(o),out=[],n=o.n,w0=2.1*o.v,baseY=97;
+  out.push(vein(0,baseY,0,5,0,50,w0));
+  for(var i=1;i<=n;i++){var f=i/(n+0.5),yE=100-(0.26+0.58*f)*100,xE=halfW(pr,yE)*0.84;
+    var cx=xE*0.34,cy=(baseY+yE)/2+10;
+    [1,-1].forEach(function(s){out.push(vein(0,baseY,s*xE,yE,s*cx,cy,w0*(0.92-0.10*i)));});}
+  var vs=out.join(' '), st=vein(0,98,0,100+100*o.p,0.5,100+50*o.p,1.6*o.v,20);
+  if(mode==='line') return '<path d="'+pr.d+'" fill="none" stroke="'+fg+'" stroke-width="'+o.s+
+    '" stroke-linejoin="round"/><path d="'+vs+'" fill="'+fg+'"/><path d="'+st+'" fill="'+fg+'"/>';
+  return '<path d="'+pr.d+'" fill="'+fg+'"/><path d="'+vs+'" fill="'+bg+'"/><path d="'+st+'" fill="'+fg+'"/>';
+}
+function leafExtent(o){var pr=profile(o);return {x:-pr.W-o.s,y:-o.s,w:2*(pr.W+o.s),h:100+100*o.p+o.s};}
+
+/* ---------- the original three-stalk mark, with the stalk/soil gap fixed ---------- */
+var BLADE='M8 1.4 C10.9 4.4 13.1 6.9 13.1 9.3 C13.1 11.9 10.9 13.6 8 13.6 C5.1 13.6 2.9 11.9 2.9 9.3 C2.9 6.9 5.1 4.4 8 1.4 Z';
+var ST=[[4.2,5.4,8.0],[10,6.6,2.6],[15.8,5.0,9.6]], BASE=17.2, SW=0.95, SOILW=1.05;
+function stalks(fg){
+  var gap=SW/2+SOILW/2+0.35, end=BASE-gap, o='';
+  ST.forEach(function(s){o+='<path d="M'+s[0]+' '+(s[2]+s[1]).toFixed(2)+' L'+s[0]+' '+end.toFixed(2)+
+    '" stroke="'+fg+'" stroke-width="'+SW+'" stroke-linecap="round" fill="none"/>';});
+  o+='<path d="M2.2 '+BASE+' L7 '+BASE+' M9 '+BASE+' L11.6 '+BASE+' M13.6 '+BASE+' L18 '+BASE+
+     '" stroke="'+fg+'" stroke-width="'+SOILW+'" stroke-linecap="round"/>';
+  ST.forEach(function(s){var k=s[1]/12.2;
+    o+='<g transform="translate('+(s[0]-8*k).toFixed(3)+','+(s[2]-1.4*k).toFixed(3)+') scale('+k.toFixed(4)+')">'+
+       '<path d="'+BLADE+'" fill="'+fg+'"/></g>';});
+  return o;
+}
+var STALK_EXT={x:2.2-SOILW/2, y:2.6, w:(18+SOILW/2)-(2.2-SOILW/2), h:(BASE+SOILW/2)-2.6};
+
+/* ---------- tile ---------- */
+function tile(kind, px){
+  var inner='', ext, body;
+  if(kind==='stalks'){ ext=STALK_EXT; body=stalks('#14161a'); }
+  else { ext=leafExtent(O); body=leaf(O, kind==='line'?'line':'solid', '#14161a', '#ffffff'); }
+  var k=px*0.50/Math.max(ext.w, ext.h*0.94);
+  var tx=(px-ext.w*k)/2-ext.x*k, ty=(px-ext.h*k)/2-ext.y*k;
+  return '<svg viewBox="0 0 '+px+' '+px+'" width="'+px+'" height="'+px+'">'+
+    '<rect width="'+px+'" height="'+px+'" fill="#ffffff"/>'+
+    ring(px/2,px/2,px*0.335,px*0.105)+
+    '<circle cx="'+px/2+'" cy="'+px/2+'" r="'+(px*0.283)+'" fill="#ffffff"/>'+
+    '<g transform="translate('+tx.toFixed(2)+','+ty.toFixed(2)+') scale('+k.toFixed(4)+')">'+body+'</g></svg>';
+}
+
+var CANDS=[
+  ['line',   'A — wheel + fine-line leaf'],
+  ['solid',  'B — wheel + solid leaf'],
+  ['stalks', 'C — wheel + the original three-stalk mark']
+];
+var SIZES=[[60,'60 · home screen'],[76,'76 · iPad'],[120,'120 · @2x reference'],[180,'180 · App Store']];
+var FILL=['#c9d0e8','#e6d5c4','#cfc7dd'];
+
+var html='';
+CANDS.forEach(function(c,ci){
+  html+='<h2>'+c[1]+'</h2><div class="row">'+SIZES.map(function(s){
+    return '<figure><span class="t" style="width:'+s[0]+'px;height:'+s[0]+'px">'+tile(c[0],s[0]*3)+
+      '</span><figcaption>'+s[1]+'</figcaption></figure>';
+  }).join('')+'</div>';
+  ['','lightwall'].forEach(function(wall){
+    html+='<div class="home '+wall+'"><div class="apps">'+
+      '<div class="app"><span class="filler" style="background:'+FILL[0]+'"></span><span>Weather</span></div>'+
+      '<div class="app"><span class="t">'+tile(c[0],180)+'</span><span>Pando</span></div>'+
+      '<div class="app"><span class="filler" style="background:'+FILL[1]+'"></span><span>Notes</span></div>'+
+      '<div class="app"><span class="filler" style="background:'+FILL[2]+'"></span><span>Photos</span></div>'+
+      '</div></div>';
+  });
+});
+document.getElementById('out').innerHTML=html;
+</script>
+</body>
+</html>

@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pando — header sizes</title>
+<style>
+:root{--font:"Helvetica Neue",Helvetica,Arial,sans-serif;
+ --paper:#fbe9f4;--card:#fff;--ink:#14161a;--muted:#6e6874;--line:#e2d2dc;
+ --night:#0d21a5;--dawn:#8ba2f0;--noon:#f7c948;--amber:#a97103;}
+*{box-sizing:border-box}html,body{margin:0;padding:0}
+body{font-family:var(--font);font-weight:300;background:#f2eef1;color:var(--ink);
+ -webkit-font-smoothing:antialiased;padding:44px 20px 90px;font-size:18px;line-height:1.6}
+.wrap{max-width:1320px;margin:0 auto}
+h1{font-weight:200;font-size:54px;letter-spacing:-.02em;margin:0 0 10px}
+.sub{color:var(--muted);font-size:19px;max-width:64ch;margin:0 0 20px}
+.key{background:#fff;border:1px solid var(--line);border-radius:16px;padding:20px 24px;
+ font-size:17px;color:var(--muted);max-width:80ch;margin-bottom:30px}
+.key b{color:var(--ink);font-weight:400}
+.row3{display:flex;gap:34px;flex-wrap:wrap}
+.col{flex:0 0 auto;width:375px}
+.col h3{font-weight:400;font-size:20px;margin:0 0 3px}
+.col .verdict{font-size:14.5px;margin:0 0 14px;font-variant-numeric:tabular-nums}
+.col .note{font-size:15.5px;color:var(--muted);margin:0 0 8px;min-height:52px}
+.col .note em{font-style:italic}
+.ok{color:var(--night)} .bad{color:#b3115c}
+
+/* honest phone: 812 tall with real safe areas drawn in */
+.phone{width:375px;height:812px;background:var(--paper);border-radius:44px;
+ border:1px solid var(--line);box-shadow:0 22px 60px rgba(20,20,26,.16);
+ overflow:hidden;position:relative;display:flex;flex-direction:column}
+.safe{flex:none;background:repeating-linear-gradient(45deg,#efe2ea,#efe2ea 6px,#f6eaf1 6px,#f6eaf1 12px);
+ font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:#b09aa6;
+ display:flex;align-items:center;justify-content:center}
+.safe.top{height:47px}.safe.bot{height:34px}
+.body{flex:1;display:flex;flex-direction:column;overflow:hidden;position:relative}
+
+/* header variants */
+.hdr{flex:none;padding:10px 20px 8px}
+.hdr h2{font-weight:200;font-size:40px;letter-spacing:-.02em;margin:0;line-height:1.1}
+.hdr p{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:2px 0 0}
+.hdr.mini{padding:3px 20px 4px;display:flex;justify-content:space-between;align-items:baseline}
+.hdr.mini h2{font-size:12px;letter-spacing:.2em;text-transform:uppercase;font-weight:300;line-height:1.5}
+.hdr.mini p{margin:0;line-height:1.5}
+.gl{display:inline-flex;align-items:center;gap:7px;color:var(--muted);
+  /* the slot is tappable - it opens the month picker - so it carries a 44pt hit area
+     even though the mark itself is 17px */
+  padding:0 2px;min-height:20px}
+.gl.val{font-size:12px;letter-spacing:.2em;text-transform:uppercase}
+.gl svg{display:block}
+.gl.tap{cursor:pointer}
+/* 12h/24h pill and month control, at header scale */
+.pill{display:inline-flex;background:#efe4ec;border-radius:99px;padding:2px;font-size:10.5px;
+  letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.pill span{padding:3px 8px;border-radius:99px}
+.pill span.on{background:#fff;color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.14)}
+.hdr.mini{gap:12px}
+/* the under-dial control row - the layout the original brief described */
+.ctrls{flex:none;display:flex;justify-content:center;align-items:center;gap:14px;padding:6px 20px 12px}
+.ctrls .pill{font-size:12px}.ctrls .pill span{padding:6px 14px}
+.dialwrap{position:relative;width:300px;height:300px}
+/* sits inside the white face, below the city label. The circle is r=78, so at
+   36px below centre there is 138px of width to play with - a 76px pill is safe. */
+.inpill{position:absolute;left:0;right:0;top:180px;display:flex;justify-content:center;z-index:2}
+.inpill .pill{font-size:12px;letter-spacing:.2em}
+.inpill .pill span{padding:4px 11px}
+.ctrls .month{display:inline-flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--line);
+  border-radius:12px;padding:7px 12px;font-size:13px;color:var(--ink)}
+.tight .r{padding:7px 18px}
+button.month-btn{border:0;background:none;font-family:var(--font);font-weight:300;cursor:pointer;
+  color:var(--muted);display:inline-flex;align-items:center;gap:7px;padding:0}
+button.month-btn.set{color:var(--night)}
+.picker{position:absolute;top:26px;right:14px;z-index:5;background:#fff;border:1px solid var(--line);
+  border-radius:14px;box-shadow:0 14px 40px rgba(20,20,26,.18);padding:6px;
+  max-height:300px;overflow-y:auto;width:150px}
+.picker[hidden]{display:none}
+.picker button{display:block;width:100%;text-align:left;border:0;background:none;cursor:pointer;
+  font-family:var(--font);font-weight:300;font-size:14px;color:var(--ink);padding:8px 10px;border-radius:9px}
+.picker button:hover{background:var(--paper)}
+.picker button.on{background:var(--dawn);color:var(--ink)}
+.hint{position:absolute;left:0;right:0;bottom:0;padding:7px;text-align:center;font-size:11px;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--muted);background:rgba(255,255,255,.7)}
+.hdr.none{display:none}
+
+.dialbox{flex:none;display:flex;justify-content:center}
+.list{list-style:none;margin:0 20px;padding:0;background:var(--card);
+ border:1px solid var(--line);border-radius:20px;overflow:hidden;flex:none}
+.r{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 18px;
+ border-bottom:1px solid var(--line)}
+.r:last-child{border-bottom:none}
+.nm{flex:1;min-width:0;display:flex;flex-direction:column}
+.n1{display:flex;align-items:center;gap:9px;height:28px;font-size:17px}
+.chip{font-size:11px;letter-spacing:.13em;text-transform:uppercase;background:var(--dawn);
+ color:var(--ink);border-radius:99px;padding:3px 9px}
+.co{height:13px;line-height:13px;margin-top:3px;font-size:11px;letter-spacing:.1em;
+ text-transform:uppercase;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rt{display:flex;align-items:center;gap:10px;flex:none}
+.stk{display:flex;flex-direction:column;align-items:flex-end}
+/* block with a fixed line box - the number sits where it always did, and the
+   suffix rides its baseline as an ordinary inline. flex+baseline pushed the whole
+   thing down and stole the gap above "next day". */
+.t{height:28px;line-height:28px;display:block;font-weight:200;font-size:25px;
+  font-variant-numeric:tabular-nums;white-space:nowrap}
+.t i{font-style:normal;font-size:17px;margin-left:5px;color:var(--muted);vertical-align:baseline}
+.sh{height:13px;line-height:13px;margin-top:3px;font-size:10.5px;letter-spacing:.12em;
+ text-transform:uppercase;color:var(--muted)}
+.cut{position:absolute;left:0;right:0;bottom:0;padding:8px;text-align:center;font-size:11.5px;
+ letter-spacing:.1em;text-transform:uppercase;color:#fff;background:#b3115c}
+.cut[hidden]{display:none}
+svg.dial{touch-action:none;cursor:grab;user-select:none;display:block}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>Where do the last two controls live?</h1>
+<p class="sub">The 12/24 toggle and the month selector are the only features left. They have to go somewhere, and there are 13 spare points on the screen. All three dials are live.</p>
+<div class="key">
+  <b>The problem in one line.</b> A control row under the dial — the layout the original brief described — costs about <b>40pt</b>, and only <b>13pt</b> are free. Something has to move, shrink, or disappear. These are the three honest ways out.
+</div>
+
+<div class="row3" id="row3"></div>
+</div>
+
+<script>
+var STOPS=[[0,'#0d21a5'],[4.5,'#3f57bd'],[6.5,'#8ba2f0'],[8,'#cfd3ee'],[9.5,'#f6e3b4'],
+ [11,'#f7c948'],[17.5,'#f7c948'],[19.5,'#f8dfa0'],[20.5,'#ecdcdd'],[21.5,'#a9b6ea'],[22.5,'#5d74d2'],[24,'#0d21a5']];
+function hx(c){c=c.replace('#','');return [parseInt(c.slice(0,2),16),parseInt(c.slice(2,4),16),parseInt(c.slice(4,6),16)];}
+function mix(a,b,t){var A=hx(a),B=hx(b);return '#'+[0,1,2].map(function(i){var v=Math.round(A[i]+(B[i]-A[i])*t).toString(16);return v.length<2?'0'+v:v;}).join('');}
+function rampAt(m){var h=((m%1440)+1440)%1440/60,col=STOPS[STOPS.length-1][1];
+ for(var i=1;i<STOPS.length;i++){if(h<=STOPS[i][0]){var a=STOPS[i-1],b=STOPS[i];col=mix(a[1],b[1],(h-a[0])/(b[0]-a[0]));break;}}
+ return mix(col,'#ffffff',0.46);}
+function pad(n){return n<10?'0'+n:''+n;}
+/* am/pm is a suffix, not part of the number - it gets its own size and a real gap,
+   so "2:30 pm" reads as a value with a unit rather than one crowded string */
+function timeParts(m){
+ m=((m%1440)+1440)%1440;var h=Math.floor(m/60),mi=m%60;
+ if(use24) return {num:pad(h)+':'+pad(mi),ap:''};
+ return {num:(h%12||12)+':'+pad(mi), ap:h<12?'am':'pm'};
+}
+function fmt(m){var p=timeParts(m);return p.num+(p.ap?' '+p.ap:'');}
+function fmtHTML(m){var p=timeParts(m);return p.num+(p.ap?'<i>'+p.ap+'</i>':'');}
+var MOON='<svg width="18" height="18" viewBox="0 0 18 18"><path d="M13.4 11.6A5.6 5.6 0 0 1 6.4 4.6 5.8 5.8 0 1 0 13.4 11.6Z" fill="#0d21a5"/></svg>';
+var SUN='<svg width="18" height="18" viewBox="0 0 18 18"><circle cx="9" cy="9" r="4" fill="#f7c948" stroke="#a97103" stroke-width="1"/><g stroke="#a97103" stroke-width="1.4" stroke-linecap="round"><line x1="9" y1="1.2" x2="9" y2="2.8"/><line x1="9" y1="15.2" x2="9" y2="16.8"/><line x1="1.2" y1="9" x2="2.8" y2="9"/><line x1="15.2" y1="9" x2="16.8" y2="9"/><line x1="3.5" y1="3.5" x2="4.6" y2="4.6"/><line x1="13.4" y1="13.4" x2="14.5" y2="14.5"/><line x1="14.5" y1="3.5" x2="13.4" y2="4.6"/><line x1="4.6" y1="13.4" x2="3.5" y2="14.5"/></g></svg>';
+
+
+/* 24x24 grid, 1.25px stroke, currentColor - the icon rules from the design kit */
+var G = {
+  cal:'<svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round"><rect x="3.5" y="5.5" width="17" height="15" rx="3"/><path d="M3.5 10h17M8.5 3.5v4M15.5 3.5v4"/></svg>',
+  ring:'<svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.25"><circle cx="12" cy="12" r="8.5"/><path d="M12 3.5v2" stroke-linecap="round"/><circle cx="17.4" cy="15.6" r="2.1" fill="currentColor" stroke="none"/></svg>',
+  chev:'<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9.5l6 6 6-6"/></svg>'
+};
+var S=300,c=150,R_CENTER=78,R_BAND=106,R_TI=126,R_TO=135,R_NUM=144,ARC={r:116,w:10};
+function pt(r,a){return [c+r*Math.sin(a),c-r*Math.cos(a)];}
+function ring(){var o='',N=144,rm=(R_CENTER+R_BAND)/2,w=R_BAND-R_CENTER;
+ for(var i=0;i<N;i++){var m0=i/N*1440,m1=(i+1.02)/N*1440,p0=pt(rm,m0/1440*2*Math.PI),p1=pt(rm,m1/1440*2*Math.PI);
+ o+='<path d="M '+p0[0].toFixed(2)+' '+p0[1].toFixed(2)+' A '+rm+' '+rm+' 0 0 1 '+p1[0].toFixed(2)+' '+p1[1].toFixed(2)+'" fill="none" stroke="'+rampAt((m0+m1)/2)+'" stroke-width="'+w+'"/>';}
+ return o;}
+function ticks(){var t='',n='';
+ for(var i=0;i<48;i++){var a=i*7.5*Math.PI/180,mj=i%2===0,p1=pt(mj?R_TI:R_TI+4,a),p2=pt(R_TO,a);
+ t+='<line x1="'+p1[0].toFixed(1)+'" y1="'+p1[1].toFixed(1)+'" x2="'+p2[0].toFixed(1)+'" y2="'+p2[1].toFixed(1)+'" stroke="'+(mj?'#8d8792':'#c2bcc6')+'" stroke-width="'+(mj?1.2:.7)+'"/>';}
+ for(var h=0;h<24;h+=6){var p=pt(R_NUM,h*15*Math.PI/180);
+ n+='<text x="'+p[0].toFixed(1)+'" y="'+(p[1]+3.6).toFixed(1)+'" text-anchor="middle" font-family="Helvetica Neue,Helvetica,Arial" font-weight="300" font-size="10.5" fill="#6e6874">'+pad(h)+'</text>';}
+ return t+n;}
+
+/* real IANA zones, so the month picker actually demonstrates daylight saving
+   rather than faking it with fixed offsets */
+var CITIES=[
+ {n:'Madrid',co:'Spain',tz:'Europe/Madrid',home:true},
+ {n:'Aspen',co:'United States',tz:'America/Denver'},
+ {n:'Tokyo',co:'Japan',tz:'Asia/Tokyo'},
+ {n:'Auckland',co:'New Zealand',tz:'Pacific/Auckland'},
+ {n:'Honolulu',co:'United States',tz:'Pacific/Honolulu'},
+ {n:'Lagos',co:'Nigeria',tz:'Africa/Lagos'}];
+var MONTHS=['January','February','March','April','May','June',
+            'July','August','September','October','November','December'];
+var MON3=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+var selMonth=null;                     // null = now
+var YEAR=new Date().getFullYear();
+
+var _fmtCache={};
+function zf(tz){
+ if(!_fmtCache[tz]) _fmtCache[tz]=new Intl.DateTimeFormat('en-GB',{timeZone:tz,hour12:false,
+   year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'});
+ return _fmtCache[tz];
+}
+function wallParts(date,tz){
+ var o={};zf(tz).formatToParts(date).forEach(function(p){if(p.type!=='literal')o[p.type]=p.value;});
+ if(o.hour==='24')o.hour='00';
+ return {y:+o.year,mo:+o.month,d:+o.day,h:+o.hour,mi:+o.minute};
+}
+function offsetMinutes(date,tz){
+ var p=wallParts(date,tz);
+ var asUTC=Date.UTC(p.y,p.mo-1,p.d,p.h,p.mi);
+ return Math.round((asUTC-Math.floor(date.getTime()/60000)*60000)/60000);
+}
+/* wall clock in a zone -> the UTC instant. Two passes, because the offset you need
+   depends on the instant you are trying to find. */
+function zonedToUtc(y,mo,d,h,mi,tz){
+ var guess=Date.UTC(y,mo,d,h,mi);
+ var o1=offsetMinutes(new Date(guess),tz);
+ var t=guess-o1*60000;
+ var o2=offsetMinutes(new Date(t),tz);
+ return o2===o1?t:guess-o2*60000;
+}
+function homeTz(){return CITIES[0].tz;}
+function baseYMD(){
+ if(selMonth===null){var p=wallParts(new Date(),homeTz());return [p.y,p.mo-1,p.d];}
+ return [YEAR,selMonth,1];              // the 1st, as decided
+}
+var mins=14*60+30, use24=true;
+
+var VARIANTS=[
+ {id:'hdr',cls:'mini',title:'A — both controls in the header',tight:false,ctrls:false,
+  note:'Costs no height at all. But the 12/24 toggle ends up nowhere near the times it governs, and three things share one 25pt line.',
+  hdr:function(){return '<h2>Pando</h2><span class="pill"><span>12</span><span class="on">24</span></span>'+
+    '<button class="gl val month-btn" type="button">'+monthLabel()+G.chev+'</button>';}},
+ {id:'under',cls:'mini',title:'B — control row under the dial',tight:true,ctrls:true,
+  note:'What the original brief described: toggle below the clock, month under it. Only fits if rows drop to 60pt.',
+  hdr:function(){return '<h2>Pando</h2>';}},
+ {id:'split',cls:'mini',title:'C — split, invisible toggle',tight:false,ctrls:false,
+  note:'Tap the dial readout to switch 12/24 — no chrome at all. Month lives in the header slot. <b>Tap the time to try it.</b>',
+  hdr:function(){return '<h2>Pando</h2><button class="gl val month-btn" type="button">'+monthLabel()+G.chev+'</button>';}},
+ {id:'inside',cls:'mini',title:'D — toggle inside the dial',tight:false,ctrls:false,inpill:true,
+  note:'The control sits on the face it governs, inside the white circle. Costs no layout height at all — the question is whether it crowds the readout.',
+  hdr:function(){return '<h2>Pando</h2><button class="gl val month-btn" type="button">'+monthLabel()+G.chev+'</button>';}}
+];
+function monthLabel(){return selMonth===null?'now':'1 '+MON3[selMonth];}
+
+document.getElementById('row3').innerHTML=VARIANTS.map(function(v){
+ return '<div class="col"><h3>'+v.title+'</h3><p class="note">'+v.note+'</p><p class="verdict" id="v-'+v.id+'">—</p>'+
+  '<div class="phone"><div class="safe top">safe area</div><div class="body" id="body-'+v.id+'">'+
+   '<div class="hdr '+v.cls+'">'+(typeof v.hdr==="function"?v.hdr():v.hdr)+'</div>'+
+   '<div class="dialbox"><div class="dialwrap">'+
+   (v.inpill?'<div class="inpill"><span class="pill" data-inpill="1"><span>12h</span><span class="on">24h</span></span></div>':'')+
+   '<svg class="dial" data-v="'+v.id+'" viewBox="0 0 300 300" width="300" height="300">'+
+     '<circle cx="150" cy="150" r="106" fill="#fff"/>'+ring()+
+     '<circle cx="150" cy="150" r="78" fill="#fff"/>'+ticks()+'<g class="arc"></g>'+
+     '<text class="big" x="150" y="'+(v.inpill?144:154)+'" text-anchor="middle" font-family="Helvetica Neue,Helvetica,Arial" font-weight="200" font-size="42" fill="#14161a"></text>'+
+     '<text x="150" y="'+(v.inpill?166:176)+'" text-anchor="middle" font-family="Helvetica Neue,Helvetica,Arial" font-weight="300" font-size="10" letter-spacing="2.4" fill="#6e6874">MADRID</text>'+
+   '</svg></div></div>'+
+   (v.ctrls?'<div class="ctrls"><span class="pill"><span>12h</span><span class="on">24h</span></span>'+
+     '<span class="month">Now'+G.chev+'</span></div>':'')+
+   '<ul class="list'+(v.tight?' tight':'')+'"></ul>'+
+   '<div class="picker" hidden><button type="button" data-m="now">Now</button>'+
+     MONTHS.map(function(m,i){return '<button type="button" data-m="'+i+'">1 '+m+'</button>';}).join('')+
+   '</div>'+
+   '<div class="cut" hidden>cut off — needs scrolling</div>'+
+  '</div><div class="safe bot">safe area</div></div></div>';
+}).join('');
+
+function drawArc(g,m){
+ if(m<2){g.innerHTML='';return;}
+ var o='',steps=Math.max(2,Math.round(m/1440*96));
+ for(var i=0;i<steps;i++){var m0=m*i/steps,m1=m*(i+1)/steps,p0=pt(ARC.r,m0/1440*2*Math.PI),p1=pt(ARC.r,m1/1440*2*Math.PI);
+  o+='<path d="M '+p0[0].toFixed(2)+' '+p0[1].toFixed(2)+' A '+ARC.r+' '+ARC.r+' 0 0 1 '+p1[0].toFixed(2)+' '+p1[1].toFixed(2)+'" fill="none" stroke="'+rampAt((m0+m1)/2)+'" stroke-width="'+ARC.w+'" stroke-linecap="'+((i===0||i===steps-1)?'round':'butt')+'"/>';}
+ g.innerHTML=o;}
+
+function rowsHTML(){
+ var b=baseYMD();
+ var instant=new Date(zonedToUtc(b[0],b[1],b[2],Math.floor(mins/60),mins%60,homeTz()));
+ var hp=wallParts(instant,homeTz());
+ return CITIES.map(function(ct){
+  var p=wallParts(instant,ct.tz);
+  var shift=Math.round((Date.UTC(p.y,p.mo-1,p.d)-Date.UTC(hp.y,hp.mo-1,hp.d))/86400000);
+  var night=(p.h>=21||p.h<7);
+  return '<li class="r"><div class="nm"><span class="n1">'+ct.n+(ct.home?'<span class="chip">home</span>':'')+'</span>'+
+   '<span class="co">'+ct.co+'</span></div>'+
+   '<div class="rt"><div class="stk"><span class="t">'+fmtHTML(p.h*60+p.mi)+'</span>'+
+   '<span class="sh">'+(shift>0?'next day':shift<0?'prev day':'')+'</span></div>'+(night?MOON:SUN)+'</div></li>';
+ }).join('');}
+
+function syncPills(){
+ document.querySelectorAll('.pill').forEach(function(p){
+  [].forEach.call(p.children,function(ch,i){ch.className=((i===1)===use24)?'on':'';});
+ });
+}
+function renderHeaders(){
+ VARIANTS.forEach(function(v){
+  var body=document.getElementById('body-'+v.id);
+  var hdr=body.querySelector('.hdr');
+  if(typeof v.hdr==='function') hdr.innerHTML=v.hdr();
+  var btn=hdr.querySelector('.month-btn');
+  if(btn) btn.classList.toggle('set',selMonth!==null);
+  body.querySelectorAll('.picker button').forEach(function(b){
+   b.classList.toggle('on', (b.dataset.m==='now') === (selMonth===null) &&
+     (b.dataset.m==='now' || +b.dataset.m===selMonth));
+  });
+ });
+}
+function render(){
+ syncPills();
+ renderHeaders();
+ document.querySelectorAll('.phone').forEach(function(ph){
+  ph.querySelector('.list').innerHTML=rowsHTML();
+  drawArc(ph.querySelector('.arc'),mins);
+  var p=timeParts(mins);
+  ph.querySelector('.big').innerHTML = p.ap
+    ? p.num+'<tspan font-size="20" dx="6" fill="#6e6874">'+p.ap+'</tspan>'
+    : p.num;
+ });
+ requestAnimationFrame(measure);
+}
+function measure(){
+ VARIANTS.forEach(function(v){
+  var body=document.getElementById('body-'+v.id);
+  var hdr=body.querySelector('.hdr'), list=body.querySelector('.list');
+  var hH=v.cls==='none'?0:Math.round(hdr.getBoundingClientRect().height);
+  var lH=Math.round(list.getBoundingClientRect().height);
+  var ct=body.querySelector('.ctrls');
+  var cH=ct?Math.round(ct.getBoundingClientRect().height):0;
+  var need=hH+300+cH+lH, have=Math.round(body.getBoundingClientRect().height);
+  var over=need>have;
+  body.querySelector('.cut').hidden=!over;
+  document.getElementById('v-'+v.id).innerHTML= over
+   ? '<span class="bad">header '+hH+' + dial 300'+(cH?' + controls '+cH:'')+' + list '+lH+' = '+need+'pt into '+have+'pt · over by '+(need-have)+'</span>'
+   : '<span class="ok">header '+hH+' + dial 300'+(cH?' + controls '+cH:'')+' + list '+lH+' = '+need+'pt into '+have+'pt · '+(have-need)+'pt spare</span>';
+ });
+}
+
+document.querySelectorAll('svg.dial').forEach(function(svg){
+ var drag=null;
+ function ang(e){var r=svg.getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height/2;
+  var a=Math.atan2(e.clientX-cx,-(e.clientY-cy));return a<0?a+2*Math.PI:a;}
+ svg.addEventListener('pointerdown',function(e){
+  try{svg.setPointerCapture(e.pointerId);}catch(_){}
+  // pointerdown calls preventDefault (to stop the drag selecting text), and that
+  // kills the browser's compatibility click event - so a tap has to be detected
+  // here, from the pointer events themselves, rather than with a click listener
+  drag={last:ang(e),x:e.clientX,y:e.clientY,moved:false,target:e.target};
+  e.preventDefault();
+ });
+ svg.addEventListener('pointermove',function(e){
+  if(!drag)return;
+  if(Math.abs(e.clientX-drag.x)>4||Math.abs(e.clientY-drag.y)>4) drag.moved=true;
+  var a=ang(e),d=a-drag.last;
+  if(d>Math.PI)d-=2*Math.PI;if(d<-Math.PI)d+=2*Math.PI;
+  mins=Math.round((mins+d/(2*Math.PI)*1440)/5)*5;drag.last=a;render();
+ });
+ ['pointerup','pointercancel','pointerleave'].forEach(function(ev){
+  svg.addEventListener(ev,function(){
+   if(!drag)return;
+   // a tap on the readout, on variant C, switches 12h/24h
+   var t=drag.target;
+   var onReadout = t && t.getAttribute && (t.getAttribute('class')||'').indexOf('big')>=0;
+   if(ev==='pointerup' && !drag.moved && svg.dataset.v==='split' && onReadout){
+    use24=!use24; render();
+   }
+   drag=null;
+  });
+ });
+});
+
+// variant C: the readout is the 12/24 control (handled in the pointer block above)
+document.querySelectorAll('svg[data-v=split] .big').forEach(function(t){ t.style.cursor='pointer'; });
+document.querySelectorAll('.pill').forEach(function(p){
+ p.addEventListener('click',function(e){
+  var idx=[].indexOf.call(p.children,e.target);
+  use24 = idx===-1 ? !use24 : idx===1;   // clicked a side, or the pill body
+  render();
+ });
+});
+// month picker
+document.addEventListener('click',function(e){
+ var btn=e.target.closest('.month-btn');
+ if(btn){
+  var body=btn.closest('.body'), pk=body.querySelector('.picker');
+  var wasOpen=!pk.hidden;
+  document.querySelectorAll('.picker').forEach(function(p){p.hidden=true;});
+  pk.hidden=wasOpen;
+  return;
+ }
+ var opt=e.target.closest('.picker button');
+ if(opt){
+  selMonth = opt.dataset.m==='now' ? null : +opt.dataset.m;
+  document.querySelectorAll('.picker').forEach(function(p){p.hidden=true;});
+  render();
+  return;
+ }
+ document.querySelectorAll('.picker').forEach(function(p){p.hidden=true;});
+});
+render();
+</script>
+</body>
+</html>

@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pando — final pass</title>
+<style>
+  :root{--bg:#f4f1ea;--card:#fff;--ink:#14161a;--muted:#6e6874;--klein:#0d21a5;--line:#e2ded4}
+  *{box-sizing:border-box}
+  body{margin:0;padding:38px 26px 100px;background:var(--bg);color:var(--ink);
+    font:300 17.5px/1.55 "Helvetica Neue",Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1320px;margin:0 auto}
+  h1{font-weight:200;font-size:42px;letter-spacing:-.5px;margin:0 0 8px}
+  .sub{color:var(--muted);max-width:66ch;margin:0 0 4px}
+  h2{font-weight:300;font-size:25px;margin:48px 0 4px;letter-spacing:-.2px}
+  .note{background:var(--card);border-radius:16px;padding:20px 24px;margin:22px 0 0;
+    border:1px solid var(--line)}
+  .note p{margin:0 0 11px} .note p:last-child{margin:0} .note b{font-weight:500}
+  code{font:500 15px/1 ui-monospace,Menlo,monospace;background:#efece4;padding:2px 6px;border-radius:5px}
+  .ask{border-color:var(--klein);border-width:2px}
+
+  .bar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;position:sticky;top:0;z-index:20;
+    background:var(--card);border:1px solid var(--line);border-radius:999px;
+    padding:10px 16px;margin:22px 0 0;box-shadow:0 4px 18px rgba(20,22,26,.06)}
+  .bar span.lbl{font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--muted)}
+  .bar input{width:180px;accent-color:var(--klein)}
+  .bar output{font-variant-numeric:tabular-nums;color:var(--klein);min-width:36px;display:inline-block}
+
+  .grid{display:grid;gap:22px;margin-top:22px;grid-template-columns:repeat(auto-fit,minmax(296px,1fr))}
+  .cand{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:18px 18px 20px}
+  .cand.sel{outline:2.5px solid var(--klein);outline-offset:-2.5px}
+  .tag{font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--klein);font-weight:500}
+  .cand h3{font-weight:400;font-size:20px;margin:3px 0 6px}
+  .cand p{margin:0 0 14px;font-size:14.5px;color:var(--muted);line-height:1.5}
+  .pair{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .screen{position:relative;width:100%;aspect-ratio:390/700;border-radius:14px;overflow:hidden;
+    border:1px solid var(--line);cursor:pointer}
+  .screen iframe{position:absolute;top:0;left:0;width:390px;height:700px;border:0;transform-origin:top left}
+  .cap{font-size:11.5px;letter-spacing:1.4px;text-transform:uppercase;color:var(--muted);
+    margin:7px 0 2px;text-align:center}
+  table{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:8px}
+  td{padding:3px 0;border-top:1px solid var(--line);color:var(--muted)}
+  td i{font-style:normal;opacity:.65}
+  td:last-child{text-align:right;font-variant-numeric:tabular-nums;color:var(--ink)}
+  .fail{color:#b3261e;font-weight:500} .pass{color:var(--klein)}
+  .chips{display:flex;gap:5px;margin:10px 0 0}
+  .chips i{width:100%;height:14px;border-radius:4px;border:1px solid rgba(20,22,26,.12)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>Final pass</h1>
+<p class="sub">Sunrise is out; this is Sky under the two wheel treatments. Every panel is the
+  <b>real app</b> in a frame — the dial is drawn by <code>app.js</code> at that moment, in those
+  colours.</p>
+
+<div class="note">
+  <p><b>The olive was real, and it was in the middle of the gradient rather than at either end.</b>
+    Sampling the old Sky path from blue to gold and watching the green channel pull ahead of the
+    blue one: it crosses over at the halfway mark and sits at <code>+20</code> through the whole
+    visible middle. That is the khaki. Blue and gold are near-opposites, so a straight line
+    between them has to pass through it — the same reason the dial's own ramp needed a pale
+    bridge stop. Sky now holds its blue to <b>44%</b> and detours through a cool pink at 68%,
+    which keeps green behind blue until the last third, where the gold is supposed to arrive.</p>
+  <p><b>Sunrise is tilted to 135&deg; too</b>, matching Sky.</p>
+  <p><b>I was wrong about the bright wheel in light mode, and it is worth saying so.</b> Last
+    round I reported that lifting in OKLab turns Noon to mustard. That was true of the version I
+    had tuned to force the day band away from white — floor 0.30, ceiling 0.80. At the
+    <i>same</i> settings dark mode uses, Noon lands at <code>#f3c543</code>, which is Noon. So
+    the bright wheel is one treatment across both schemes, and it beats the soft wheel on the
+    numbers in light: night band 3.38 → <b>4.87</b>, day band 1.28 → <b>1.63</b>, chroma
+    0.092 → <b>0.150</b>. It is louder. That is the whole question, and it is a taste one.</p>
+  <p><b>0.70 works in dark. In light it misses, by 0.08.</b> On the dark face 0.70 puts Sky's
+    night band at <b>4.36</b> — comfortable. On the white face the same setting gives
+    <b>2.92</b>, just under the 3:1 a meaningful graphic needs. The crossover is at
+    <b>0.68</b> (3.10), so light is set there and dark to your 0.70. Two clicks apart on the
+    slider and not a difference you can see — but 0.70 in light would have been a number that
+    quietly fails, which is the sort of thing that only shows up in an audit six months later.</p>
+</div>
+
+<div class="bar">
+  <span class="lbl">Bright floor · light <output id="oLight">0.68</output></span>
+  <input id="floorLight" type="range" min="0.46" max="0.82" step="0.01" value="0.68">
+  <span class="lbl" style="margin-left:12px">· dark <output id="oDark">0.70</output></span>
+  <input id="floorDark" type="range" min="0.46" max="0.82" step="0.01" value="0.70">
+</div>
+
+
+<div class="note ask">
+  <p><b>The chip is the wheel's gold, and the wheel offers exactly one yellow.</b> Its three warm
+    stops — cream at 09:30, noon gold, warming-down at 19:30 — measure <b>1.01, 1.06 and 1.07</b>
+    apart from each other once lifted. That is one colour with three names. So there is no toggle
+    here: a yellow chip is <i>the</i> yellow, <code>#f9cb4a</code>, sampled from the noon plateau.</p>
+  <p><b>Which means the chip and the sun are the same colour, and that is the thing to look at.</b>
+    They sit at opposite ends of the same row — a labelled pill on the left, a rayed disc on the
+    right. Different objects, one colour. The precedent is already in light mode, where the add
+    button and the moon are both Klein and nobody has ever misread them.</p>
+  <p>The one thing worth watching: when home is <i>awake</i> the row shows a gold chip and a gold
+    sun; when it is <i>asleep</i>, a gold chip and a blue moon. So the chip matches the day-state
+    marker half the time. Light mode already does this in mirror image — a Dawn chip beside a
+    Klein moon — so it is not new, but it is easier to see in gold.</p>
+  <p><b>Against the add button it is the best separation available anywhere in the wheel:</b>
+    <code>#f9cb4a</code> against <code>#6194ff</code> is gold against blue, the full width of the
+    ramp. That was the collision you flagged, and it is now as far from happening as this palette
+    can get.</p>
+  <p><b>Sun: exempt, on your call.</b> Amber stays as its outline. It is a legibility patch — Noon
+    on white measures 1.57 and the disc vanishes — and no wheel stop can do that job. The audit
+    below now records the exemption rather than failing on it, so it stays visible as a deliberate
+    decision instead of quietly disappearing.</p>
+</div>
+
+<h2>Sky, two wheels</h2>
+<div class="grid" id="grid"></div>
+
+<div class="note ask" style="margin-top:30px">
+  <p><b>The hour marks are darker as of this round, and the grounds are untouched.</b>
+    <code>#8d8792</code> measured exactly <b>3.00</b> against every paper tried — dead on the
+    3:1 floor a meaningful graphic needs, with no margin at all, and it had quietly blocked
+    three rounds of ground work. It is now <code>#79717e</code>, which scores <b>4.04</b> at
+    worst across every stop of both grounds. It stays lighter than the numerals, so the
+    hierarchy on the dial rim survives.</p>
+  <p>Sky's blue is deliberately unchanged at <code>#eaeefb</code> — the margin was taken as
+    margin, not spent on a deeper corner. The olive fix stands on its own.</p>
+  <p>The half-hour ticks moved <code>#c2bcc6</code> → <code>#aea7b3</code>, purely to hold their
+    old relationship to the hour marks. They are subdivisions, redundant with both the hour
+    ticks and the numerals, so 3:1 does not reach them and they are not pretending to clear it.</p>
+</div>
+
+</div>
+
+<script>
+/* ---- colour ---- */
+function hx(h){h=h.replace('#','');return [0,2,4].map(function(i){return parseInt(h.slice(i,i+2),16);});}
+function h2(v){v=v.toString(16);return v.length<2?'0'+v:v;}
+function s2l(c){c/=255;return c<=.04045?c/12.92:Math.pow((c+.055)/1.055,2.4);}
+function l2s(c){var v=c<=.0031308?12.92*c:1.055*Math.pow(c,1/2.4)-.055;
+  return Math.max(0,Math.min(255,Math.round(v*255)));}
+function lum(h){var p=hx(h);return .2126*s2l(p[0])+.7152*s2l(p[1])+.0722*s2l(p[2]);}
+function cr(a,b){var x=lum(a),y=lum(b),hi=Math.max(x,y),lo=Math.min(x,y);return (hi+.05)/(lo+.05);}
+function toLab(h){var p=hx(h),r=s2l(p[0]),g=s2l(p[1]),b=s2l(p[2]);
+  var l=Math.cbrt(.4122214708*r+.5363325363*g+.0514459929*b);
+  var m=Math.cbrt(.2119034982*r+.6806995451*g+.1073969566*b);
+  var s=Math.cbrt(.0883024619*r+.2817188376*g+.6299787005*b);
+  return [.2104542553*l+.7936177850*m-.0040720468*s,
+          1.9779984951*l-2.4285922050*m+.4505937099*s,
+          .0259040371*l+.7827717662*m-.8086757660*s];}
+function fromLab(L,a,bb){
+  var l=Math.pow(L+.3963377774*a+.2158037573*bb,3);
+  var m=Math.pow(L-.1055613458*a-.0638541728*bb,3);
+  var s=Math.pow(L-.0894841775*a-1.2914855480*bb,3);
+  return '#'+[4.0767416621*l-3.3077115913*m+.2309699292*s,
+             -1.2684380046*l+2.6097574011*m-.3413193965*s,
+             -0.0041960863*l-0.7034186147*m+1.7076147010*s].map(l2s).map(h2).join('');}
+function chroma(h){var L=toLab(h);return Math.hypot(L[1],L[2]);}
+function hueOf(h){var L=toLab(h);return (Math.atan2(L[2],L[1])*180/Math.PI+360)%360;}
+/* Two colours are told apart by hue OR by lightness. Requiring luminance contrast between
+   different hues is the wrong test - blue and gold are obviously distinct at any luminance -
+   and it is a mistake I have now made twice, so it lives in one function. */
+function hueGap(a,b){var d=Math.abs(hueOf(a)-hueOf(b))%360;return Math.min(d,360-d);}
+function distinct(a,b){return hueGap(a,b)>=60 || cr(a,b)>=1.9;}
+
+/* ---- the two grounds ---- */
+var SKY = {
+  /* Blue held to 44%, then a cool pink at 68%. Straight blue→gold turns khaki through the
+     middle; this keeps the green channel behind the blue one until the gold is due. */
+  light:{ paper:'linear-gradient(135deg,#eaeefb,#eff0f9 44%,#f6edf0 68%,#fbf0d2)',
+          stops:['#eaeefb','#eff0f9','#f6edf0','#fbf0d2'],
+          line:'#dedbd8', 'row-open':'#f9f7f3' },
+  dark:{ paper:'linear-gradient(135deg,#080c26,#241a33)', stops:['#080c26','#241a33'],
+         card:'#2a2456', line:'#3a3468', 'row-open':'#332d60',
+         ink:'#f1f0f6', muted:'#a9a5c4', 'dial-face':'#2a2456',
+         'tick-maj':'#7d76b0', 'tick-min':'#514d88' }
+};
+
+var LIGHT_BASE = {
+  card:'#ffffff', ink:'#14161a', muted:'#6e6874', night:'#0d21a5', 'on-night':'#ffffff',
+  dawn:'#8ba2f0', 'on-chip':'#14161a', moon:'#0d21a5', sun:'#f7c948', 'sun-edge':'#a97103',
+  'dial-face':'#ffffff', 'tick-maj':'#79717e', 'tick-min':'#aea7b3',
+  scrim:'rgba(20,22,26,.28)', shadow:'0 14px 40px rgba(20,20,26,.18)'
+};
+/* The grammar, held identical across schemes: KLEIN ACTS, DAWN INFORMS.
+   Klein #0d21a5 scores 1.50 on a dark ground and dies, so it is lifted - the same OKLab
+   operation the ramp uses, at a shallower setting so it stays the DEEP member of the pair,
+   exactly as it is in light. Dawn does not move at all. */
+var DARK_BASE = {
+  night:'#3560e3', 'on-night':'#ffffff', dawn:'#8ba2f0', moon:'#8ba2f0',
+  sun:'#f7c948', 'sun-edge':'#f7c948', 'on-chip':'#14161a',
+  scrim:'rgba(4,5,10,.55)', shadow:'0 14px 40px rgba(0,0,0,.5)'
+};
+
+/* wheel: 'lift' = keep hue and chroma, remap lightness (bright).
+          'white' = blend each stop 46% toward white (soft). Applied to BOTH schemes. */
+var CANDIDATES = [
+  { id:'1', ground:SKY, wheel:'lift',
+    tag:'Sky · bright wheel', name:'Sky, bright',
+    why:'The tilted blue-to-gold ground with the olive squeezed out, under a wheel at full chroma in both schemes. Best numbers on the page in light — but it is the loudest thing here, and the ground is the quietest, so the dial does all the talking.' },
+  { id:'2', ground:SKY, wheel:'white',
+    tag:'Sky · soft wheel', name:'Sky, soft',
+    why:'The same ground under the locked soft wheel. In light this is exactly what you have been looking at for two days. In dark it is light mode’s pastel ring floating on a dark face — which is a real look, not a compromise.' }
+];
+
+/* Four ways to keep "this row is home" (info) from reading as "tap me" (action).
+   In light the system is Klein=action, Dawn=info. Dark broke that: the action colour became
+   Dawn, so a Dawn chip and the add button ended up the same colour. */
+/* THE RULE (Halley, 4 Sept): every UI colour — plus, sun, moon, home chip — must be a colour
+   the time-picker wheel actually paints. Not "from the palette", not "near the palette": on the
+   wheel. So they are not chosen here at all, they are SAMPLED from it, by the same lift the
+   wheel itself uses. Move the dark floor and they follow, because they are the same colours. */
+/* Sampling has to follow the candidate's OWN wheel treatment. Using the lift for both meant the
+   soft candidate carried UI colours its own wheel never paints - the rule looked enforced and
+   was not. Each candidate now samples the wheel it actually draws. */
+function sampleStop(hexStop, wheel, floor) {
+  if (wheel === 'lift') {
+    var lab = toLab(hexStop);
+    return fromLab(+floor + (lab[0] - 0.358) / (0.920 - 0.358) * (0.88 - +floor), lab[1], lab[2]);
+  }
+  var A = hx(hexStop);
+  return '#' + [0,1,2].map(function (i) { return h2(Math.round(A[i] + (255 - A[i]) * 0.46)); }).join('');
+}
+var WHEEL_ROLE = {
+  action: '#8ba2f0',   /* 06:30 - Dawn. The same stop the light-mode home chip is drawn from */
+  moon:   '#8ba2f0',   /* the same, so moon and action match as they do in light */
+  sun:    '#f7c948'    /* 11:00-17:30 - the noon plateau */
+};
+var CHIP_STOP = '#f7c948';   /* the chip is the sun's stop: the wheel has only one yellow */
+var LIGHTCHIP = { 'chip-bg':'#8ba2f0', 'chip-line':'transparent', 'on-chip':'#14161a' };
+
+var picked = null, grid = document.getElementById('grid');
+
+function tokens(c, mode) {
+  var set = {}, k;
+  for (k in LIGHT_BASE) set[k] = LIGHT_BASE[k];
+  if (mode === 'dark') for (k in DARK_BASE) set[k] = DARK_BASE[k];
+  var g = c.ground[mode];
+  for (k in g) if (k !== 'stops') set[k] = g[k];
+  if (mode === 'light') {
+    for (k in LIGHTCHIP) set[k] = LIGHTCHIP[k];
+  } else {
+    /* Sampled from the wheel at this floor, so the rule cannot drift out of true. */
+    var f = document.getElementById('floorDark').value;
+    set.night = sampleStop(WHEEL_ROLE.action, c.wheel, f);
+    set.moon  = sampleStop(WHEEL_ROLE.moon, c.wheel, f);
+    set.sun   = sampleStop(WHEEL_ROLE.sun, c.wheel, f);
+    set['sun-edge'] = set.sun;
+    set['chip-bg'] = sampleStop(CHIP_STOP, c.wheel, f);
+    set['chip-line'] = 'transparent';
+    set['on-chip'] = '#14161a';
+    set['on-night'] = '#14161a';   /* the lifted midnight is light; ink on it reads 6.20, white 2.92 */
+  }
+  if (c.wheel === 'lift') {
+    set['ramp-mode'] = 'lift';
+    set['ramp-floor'] = document.getElementById(mode === 'dark' ? 'floorDark' : 'floorLight').value;
+    set['ramp-ceil'] = '0.88';
+  } else {
+    set['ramp-mode'] = 'mix';
+    set['ramp-toward'] = '#ffffff';
+    set['ramp-soften'] = '0.46';
+  }
+  return set;
+}
+/* A gradient has no single paper colour, and no single worst stop either — on the tilted Sky
+   the blue corner is worst for the ticks and the gold corner is worst for the card. So every
+   paper-facing check walks all of them and reports the worst, naming which. */
+function stopsOf(c, mode) { var g = c.ground[mode]; return g.stops || [g.paper]; }
+
+function rampReport(c, mode) {
+  var t = tokens(c, mode), face = t['dial-face'], out = {};
+  ['#0d21a5', '#f7c948'].forEach(function (stop, i) {
+    var col;
+    if (t['ramp-mode'] === 'lift') {
+      var lab = toLab(stop), lo = +t['ramp-floor'], hi = +t['ramp-ceil'];
+      col = fromLab(lo + (lab[0] - 0.358) / (0.920 - 0.358) * (hi - lo), lab[1], lab[2]);
+    } else {
+      var A = hx(stop);
+      col = '#' + [0,1,2].map(function (j) { return h2(Math.round(A[j] + (255-A[j]) * .46)); }).join('');
+    }
+    out[i ? 'noon' : 'night'] = { hex: col, c: chroma(col), r: cr(col, face) };
+  });
+  return out;
+}
+
+var CHECKS = [
+  ['muted on paper', function (t,p) { return [t.muted, p]; }, 4.5],
+  ['muted on card',  function (t,p) { return [t.muted, t.card]; }, 4.5],
+  ['major tick',     function (t,p) { return [t['tick-maj'], p]; }, 3],
+  ['card off paper', function (t,p) { return [t.card, p]; }, 1.1],
+  ['chip text', function (t,p) {
+     return [t['on-chip'], t['chip-bg'] === 'transparent' ? t.card : t['chip-bg']]; }, 4.5],
+  ['moon off card',  function (t,p) { return [t.moon, t.card]; }, 3],
+  ['button glyph',   function (t,p) { return [t['on-night'], t.night]; }, 4.5],
+  ['action vs chip', function (t,p) { return [t.night, t['chip-bg']]; }, 'distinct'],
+  ['action vs sun',  function (t,p) { return [t.night, t.sun]; }, 'distinct']
+];
+
+var RAW_STOPS = ['#0d21a5','#3f57bd','#8ba2f0','#cfd3ee','#f6e3b4','#f7c948',
+                 '#f8dfa0','#ecdcdd','#a9b6ea','#5d74d2'];
+/* The rule, audited rather than asserted: every UI colour must BE one of the colours the wheel
+   paints at this floor. In light the wheel paints the raw stops blended toward white, and the
+   UI colours are the raw stops themselves - so the light set is the raw list. */
+function ruleAudit(t, mode, wheel) {
+  var set = mode === 'dark'
+    ? RAW_STOPS.map(function (x) {
+        return sampleStop(x, wheel, document.getElementById('floorDark').value); })
+    : RAW_STOPS;
+  /* The sun's outline is exempt, by Halley's decision on 4 Sept: it is a legibility patch for
+     Noon on white, not a colour choice, and no wheel stop can do its job. Recorded, not hidden. */
+  var roles = { plus:t.night, moon:t.moon, sun:t.sun, chip:t['chip-bg'] };
+  var bad = [];
+  for (var r in roles) if (set.indexOf(roles[r]) < 0) bad.push(r);
+  return bad;
+}
+
+function rows(c, mode) {
+  var t = tokens(c, mode), stops = stopsOf(c, mode);
+  var html = CHECKS.map(function (ch) {
+    if (ch[2] === 'distinct') {
+      var pr = ch[1](t, stops[0]), g = hueGap(pr[0], pr[1]), l = cr(pr[0], pr[1]);
+      var okd = distinct(pr[0], pr[1]);
+      return '<tr><td>' + ch[0] + '</td><td><span class="' + (okd ? 'pass' : 'fail') + '">' +
+        Math.round(g) + '° hue · ' + l.toFixed(2) + (okd ? '' : ' ✗') + '</span></td></tr>';
+    }
+    var worst = Infinity, best = -Infinity, at = '';
+    stops.forEach(function (p) {
+      var v = cr.apply(null, ch[1](t, p));
+      if (v < worst) { worst = v; at = p; }
+      if (v > best) best = v;
+    });
+    var ok = worst >= ch[2], varies = best - worst > 0.005;
+    return '<tr><td>' + ch[0] + (varies ? ' <i>@ ' + at + '</i>' : '') + '</td><td><span class="' +
+      (ok ? 'pass' : 'fail') + '">' + worst.toFixed(2) + (ok ? '' : ' ✗') + '</span></td></tr>';
+  }).join('');
+  var bad = ruleAudit(tokens(c, mode), mode, c.wheel);
+  html += '<tr><td>every UI colour on the wheel <i>sun outline exempt</i></td><td><span class="' +
+    (bad.length ? 'fail' : 'pass') + '">' +
+    (bad.length ? bad.join(', ') + ' ✗' : 'yes') + '</span></td></tr>';
+  var r = rampReport(c, mode), nOk = r.night.r >= 3;
+  return html +
+    '<tr><td>Noon chroma <i>0.150 = intact</i></td><td>' + r.noon.c.toFixed(3) + '</td></tr>' +
+    '<tr><td>night band off face <i>' + r.night.hex + '</i></td><td><span class="' +
+      (nOk ? 'pass' : 'fail') + '">' + r.night.r.toFixed(2) + (nOk ? '' : ' ✗') + '</span></td></tr>' +
+    '<tr><td>day band off face</td><td>' + r.noon.r.toFixed(2) + '</td></tr>';
+}
+
+function panel(c, m) {
+  var t = tokens(c, m);
+  return '<div><div class="cap">' + m + '</div>' +
+    '<div class="screen" data-id="' + c.id + '" data-mode="' + m + '">' +
+      '<iframe src="app/index.html" scrolling="no" title="' + c.name + ' ' + m + '"></iframe></div>' +
+    '<div class="chips">' + ['paper','card','ink','muted','chip','night'].map(function (k) {
+      return '<i style="background:' + (k === 'chip' ? (t['chip-bg'] === 'transparent'
+        ? t.card : t['chip-bg']) : t[k]) + '"></i>'; }).join('') + '</div>' +
+    '<table>' + rows(c, m) + '</table></div>';
+}
+
+function paint(frame, c, mode) {
+  var d = frame.contentDocument;
+  if (!d || !d.documentElement) return;
+  var t = tokens(c, mode), css = ':root{';
+  for (var k in t) css += '--' + k + ':' + t[k] + ';';
+  css += '}';
+  var tag = d.getElementById('override');
+  if (!tag) { tag = d.createElement('style'); tag.id = 'override'; d.head.appendChild(tag); }
+  tag.textContent = css;
+  try { frame.contentWindow.dispatchEvent(new Event('pando:retheme')); } catch (e) {}
+}
+
+function draw() {
+  grid.innerHTML = CANDIDATES.map(function (c) {
+    return '<div class="cand' + (picked === c.id ? ' sel' : '') + '" data-cand="' + c.id + '">' +
+      '<span class="tag">' + c.id + ' — ' + c.tag + '</span><h3>' + c.name + '</h3>' +
+      '<p>' + c.why + '</p><div class="pair">' + panel(c,'light') + panel(c,'dark') + '</div></div>';
+  }).join('');
+  fit();
+  grid.querySelectorAll('iframe').forEach(function (f) {
+    var box = f.parentNode, c = byId(box.dataset.id);
+    var go = function () { paint(f, c, box.dataset.mode); };
+    f.addEventListener('load', go);
+    if (f.contentDocument && f.contentDocument.readyState === 'complete') go();
+  });
+}
+function byId(id) { return CANDIDATES.filter(function (x) { return x.id === id; })[0]; }
+/* Only the two bright candidates move with the floor, and only their tables and frames need
+   touching - rebuilding the grid would reload eight iframes for a slider drag. */
+function retint(all) {
+  grid.querySelectorAll('.screen').forEach(function (box) {
+    var c = byId(box.dataset.id);
+    if (!all && c.wheel !== 'lift') return;
+    paint(box.querySelector('iframe'), c, box.dataset.mode);
+    var tbl = box.parentNode.querySelector('table');
+    if (tbl) tbl.innerHTML = rows(c, box.dataset.mode);
+  });
+}
+function fit() {
+  grid.querySelectorAll('.screen').forEach(function (s) {
+    s.querySelector('iframe').style.transform = 'scale(' + (s.clientWidth / 390) + ')';
+  });
+}
+addEventListener('resize', fit);
+[['floorLight','oLight'],['floorDark','oDark']].forEach(function (pair) {
+  document.getElementById(pair[0]).addEventListener('input', function () {
+    document.getElementById(pair[1]).textContent = (+this.value).toFixed(2);
+    retint();
+  });
+});
+grid.addEventListener('click', function (e) {
+  var c = e.target.closest('.cand'); if (!c) return;
+  picked = picked === c.dataset.cand ? null : c.dataset.cand;
+  document.querySelectorAll('.cand').forEach(function (x) {
+    x.classList.toggle('sel', x.dataset.cand === picked);
+  });
+});
+draw();
+</script>
+</body>
+</html>

@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pando — dial prototype</title>
+<style>
+:root{
+  --font:"Helvetica Neue",Helvetica,Arial,sans-serif;
+  --paper:#fbe9f4; --card:#fff; --ink:#14161a; --muted:#6e6874; --line:#e2d2dc;
+  --night:#0d21a5; --dawn:#8ba2f0; --noon:#f7c948; --amber:#a97103;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{font-family:var(--font);font-weight:300;background:var(--paper);color:var(--ink);
+  -webkit-font-smoothing:antialiased;padding:48px 20px 110px;line-height:1.6;font-size:18px}
+.wrap{max-width:1220px;margin:0 auto}
+h1{font-weight:200;font-size:56px;letter-spacing:-.02em;margin:0 0 10px}
+.sub{color:var(--muted);font-size:20px;margin:0 0 18px;max-width:64ch}
+.key{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px 26px;
+  font-size:17.5px;color:var(--muted);max-width:78ch;margin-bottom:14px}
+.key b{color:var(--ink);font-weight:400}
+h2{font-weight:300;font-size:17px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);
+  margin:54px 0 6px;padding-bottom:12px;border-bottom:1px solid var(--line)}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:26px;margin-top:30px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:26px 22px 24px;
+  display:flex;flex-direction:column}
+.card h3{font-weight:400;font-size:23px;margin:0 0 6px;letter-spacing:-.01em}
+.card .why{font-size:16.5px;color:var(--muted);margin:0 0 14px}
+.stagewrap{display:flex;justify-content:center;margin:4px 0 6px}
+svg.dial{display:block;touch-action:none;cursor:grab;user-select:none;-webkit-user-select:none}
+svg.dial.drag{cursor:grabbing}
+.mode{text-align:center;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);
+  min-height:22px;margin-bottom:6px}
+.mode.fine{color:var(--night)}
+ul{margin:auto 0 0;padding-left:20px;font-size:16px;color:var(--muted);padding-top:16px}
+li{margin-bottom:7px} li b{color:var(--ink);font-weight:400}
+
+/* city readout */
+.cities{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:6px 22px;margin-top:30px;max-width:560px}
+.row{display:flex;justify-content:space-between;align-items:center;padding:13px 0;border-bottom:1px solid var(--line)}
+.row:last-child{border-bottom:none}
+.city{font-size:17px}
+.city small{display:block;font-size:12px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);margin-top:3px}
+.homechip{display:inline-block;font-size:12px;letter-spacing:.13em;text-transform:uppercase;
+  background:var(--dawn);color:var(--ink);border-radius:99px;padding:3px 10px;margin-left:9px;vertical-align:2px}
+.tm{display:flex;align-items:center;gap:12px}
+.tm b{font-weight:200;font-size:26px;font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+.toggle{display:inline-flex;background:var(--paper);border-radius:99px;padding:3px;font-size:15px;margin:22px 0 0}
+.toggle span{padding:8px 22px;border-radius:99px;color:var(--muted);cursor:pointer}
+.toggle span.on{background:var(--card);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.14)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>Spin it</h1>
+<p class="sub">Three ways to build the same 24-hour ring. Drag each one — they’re live, not pictures.</p>
+<div class="key">
+  <b>All three share the approved behavior.</b> A normal drag snaps to 5 minutes. <b>Slow the drag right down and it unlocks single minutes</b> — the label under the dial tells you when you’ve crossed over, which is the visible response that stops the gesture being undiscoverable. Midnight is at the top, noon at the bottom, and the shading is the day/night ramp.
+</div>
+<div class="key">
+  <b>What’s actually being decided here</b> is the thing you didn’t like: how the dial shows where it’s pointing. A hand? A knob? Neither? The ring, the ramp and the readout are the same in all three.
+</div>
+
+<h2>The three</h2>
+<div class="grid" id="grid"></div>
+
+<div class="cities" id="cities"></div>
+<div style="display:flex;justify-content:center"><div class="toggle" id="tg"><span data-h="12">12h</span><span data-h="24" class="on">24h</span></div></div>
+
+</div>
+
+<script>
+var RAMP=[["#a3abdd",0],["#cbd5f8",.42],["#fdf0cc",1]];
+var STATE={mins:14*60+30, fine:false};
+var CITIES=[
+  {n:"London",     tz:"BST", off:0,   home:true},
+  {n:"Mexico City",tz:"CST", off:-6,  home:false},
+  {n:"Lagos",      tz:"WAT", off:1,   home:false},
+  {n:"Tokyo",      tz:"JST", off:8,   home:false}
+];
+var use24=true;
+
+function pad(n){return n<10?"0"+n:""+n;}
+function fmt(m){
+  m=((m%1440)+1440)%1440;
+  var h=Math.floor(m/60), mi=m%60;
+  if(use24) return pad(h)+":"+pad(mi);
+  var ap=h<12?"am":"pm", h12=h%12; if(h12===0)h12=12;
+  return h12+":"+pad(mi)+ap;
+}
+function dayShift(m){ return Math.floor(m/1440); }
+function asleep(m){ var h=Math.floor((((m%1440)+1440)%1440)/60); return h>=21||h<7; }
+
+var MOON='<svg width="19" height="19" viewBox="0 0 18 18"><path d="M13.4 11.6A5.6 5.6 0 0 1 6.4 4.6 5.8 5.8 0 1 0 13.4 11.6Z" fill="#0d21a5"/></svg>';
+var SUN='<svg width="19" height="19" viewBox="0 0 18 18"><circle cx="9" cy="9" r="4" fill="#f7c948" stroke="#a97103" stroke-width="1"/><g stroke="#a97103" stroke-width="1.4" stroke-linecap="round"><line x1="9" y1="1.2" x2="9" y2="2.8"/><line x1="9" y1="15.2" x2="9" y2="16.8"/><line x1="1.2" y1="9" x2="2.8" y2="9"/><line x1="15.2" y1="9" x2="16.8" y2="9"/><line x1="3.5" y1="3.5" x2="4.6" y2="4.6"/><line x1="13.4" y1="13.4" x2="14.5" y2="14.5"/><line x1="14.5" y1="3.5" x2="13.4" y2="4.6"/><line x1="4.6" y1="13.4" x2="3.5" y2="14.5"/></g></svg>';
+
+var VARIANTS=[
+  {id:"A", name:"Bare knob", why:"No hand, no stem. A single knob riding the ring, and the time in the middle.",
+   pts:["<b>The quietest of the three</b> — nothing crosses the readout.",
+        "<b>Nothing points</b>, so the eye takes a beat to connect knob to number.",
+        "Kills the minute hand outright, which is what you objected to."]},
+  {id:"B", name:"Swept arc", why:"The arc fills from midnight round to the set time. Its leading edge is the handle — grab anywhere on it.",
+   pts:["<b>Shows elapsed day</b>, not just a position. You can see how far through you are.",
+        "<b>Biggest grab target</b> by far — the whole arc, not a 44px dot.",
+        "Uses Klein heavily, so the dial gets louder."]},
+  {id:"C", name:"Stemmed knob", why:"The original: a thin line from the center out to the knob. Included for comparison.",
+   pts:["<b>Unambiguous</b> — the stem points at the hour, clock-like.",
+        "<b>This is the bit you didn't like</b>, and it does read as a hand.",
+        "The stem crosses the readout at some angles."]}
+];
+
+function dialSVG(v){
+  var S=280,c=S/2;
+  var ticks="",nums="";
+  for(var i=0;i<48;i++){
+    var a=i*7.5*Math.PI/180, maj=i%2===0, r1=maj?93:97, r2=101;
+    ticks+='<line x1="'+(c+r1*Math.sin(a)).toFixed(1)+'" y1="'+(c-r1*Math.cos(a)).toFixed(1)+
+      '" x2="'+(c+r2*Math.sin(a)).toFixed(1)+'" y2="'+(c-r2*Math.cos(a)).toFixed(1)+
+      '" stroke="'+(maj?"#8d8792":"#c2bcc6")+'" stroke-width="'+(maj?1.4:.8)+'" class="tick" data-maj="'+(maj?1:0)+'"/>';
+  }
+  for(var h=0;h<24;h+=3){
+    var a2=h*15*Math.PI/180;
+    nums+='<text x="'+(c+112*Math.sin(a2)).toFixed(1)+'" y="'+(c-112*Math.cos(a2)+4.5).toFixed(1)+
+      '" text-anchor="middle" font-family="Helvetica Neue,Helvetica,Arial" font-weight="300" font-size="12" fill="#6e6874">'+pad(h)+'</text>';
+  }
+  return '<svg class="dial" data-v="'+v.id+'" viewBox="0 0 '+S+' '+S+'" width="280" height="280">'+
+    '<defs><linearGradient id="g'+v.id+'" x1="0" y1="0" x2="0" y2="1">'+
+      RAMP.map(function(r){return '<stop offset="'+(r[1]*100)+'%" stop-color="'+r[0]+'"/>';}).join("")+
+    '</linearGradient></defs>'+
+    '<circle cx="'+c+'" cy="'+c+'" r="118" fill="url(#g'+v.id+')"/>'+
+    (v.id==="B"?'<path class="arc" fill="none" stroke="#0d21a5" stroke-width="13" stroke-linecap="round"/>':'')+
+    '<circle cx="'+c+'" cy="'+c+'" r="86" fill="#fff"/>'+
+    ticks+nums+
+    (v.id==="C"?'<line class="stem" stroke="#6e6874" stroke-width="1.6"/>':'')+
+    (v.id!=="B"?'<circle class="knob" r="18" fill="#0d21a5"/><circle class="knobring" r="18" fill="none" stroke="#fff" stroke-width="3"/>':'')+
+    (v.id==="B"?'<circle class="knob" r="9" fill="#0d21a5"/><circle class="knobring" r="9" fill="none" stroke="#fff" stroke-width="2.5"/>':'')+
+    '<text class="big" x="'+c+'" y="'+(c-2)+'" text-anchor="middle" font-family="Helvetica Neue,Helvetica,Arial" font-weight="200" font-size="44" fill="#14161a"></text>'+
+    '<text class="sml" x="'+c+'" y="'+(c+22)+'" text-anchor="middle" font-family="Helvetica Neue,Helvetica,Arial" font-weight="300" font-size="11" letter-spacing="2.6" fill="#6e6874">LONDON</text>'+
+  '</svg>';
+}
+
+document.getElementById('grid').innerHTML=VARIANTS.map(function(v){
+  return '<div class="card"><h3>'+v.id+' — '+v.name+'</h3><p class="why">'+v.why+'</p>'+
+    '<div class="stagewrap">'+dialSVG(v)+'</div>'+
+    '<div class="mode" data-for="'+v.id+'"></div>'+
+    '<ul>'+v.pts.map(function(p){return '<li>'+p+'</li>';}).join("")+'</ul></div>';
+}).join("");
+
+function render(){
+  var m=((STATE.mins%1440)+1440)%1440;
+  var ang=m/1440*2*Math.PI, S=280, c=S/2;
+  document.querySelectorAll('svg.dial').forEach(function(sv){
+    var v=sv.dataset.v;
+    var kr = (v==="B")?118:102;
+    var kx=c+kr*Math.sin(ang), ky=c-kr*Math.cos(ang);
+    var k=sv.querySelector('.knob'), kg=sv.querySelector('.knobring');
+    if(k){k.setAttribute('cx',kx);k.setAttribute('cy',ky);}
+    if(kg){kg.setAttribute('cx',kx);kg.setAttribute('cy',ky);}
+    var st=sv.querySelector('.stem');
+    if(st){st.setAttribute('x1',c);st.setAttribute('y1',c);st.setAttribute('x2',kx);st.setAttribute('y2',ky);}
+    var arc=sv.querySelector('.arc');
+    if(arc){
+      var r=118, big=(m>720)?1:0;
+      if(m<1){ arc.setAttribute('d',''); }
+      else arc.setAttribute('d','M '+c+' '+(c-r)+' A '+r+' '+r+' 0 '+big+' 1 '+kx.toFixed(2)+' '+ky.toFixed(2));
+    }
+    sv.querySelector('.big').textContent=fmt(m);
+    sv.querySelectorAll('.tick').forEach(function(t){
+      var maj = t.dataset.maj==="1";
+      t.setAttribute('stroke-width', STATE.fine ? (maj?2.2:1.5) : (maj?1.4:0.8));
+      t.setAttribute('stroke', STATE.fine ? (maj?"#0d21a5":"#8ba2f0") : (maj?"#8d8792":"#c2bcc6"));
+    });
+  });
+  document.querySelectorAll('.mode').forEach(function(el){
+    el.textContent = STATE.fine ? "fine — 1 minute steps" : "5 minute steps";
+    el.className = "mode"+(STATE.fine?" fine":"");
+  });
+  renderCities(m);
+}
+
+function renderCities(m){
+  document.getElementById('cities').innerHTML=CITIES.map(function(ct){
+    var t=m+ct.off*60, sh=dayShift(t);
+    var shift = sh>0?" · next day":(sh<0?" · prev day":"");
+    return '<div class="row"><div class="city">'+ct.n+(ct.home?' <span class="homechip">home</span>':'')+
+      '<small>'+ct.tz+' · '+(ct.off>=0?"+":"")+ct.off+'h'+shift+'</small></div>'+
+      '<div class="tm"><b>'+fmt(t)+'</b>'+(asleep(t)?MOON:SUN)+'</div></div>';
+  }).join("");
+}
+
+// ---- dragging ----
+var drag=null;
+function angleAt(sv,e){
+  var r=sv.getBoundingClientRect();
+  var cx=r.left+r.width/2, cy=r.top+r.height/2;
+  var a=Math.atan2(e.clientX-cx,-(e.clientY-cy));
+  return (a<0? a+2*Math.PI : a);
+}
+document.querySelectorAll('svg.dial').forEach(function(sv){
+  sv.addEventListener('pointerdown',function(e){
+    sv.setPointerCapture(e.pointerId); sv.classList.add('drag');
+    drag={sv:sv,last:angleAt(sv,e),t:performance.now()};
+    e.preventDefault();
+  });
+  sv.addEventListener('pointermove',function(e){
+    if(!drag||drag.sv!==sv) return;
+    var a=angleAt(sv,e), now=performance.now();
+    var d=a-drag.last;
+    if(d>Math.PI) d-=2*Math.PI; if(d<-Math.PI) d+=2*Math.PI;
+    var dt=Math.max(now-drag.t,1);
+    var speed=Math.abs(d)/dt*1000;          // rad/sec
+    STATE.fine = speed < 0.75;              // slow drag -> single minutes
+    var step = STATE.fine?1:5;
+    var target = STATE.mins + d/(2*Math.PI)*1440;
+    STATE.mins = Math.round(target/step)*step;
+    drag.last=a; drag.t=now;
+    render();
+  });
+  ['pointerup','pointercancel','pointerleave'].forEach(function(ev){
+    sv.addEventListener(ev,function(){ if(drag&&drag.sv===sv){drag=null;sv.classList.remove('drag');} });
+  });
+});
+
+document.getElementById('tg').addEventListener('click',function(e){
+  var s=e.target.closest('span'); if(!s) return;
+  use24 = s.dataset.h==="24";
+  [].forEach.call(this.children,function(ch){ ch.className = (ch===s)?"on":""; });
+  render();
+});
+
+render();
+</script>
+</body>
+</html>

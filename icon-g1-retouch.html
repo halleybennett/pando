@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pando — G1 retouched</title>
+<style>
+  :root{--bg:#f2f0f7;--card:#fff;--ink:#14161a;--muted:#6e6874;--klein:#0d21a5;--line:#dedbd8}
+  *{box-sizing:border-box}
+  body{margin:0;padding:36px 24px 80px;background:var(--bg);color:var(--ink);
+    font:300 17.5px/1.55 "Helvetica Neue",Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1180px;margin:0 auto}
+  h1{font-weight:200;font-size:40px;letter-spacing:-.5px;margin:0 0 8px}
+  .sub{color:var(--muted);max-width:64ch;margin:0 0 4px}
+  h2{font-weight:300;font-size:24px;margin:42px 0 10px}
+  .note{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px 22px;margin:20px 0 0}
+  .note p{margin:0 0 10px}.note p:last-child{margin:0}.note b{font-weight:500}
+  .bar{display:flex;gap:16px;align-items:center;flex-wrap:wrap;position:sticky;top:0;z-index:20;
+    background:var(--card);border:1px solid var(--line);border-radius:16px;padding:12px 18px;margin:20px 0 0;
+    box-shadow:0 4px 18px rgba(20,22,26,.06)}
+  .bar label{font-size:11px;letter-spacing:1.4px;text-transform:uppercase;color:var(--muted);display:block}
+  .bar output{font-variant-numeric:tabular-nums;color:var(--klein)}
+  .bar input{width:96px;accent-color:var(--klein);display:block}
+  .grid{display:grid;gap:20px;margin-top:18px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));align-items:start}
+  .cand{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px}
+  .tag{font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--klein);font-weight:500}
+  .cand h3{font-weight:400;font-size:17.5px;margin:2px 0 6px}
+  .cand p{margin:0 0 12px;font-size:13.5px;color:var(--muted);line-height:1.5}
+  .hero{width:100%;border-radius:22.37%;overflow:hidden;box-shadow:0 1px 3px rgba(20,22,26,.18)}
+  .hero svg{display:block;width:100%;height:auto}
+  .small{display:flex;gap:14px;align-items:flex-end;margin-top:12px}
+  .small figure{margin:0;text-align:center}
+  .small .t{border-radius:22.37%;overflow:hidden;display:block;box-shadow:0 1px 2px rgba(20,22,26,.2)}
+  .small .t svg{display:block;width:100%;height:100%}
+  .small figcaption{font-size:10.5px;color:var(--muted);margin-top:5px}
+  .home{border-radius:20px;padding:26px 24px 18px;margin-top:16px;
+    background:linear-gradient(160deg,#2b3a6b,#6d5a86 45%,#c98f79)}
+  .home.light{background:linear-gradient(160deg,#dfe6f6,#f2e6ee 45%,#f8e7cf)}
+  .apps{display:grid;grid-template-columns:repeat(6,60px);gap:24px 28px;justify-content:start}
+  .app{text-align:center}
+  .app .t{width:60px;height:60px;border-radius:22.37%;overflow:hidden;display:block;box-shadow:0 1px 3px rgba(0,0,0,.25)}
+  .app .t svg{display:block;width:100%;height:100%}
+  .app .filler{width:60px;height:60px;border-radius:22.37%;display:block}
+  .app span{display:block;font-size:10px;margin-top:5px;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.45)}
+  .home.light .app span{color:#22202a;text-shadow:none}
+</style>
+</head>
+<body>
+<div style="position:sticky;top:0;z-index:999;background:#0d21a5;color:#fff;font:400 15px/1.5 'Helvetica Neue',Helvetica,Arial,sans-serif;padding:12px 20px;text-align:center"><b>Superseded page.</b> The four G1 retouches — this is where V2 came from, and its sliders still tune V2’s parameters. &nbsp;→&nbsp; the current icon work is always at <a href="icon-current.html" style="color:#fbe29c">icon-current.html</a></div>
+<div class="wrap">
+
+<h1>G1, retouched</h1>
+<p class="sub">Your parameters as the base — cutout 0.43, mark 0.69, leaf 13.5 × 34 — with the
+  roots pulled closer, the elbows rounded, and a little more lean.</p>
+
+<div class="note">
+  <p><b>The elbow is the change that matters most.</b> A vertical stem butted against a horizontal
+    line reads as two pieces; one path turning a corner reads as one thing that grew. The stem and
+    its root are now a single stroke with a rounded turn, exactly as in your sketch — and the
+    centre fork is two rounded turns off one stem rather than a stem crossing a bar.</p>
+  <p><b>Pulling the roots together also lengthens the outer stems</b>, since the outer root line
+    drops toward the centre one. That is the same move, which is why it is one slider.</p>
+</div>
+
+<div class="bar">
+  <div><label>Cutout ⌀ <output id="oR">0.43</output></label><input id="r" type="range" min="0.30" max="0.50" step="0.01" value="0.43"></div>
+  <div><label>Mark <output id="oM">0.69</output></label><input id="m" type="range" min="0.50" max="0.92" step="0.01" value="0.69"></div>
+  <div><label>Leaf w <output id="oW">13.5</output></label><input id="w" type="range" min="9" max="18" step="0.5" value="13.5"></div>
+  <div><label>Leaf h <output id="oH">34</output></label><input id="h" type="range" min="24" max="42" step="1" value="34"></div>
+  <div><label>Lean <output id="oK">0.22</output></label><input id="k" type="range" min="0" max="0.40" step="0.01" value="0.22"></div>
+  <div><label>Root gap <output id="oG">9</output></label><input id="g" type="range" min="4" max="18" step="1" value="9"></div>
+  <div><label>Corner <output id="oC">4.5</output></label><input id="c" type="range" min="0" max="9" step="0.5" value="4.5"></div>
+  <div><label>Root reach <output id="oS">17</output></label><input id="s" type="range" min="8" max="26" step="1" value="17"></div>
+</div>
+
+<h2>Four retouches</h2>
+<div class="grid" id="grid"></div>
+
+<h2>At 60px, on a phone</h2>
+<div id="homes"></div>
+
+</div>
+
+<script>
+var STOPS=[[0,'#0d21a5'],[4.5,'#3f57bd'],[6.5,'#8ba2f0'],[8,'#cfd3ee'],[9.5,'#f6e3b4'],
+  [11,'#f7c948'],[17.5,'#f7c948'],[19.5,'#f8dfa0'],[20.5,'#ecdcdd'],[21.5,'#a9b6ea'],
+  [22.5,'#5d74d2'],[24,'#0d21a5']];
+function hx(c){c=c.replace('#','');return [0,2,4].map(function(i){return parseInt(c.slice(i,i+2),16);});}
+function h2(v){v=v.toString(16);return v.length<2?'0'+v:v;}
+function mix(a,b,t){var A=hx(a),B=hx(b);return '#'+[0,1,2].map(function(i){
+  return h2(Math.round(A[i]+(B[i]-A[i])*t));}).join('');}
+function rampAt(h){var col=STOPS[STOPS.length-1][1];
+  for(var i=1;i<STOPS.length;i++){if(h<=STOPS[i][0]){var a=STOPS[i-1],b=STOPS[i];
+    col=mix(a[1],b[1],(h-a[0])/(b[0]-a[0]));break;}}
+  return mix(col,'#ffffff',0.46);}
+var WHEEL_RUN=[0,3,6,8,10,12].map(rampAt);
+
+/* ---------- leaf ---------- */
+function leafPath(W,H,lean){
+  var Wl=W*(1-lean*0.5), Wr=W*(1+lean*0.5), tx=-W*lean*0.35, wy=H*0.58;
+  return 'M '+tx+' 0'+
+    ' C '+(Wr*0.10)+' '+(H*0.24)+', '+(Wr*0.78)+' '+(wy-H*0.26)+', '+Wr+' '+wy+
+    ' C '+Wr+' '+(wy+H*0.24)+', '+(Wr*0.55)+' '+(H*1.02)+', '+(W*0.06)+' '+H+
+    ' L '+(-W*0.06)+' '+H+
+    ' C '+(-Wl*0.55)+' '+(H*1.02)+', '+(-Wl)+' '+(wy+H*0.24)+', '+(-Wl)+' '+wy+
+    ' C '+(-Wl)+' '+(wy-H*0.26)+', '+(-Wl*0.10)+' '+(H*0.24)+', '+tx+' 0 Z';
+}
+function spindle(x0,y0,x1,y1,w0,N){N=N||22;var L=[],R=[];
+  for(var i=0;i<=N;i++){var t=i/N,x=x0+(x1-x0)*t,y=y0+(y1-y0)*t;
+    var dx=x1-x0,dy=y1-y0,m=Math.hypot(dx,dy)||1,nx=-dy/m,ny=dx/m;
+    var w=w0*Math.sin(Math.PI*Math.pow(t,0.72));
+    L.push([x+nx*w,y+ny*w]);R.push([x-nx*w,y-ny*w]);}
+  R.reverse();
+  return 'M '+L.concat(R).map(function(q){return q[0].toFixed(2)+' '+q[1].toFixed(2);}).join(' L ')+' Z';}
+
+/* ---------- the grove: stems that turn into roots, in one stroke ---------- */
+var ROOT_BOT=82;
+function grove(fg,bg,o){
+  var W=o.w,H=o.h,R=o.c,reach=o.s,SW=1.9;
+  var xs=[24,50,76], tips=[16,2,22];
+  var ry=ROOT_BOT-o.g;              /* the outer root line */
+  var cy=ROOT_BOT;                  /* the centre root, running beneath it */
+  var s='', stroke=' stroke="'+fg+'" stroke-width="'+SW+
+        '" stroke-linecap="round" stroke-linejoin="round" fill="none"';
+  /* outer: down, then a rounded turn outward */
+  [[24,-1,0],[76,1,2]].forEach(function(p){
+    var cx=p[0], dir=p[1], base=tips[p[2]]+H;
+    s+='<path d="M '+cx+' '+base.toFixed(1)+' L '+cx+' '+(ry-R).toFixed(1)+
+       ' Q '+cx+' '+ry+' '+(cx+dir*R)+' '+ry+' L '+(cx+dir*reach)+' '+ry+'"'+stroke+'/>';
+  });
+  /* centre: down, then a rounded turn each way - a fork, not a crossing */
+  var cbase=tips[1]+H, half=reach+ (50-24) - 8;
+  s+='<path d="M 50 '+cbase.toFixed(1)+' L 50 '+(cy-R).toFixed(1)+
+     ' Q 50 '+cy+' '+(50-R)+' '+cy+' L '+(50-half)+' '+cy+'"'+stroke+'/>';
+  s+='<path d="M 50 '+(cy-R).toFixed(1)+' Q 50 '+cy+' '+(50+R)+' '+cy+' L '+(50+half)+' '+cy+'"'+stroke+'/>';
+  /* leaves last, so they sit over the stems */
+  xs.forEach(function(cx,i){
+    s+='<g transform="translate('+cx+','+tips[i]+')">'+
+       '<path d="'+leafPath(W,H,o.k)+'" fill="'+fg+'"/>'+
+       '<path d="'+spindle(0,H*0.90,0,H*0.12,W*0.105)+'" fill="'+bg+'"/></g>';
+  });
+  return s;
+}
+function groveExt(o){
+  var half=o.s+26-8, left=Math.min(24-o.s, 50-half), right=Math.max(76+o.s, 50+half);
+  return {x:left-1.5, y:0, w:(right-left)+3, h:ROOT_BOT+1.5};
+}
+
+var UID=0;
+function tile(px,o){
+  var id='g'+(UID++), r=px*o.r;
+  var s='<defs><linearGradient id="'+id+'" x1="0" y1="0" x2="1" y2="1">'+
+    WHEEL_RUN.map(function(x,i){return '<stop offset="'+(i/(WHEEL_RUN.length-1)*100)+'%" stop-color="'+x+'"/>';}).join('')+
+    '</linearGradient></defs>'+
+    '<rect width="'+px+'" height="'+px+'" fill="url(#'+id+')"/>'+
+    '<circle cx="'+px/2+'" cy="'+px/2+'" r="'+r+'" fill="#ffffff"/>';
+  var e=groveExt(o), k=(2*r*o.m)/Math.max(e.w,e.h);
+  var tx=px/2-(e.x+e.w/2)*k, ty=px/2-(e.y+e.h/2)*k;
+  return '<svg viewBox="0 0 '+px+' '+px+'" width="'+px+'" height="'+px+'">'+s+
+    '<g transform="translate('+tx.toFixed(2)+','+ty.toFixed(2)+') scale('+k.toFixed(4)+')">'+
+    grove('#14161a','#ffffff',o)+'</g></svg>';
+}
+
+var VARIANTS=[
+  {id:'V1',name:'Tight roots, soft elbow',d:{g:9,c:4.5},
+   why:'Your note applied straight: the outer root line drops toward the centre one, so the outer stems lengthen and the two root lines sit close enough to read as one system.'},
+  {id:'V2',name:'Tighter still, rounder elbow',d:{g:6,c:6.5},
+   why:'Pushed further — the roots nearly stack, and the turn is generous enough to be visible at 60px.'},
+  {id:'V3',name:'Tight, crisp elbow',d:{g:8,c:2.5},
+   why:'The same spacing with a much smaller radius. Sharper and more diagrammatic; closer to a technical drawing than a sketch.'},
+  {id:'V4',name:'Tight, longer reach',d:{g:9,c:4.5,s:22},
+   why:'Roots close together and reaching further toward the edge, so the mark spans more of the circle.'}
+];
+
+function base(){return {r:+r.value,m:+m.value,w:+w.value,h:+h.value,k:+k.value,g:+g.value,c:+c.value,s:+s.value};}
+function optsFor(v){var o=base();for(var kk in v.d)o[kk]=v.d[kk];return o;}
+function draw(){
+  var b=base();
+  oR.value=b.r.toFixed(2);oM.value=b.m.toFixed(2);oW.value=b.w;oH.value=b.h;
+  oK.value=b.k.toFixed(2);oG.value=b.g;oC.value=b.c.toFixed(1);oS.value=b.s;
+  document.getElementById('grid').innerHTML=VARIANTS.map(function(v){
+    var o=optsFor(v);
+    return '<div class="cand"><span class="tag">'+v.id+'</span><h3>'+v.name+'</h3><p>'+v.why+'</p>'+
+      '<span class="hero">'+tile(512,o)+'</span><div class="small">'+
+      [[76,'76'],[60,'60']].map(function(z){
+        return '<figure><span class="t" style="width:'+z[0]+'px;height:'+z[0]+'px">'+tile(z[0]*3,o)+
+          '</span><figcaption>'+z[1]+'px</figcaption></figure>';}).join('')+'</div></div>';
+  }).join('');
+  document.getElementById('homes').innerHTML=['','light'].map(function(wl){
+    return '<div class="home '+wl+'"><div class="apps">'+
+      VARIANTS.map(function(v){return '<div class="app"><span class="t">'+tile(180,optsFor(v))+
+        '</span><span>'+v.id+'</span></div>';}).join('')+
+      '<div class="app"><span class="filler" style="background:#c9d0e8"></span><span>Weather</span></div>'+
+      '<div class="app"><span class="filler" style="background:#e6d5c4"></span><span>Notes</span></div>'+
+      '</div></div>';}).join('');
+}
+['r','m','w','h','k','g','c','s'].forEach(function(id){document.getElementById(id).addEventListener('input',draw);});
+draw();
+</script>
+</body>
+</html>

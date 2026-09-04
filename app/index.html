@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#eaeefb" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#080c26" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Pando">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="icon" href="icons/icon-192.png">
+<title>Pando</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header class="top">
+  <span class="brand" id="brand"></span>
+  <button class="datebtn" id="datebtn" type="button" aria-haspopup="listbox"></button>
+</header>
+
+<div class="picker" id="picker" hidden role="listbox" aria-label="Date"></div>
+
+<main>
+  <div class="dialbox">
+    <div class="tog" id="tog"></div>
+    <svg class="dial" id="dial" viewBox="0 0 300 300" width="300" height="300"
+         role="slider" aria-label="Time" aria-valuemin="0" aria-valuemax="1439"></svg>
+  </div>
+
+  <ul class="cities" id="cities"></ul>
+
+  <button class="add" id="add" type="button">
+    <span>Add city</span><span class="plus" aria-hidden="true"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5.5v13M5.5 12h13"/></svg></span>
+  </button>
+
+  <p class="empty" id="empty">
+    Add a city to begin. The first one is <b>home</b> — every other time is shown against it.
+  </p>
+</main>
+
+<div class="sheet" id="sheet" hidden>
+  <div class="sheetcard" role="dialog" aria-label="Add a city">
+    <div class="searchrow">
+      <input id="q" type="search" placeholder="Search cities" autocomplete="off"
+             autocorrect="off" autocapitalize="off" spellcheck="false">
+      <button class="cancel" id="cancel" type="button">Cancel</button>
+    </div>
+    <ul class="results" id="results"></ul>
+    <p class="hint" id="hint">Start typing a city name.</p>
+  </div>
+</div>
+
+<footer>City data from <b>GeoNames</b>, CC BY 4.0 · times from your device’s own timezone database</footer>
+
+<script src="app.js"></script>
+<script>
+/* Offline + Add to Home Screen. Registration is fire-and-forget: a browser without
+   service workers, or a page opened over file://, just runs as a normal web page.
+   Skipped inside a frame: paper-options.html runs several copies of the app to compare
+   themes, and a cache serving them yesterday's stylesheet makes the comparison a lie. */
+if ('serviceWorker' in navigator && window.top === window) {
+  window.addEventListener('load', function () {
+    navigator.serviceWorker.register('sw.js').catch(function () {});
+  });
+}
+</script>
+</body>
+</html>
