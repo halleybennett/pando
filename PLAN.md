@@ -466,7 +466,32 @@ What is *not* worth retrying: any scheme that senses drag speed. Three rounds of
 because fingers start slow, so any velocity threshold fires within the first few move events of
 every drag. See *Slow-drag fine adjust* under Locked decisions.
 
-**3. Usage analytics.** Worth knowing this is not free on GitHub Pages: it is static hosting with
+**3. The first run lands strangely.** Halley, after using it: the sheet appears before you have
+seen the app, and then choosing a city produces *two* rows — yours and Aspen — so the choice does
+not feel like yours. The question is being asked with no context, and the answer arrives with an
+uninvited passenger.
+
+Worth separating two things that are currently tangled: **asking** (which replaced the timezone
+guess, and was right — see *Seeding* under Locked decisions) and **when** it is asked.
+
+Two directions Halley raised:
+
+- **Seed Aspen, then prompt for home on a delay.** The app opens as a working app with something
+  in it, you get a moment to see what it is, and only then is the question asked. The prompt has
+  context by the time it arrives. Cost: a timed interruption is its own kind of rude, and the
+  delay needs a value nobody can justify from first principles.
+- **Seed Aspen and say nothing** — rely on the existing controls to let you make it yours, with a
+  small motion cue so they get discovered. Worth knowing that **swipe-to-delete and Set home
+  already exist** and always have; they are not missing, they are invisible. A row swipes left to
+  reveal Delete, and Set home sits in the same panel. So this option is really *"make the existing
+  affordances discoverable"*, and a one-time bounce on the first row is a reasonable way in.
+  Cost: someone who never finds them is stuck looking at Aspen, and Aspen is not their home.
+
+A third worth considering: **seed Aspen, and let the empty second slot do the asking** — an
+"Add your city" row that reads as an invitation rather than a modal. No timer, no interruption, no
+uninvited passenger, and the first tap opens the sheet you already have.
+
+**4. Usage analytics.** Worth knowing this is not free on GitHub Pages: it is static hosting with
 no server logs, so anything at all means adding a client-side script. Candidates —
 **GoatCounter** (free for personal use, no cookies, ~3KB), **Plausible** (~£7/mo, no cookies),
 self-hosted **Umami**. Two caveats specific to Pando: the service worker means repeat visits can
@@ -475,7 +500,7 @@ any figure will undercount real use, and should be read as "sessions that reache
 not "sessions". Also: adding a third-party script to a page that currently makes **zero** network
 calls after first load is a real change in what the app is. Worth deciding deliberately.
 
-**4. The search sheet's position is wrong on desktop.** It is `position:fixed; inset:0` anchored to
+**5. The search sheet's position is wrong on desktop.** It is `position:fixed; inset:0` anchored to
 the *top* of the viewport, so tapping **Add city** — which sits at the bottom of the list — throws
 the field to the top of the screen. On a phone that is defensible: the sheet lands near the
 keyboard and the viewport is short. On a desktop browser it is a long way from where you clicked,
