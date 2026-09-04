@@ -344,10 +344,14 @@
       $('cities').innerHTML = '';
     }
 
-    drawArc(m);
+    /* With no cities the dial has nothing to speak for - currentMins() falls back to UTC, and
+       showing that reads as a real time for a place nobody named. Better to show nothing. */
+    drawArc(cities.length ? m : 0);
     var pr = parts(m);
     var big = $('dial').querySelector('.big');
-    big.innerHTML = pr.num + (pr.ap ? '<tspan font-size="20" dx="6" fill="' + T.muted + '">' + pr.ap + '</tspan>' : '');
+    big.innerHTML = cities.length
+      ? pr.num + (pr.ap ? '<tspan font-size="20" dx="6" fill="' + T.muted + '">' + pr.ap + '</tspan>' : '')
+      : '';
     $('dial').querySelector('.hometag').textContent = cities.length ? cities[0].name.toUpperCase() : '';
     $('dial').setAttribute('aria-valuenow', m);
     $('dial').setAttribute('aria-valuetext', parts(m).num + (parts(m).ap ? ' ' + parts(m).ap : ''));
@@ -544,8 +548,11 @@
   function openSheet() {
     if (cities.length >= MAX) return;
     $('sheet').hidden = false; $('q').value = ''; $('results').innerHTML = '';
-    $('hint').hidden = false; $('hint').textContent = DB ? 'Start typing a city name.'
-      : dbFail ? 'City list unavailable — reconnect to add a city.' : 'Loading cities…';
+    $('hint').hidden = false;
+    $('hint').textContent = !DB ? (dbFail ? 'City list unavailable — reconnect to add a city.'
+                                          : 'Loading cities…')
+      : firstRun ? 'Which city are you in? It becomes your home, and every other time is shown against it.'
+      : 'Start typing a city name.';
     setTimeout(function () { $('q').focus(); }, 30);
   }
   function closeSheet() { $('sheet').hidden = true; }
@@ -561,13 +568,13 @@
       if (pin.getAttribute('aria-disabled') === 'true') return;
       var p = PINNED.find(function (x) { return x.name === pin.dataset.pin; });
       cities.push({ name: p.name, cc: p.cc, country: p.country, tz: p.tz });
-      closeSheet(); render(); save(); return;
+      firstRun = false; closeSheet(); render(); save(); return;
     }
     var li = e.target.closest('li[data-idx]');
     if (!li || li.getAttribute('aria-disabled') === 'true') return;
     var r = DB.c[+li.dataset.idx];
     cities.push({ name: r[0], cc: DB.cc[r[1]], country: DB.country[r[1]], tz: DB.tz[r[2]] });
-    closeSheet(); render(); save();
+    firstRun = false; closeSheet(); render(); save();
   });
 
   /* ---------- live ticking ---------- */
@@ -582,36 +589,11 @@
   function stopTick() { clearTimeout(tickTimer); tickTimer = null; }
 
   /* ---------- boot ---------- */
-  /* Seed only ever runs on an empty list - first open, or after you have cleared it out. */
-  function seed() {
-    /* Where you actually are becomes home, then one pinned city underneath, so
-       the wink reads as a demonstration of stacking rather than a claim about you. */
-    var localTz = null, seededLocal = false;
-    try { localTz = Intl.DateTimeFormat().resolvedOptions().timeZone; } catch (e) {}
-    if (localTz) {
-      var li = DB.c.findIndex(function (r) { return DB.tz[r[2]] === localTz; });
-      if (li >= 0) {
-        cities.push({ name: DB.c[li][0], cc: DB.cc[DB.c[li][1]],
-          country: DB.country[DB.c[li][1]], tz: localTz });
-        seededLocal = true;
-      }
-    }
-    var winks = PINNED.filter(function (p) { return p.tz !== localTz; });
-    var pick = winks[Math.floor(Math.random() * winks.length)] || PINNED[0];
-    cities.push({ name: pick.name, cc: pick.cc, country: pick.country, tz: pick.tz });
-    if (!seededLocal) cities.reverse();
-  }
-
-  /* A scheme change repaints the dial: every colour in it was resolved at draw time. */
-  if (window.matchMedia) {
-    var mq = window.matchMedia('(prefers-color-scheme: dark)');
-    var onScheme = function () { readTheme(); buildDial(); render(); };
-    if (mq.addEventListener) mq.addEventListener('change', onScheme);
-    else if (mq.addListener) mq.addListener(onScheme);
-    /* Same repaint, on demand. paper-options.html overrides the tokens from outside the
-       frame and then fires this; nothing in the app itself dispatches it. */
-    window.addEventListener('pando:retheme', onScheme);
-  }
+  /* No seeding. `Intl` gives a *timezone*, not a city, and Europe/Madrid covers the Balearics
+     as well as the mainland - so guessing meant picking the largest city in the zone and calling
+     it yours. For anyone outside that one city it was simply wrong, and the person it was most
+     wrong for was the one whose city is pinned. Asking once costs a tap and is always right. */
+  var firstRun = false;
 
   buildDial();
   buildPicker();
@@ -622,8 +604,8 @@
   fetch('data/cities.json').then(function (r) { return r.json(); }).then(function (db) {
     DB = db;
     if (cities.length) return;
-    seed(); save(); render();
-    if (isLive()) startTick();
+    firstRun = true;
+    openSheet();          /* nothing saved: ask which city is home */
   }).catch(function () {
     dbFail = true;
     if (cities.length) return;      // saved cities still tell the time; only search is lost

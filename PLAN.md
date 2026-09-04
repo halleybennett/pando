@@ -325,7 +325,7 @@ filled or outlined at constant size.
 
 | Area | Decision |
 |---|---|
-| **Home city** | First city added becomes **Home** and sets what the dial reads. Marked in the list; tap any other city to promote it. Defaults to the device timezone on first open. |
+| **Home city** | First city added becomes **Home** and sets what the dial reads. Marked in the list; tap any other city to promote it. **The app asks on first open** — see *Seeding* below. |
 | **Month sampling** | A chosen month samples the **1st of that month**, and says so on screen (e.g. "1 March"). |
 | **Year** | Always the current year. |
 | **Font** | Helvetica Neue Light (300). Native on Mac & iOS — no webfont. Fallback: Helvetica → Arial. |
@@ -335,7 +335,8 @@ filled or outlined at constant size.
 | **Mode** | Light only. |
 | **Max cities** | 6. |
 | **City data** | GeoNames `cities15000`, trimmed to population ≥50,000 **plus every national capital**, districts stripped. 11,486 cities, 247KB (89KB gzipped), bundled — no API, works offline. **CC BY 4.0, so the attribution in the footer is a licence condition, not decoration.** |
-| **Pinned cities** | **Aspen** (America/Denver) and **Palma de Mallorca** (Europe/Madrid) are hand-added. Aspen's population is ~7,400, under the GeoNames floor, so it is genuinely absent from the dataset; Palma exists but is filed as bare "Palma". **Your own city seeds home first**, with one pinned city added beneath it as a demonstration of how cities stack — the wink must not claim to be where you are. If your device zone matches one pinned city, the other is used. Both searchable, incl. "mallorca" / "majorca". |
+| **Seeding** | **None. Reversed 4 Sept 2026** (was: default to the device timezone). `Intl` gives a *timezone*, not a city, and `Europe/Madrid` covers the Balearics as well as the mainland — so guessing meant taking the largest city in the zone and calling it yours. Halley opened the live build and it said her home was Madrid. Worse, Palma is *pinned*, and the wink logic deliberately excluded pinned cities sharing your timezone — so the one city that was actually hers was the one city that could never appear. First open now shows the search sheet asking which city you are in. Costs one tap, is always right, and the answer persists. The dial shows nothing until a city exists, rather than a UTC fallback that reads as a real time for a place nobody named. |
+| **Pinned cities** | **Aspen** (America/Denver) and **Palma de Mallorca** (Europe/Madrid) are hand-added. Aspen's population is ~7,400, under the GeoNames floor, so it is genuinely absent from the dataset; Palma exists but is filed as bare "Palma". **Your own city seeds home first**, with one pinned city added beneath it as a demonstration of how cities stack — the wink must not claim to be where you are. If your device zone matches one pinned city, the other is used. Both searchable, incl. "mallorca" / "majorca". The "wink" that added one of them beneath your seeded city is gone with the seeding. |
 | **Dial form** | **Full centered wheel**, **outer arc** — the arc rides between the ramp band and the hour ticks. The edge-anchored version from the reference app was tried and rejected as a step backwards. |
 | **Dial marker** | The gradient arc's own **rounded cap**. No notch, bar or knob. Works because the whole dial is the drag surface. |
 | **Ramp timing** | Skewed to the hour, not symmetric around noon: cool roughly **21:00–06:30**. Deliberately close to the 21:00–06:59 asleep threshold so ring and rows broadly agree — but they are *not* the same number, and the ramp is a gradient with no hard edge, so do not describe them as identical. Painted as 144 conic segments. |
