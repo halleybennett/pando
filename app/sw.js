@@ -1,15 +1,17 @@
 /* Pando service worker.
    Two strategies, because the app has two kinds of file:
 
-   - The shell (html/css/js) is stale-while-revalidate: served from cache instantly,
-     refreshed in the background, so a new version lands on the *next* open. That means
-     no version constant to remember to bump - the cache heals itself.
+   - The shell (html/css/js) is NETWORK-FIRST with a 3s timeout, falling back to cache.
+     It was stale-while-revalidate, which meant every change took two launches to appear and
+     an installed app could sit on an old build without saying so. Correctness of "what am I
+     running" matters more here than saving a few milliseconds on launch: online you always
+     get the current build, offline you get the last one you had.
    - cities.json is cache-first and never revalidated. It is 247KB of GeoNames extract
      that only changes when we deliberately rebuild it, so paying for a revalidation on
      every launch would buy nothing. Bump CACHE below if that file ever changes. */
 'use strict';
 
-var CACHE = 'pando-v1';
+var CACHE = 'pando-v2';   /* bumped when the strategy changed */
 var SHELL = ['./', './index.html', './styles.css', './app.js', './manifest.json'];
 var IMMUTABLE = /\/data\/cities\.json$/;
 
@@ -52,15 +54,19 @@ self.addEventListener('fetch', function (e) {
   }
 
   e.respondWith(caches.open(CACHE).then(function (c) {
-    return c.match(req).then(function (hit) {
-      var net = fetch(req).then(function (res) {
-        if (res.ok) c.put(req, res.clone());
-        return res;
-      }).catch(function () {
-        /* Offline. A navigation still has to render something, so fall back to the shell. */
+    var fromCache = function () {
+      return c.match(req).then(function (hit) {
         return hit || (req.mode === 'navigate' ? c.match('./index.html') : Response.error());
       });
-      return hit || net;
+    };
+    /* Don't let a slow or half-open network hold the app hostage - after 3s, serve what we have. */
+    var timeout = new Promise(function (resolve) {
+      setTimeout(function () { resolve(fromCache()); }, 3000);
     });
+    var network = fetch(req).then(function (res) {
+      if (res.ok) c.put(req, res.clone());
+      return res;
+    }).catch(fromCache);
+    return Promise.race([network, timeout]);
   }));
 });

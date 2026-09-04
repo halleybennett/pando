@@ -352,7 +352,7 @@ filled or outlined at constant size.
 | **What persists** | Cities, their order (so home), and 12h/24h — always. The dial position and the chosen month — **only if you were last here within the hour**. Same session keeps its context; the next morning opens live. A frozen time under a stale `1 MAR` reads as a bug, and always-restore would show you that most mornings. |
 | **Empty list** | Re-seeds. An empty saved list is treated as no saved list, so the seed logic runs again. Distinguishing “never opened” from “emptied on purpose” needs an extra flag to buy a state nobody wants to sit in. |
 | **Corrupt saved state** | Rows whose IANA zone the browser no longer knows are dropped, not trusted — one bad zone inside `Intl` would take the whole app down. If the dropped row was home, the next city becomes home. |
-| **Cache strategy** | Shell (html/css/js) is stale-while-revalidate, so a new version lands on the next open with no version constant to bump. `cities.json` is cache-first and never revalidated — 247KB that only changes when it is deliberately rebuilt. Bump `CACHE` in `sw.js` if it ever is. |
+| **Cache strategy** | Shell (html/css/js) is **network-first with a 3s timeout**, falling back to cache. It was stale-while-revalidate, which meant every change took two launches to appear — and an installed app, having no reload button, could sit on an old build silently. Changed 4 Sept 2026 after that happened twice in one afternoon: knowing what you are running matters more than a few milliseconds at launch. Online you get the current build; offline you get the last one you had. `cities.json` stays cache-first and is never revalidated — 247KB that only changes when deliberately rebuilt. Bump `CACHE` in `sw.js` if it ever is. |
 
 ## Open
 
