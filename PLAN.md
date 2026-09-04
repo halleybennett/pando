@@ -441,7 +441,32 @@ does. The rows already own `pointerdown`/`pointermove` for swipe-to-delete, so t
 to share that gesture space — a long-press to pick up is the usual answer, and it must not fight
 the horizontal swipe.
 
-**2. Usage analytics.** Worth knowing this is not free on GitHub Pages: it is static hosting with
+**2. The dial still is not good enough to set an arbitrary time.** Detents made the quarter hours
+easy and reliable — Halley's verdict on the shipped version was "better but definitely not great",
+and the honest reading is that quarter hours now work while everything else is still out of reach.
+
+The root cause is unchanged and is not a tuning problem: **the full 24 hours maps 1:1 onto a
+300pt dial**, so one minute is half a pixel. Detents redistribute that budget; they cannot create
+more of it. Every option below works by **breaking the 1:1 mapping** — that is the only lever left.
+
+- **Gear the drag by distance from the centre.** Near the rim, 1:1 as now; drag your finger *away*
+  from the dial and the ratio falls, so the same finger travel covers fewer minutes. This is how
+  precision knobs work in audio and design software. It is the strongest candidate: it solves the
+  actual constraint (input resolution, not grid choice), needs no mode to enter, cannot be
+  triggered by accident, and is self-teaching — wanting more control makes you move outward
+  anyway. The angle maths already uses distance from centre, so the hook is there.
+- **Two rings.** Outer sets the hour, inner sets minutes. Precise and obvious, but it doubles the
+  dial's job and the layout has 16pt of spare vertical, so something else would have to give.
+- **Momentum, settling into a detent.** Fixes the feel of stopping rather than the resolution.
+  Worth having regardless, but it will not make 11:07 reachable.
+- **A bigger dial.** Would genuinely help — and is not available. The layout sums to 715pt into
+  731, and that is arithmetic, not taste.
+
+What is *not* worth retrying: any scheme that senses drag speed. Three rounds of that failed
+because fingers start slow, so any velocity threshold fires within the first few move events of
+every drag. See *Slow-drag fine adjust* under Locked decisions.
+
+**3. Usage analytics.** Worth knowing this is not free on GitHub Pages: it is static hosting with
 no server logs, so anything at all means adding a client-side script. Candidates —
 **GoatCounter** (free for personal use, no cookies, ~3KB), **Plausible** (~£7/mo, no cookies),
 self-hosted **Umami**. Two caveats specific to Pando: the service worker means repeat visits can
@@ -450,7 +475,7 @@ any figure will undercount real use, and should be read as "sessions that reache
 not "sessions". Also: adding a third-party script to a page that currently makes **zero** network
 calls after first load is a real change in what the app is. Worth deciding deliberately.
 
-**3. The search sheet's position is wrong on desktop.** It is `position:fixed; inset:0` anchored to
+**4. The search sheet's position is wrong on desktop.** It is `position:fixed; inset:0` anchored to
 the *top* of the viewport, so tapping **Add city** — which sits at the bottom of the list — throws
 the field to the top of the screen. On a phone that is defensible: the sheet lands near the
 keyboard and the viewport is short. On a desktop browser it is a long way from where you clicked,
