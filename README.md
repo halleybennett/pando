@@ -6,7 +6,7 @@ Drag the 24-hour dial to ask "what time is it there when it's 3pm here"; every c
 from the one marked **home**. A month selector recomputes real daylight saving for any date,
 so you can check what a call looks like after the clocks change.
 
-**[Open it →](https://pentixolpalma.github.io/pando/)** · add it to your home screen and it
+**[Open it →](https://halleybennett.github.io/pando/)** · add it to your home screen and it
 works offline.
 
 ---
