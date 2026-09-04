@@ -420,8 +420,12 @@
       if (!cities.length) return;
       try { svg.setPointerCapture(e.pointerId); } catch (_) {}
       svg.classList.add('drag');
-      drag = { last: ang(e), t: performance.now() };
       if (dialMins === null) dialMins = currentMins();   // dragging leaves live mode
+      /* `raw` accumulates the drag unrounded. Rounding the running value on every move threw
+         away any movement smaller than half a step - so at the 5-minute step nothing under
+         2.5 minutes of arc registered at all, and a slow drag did nothing. The grid is applied
+         for display only; the underlying position is continuous. */
+      drag = { last: ang(e), t: performance.now(), raw: dialMins };
       stopTick();
       e.preventDefault();
     });
@@ -431,8 +435,8 @@
       if (d > Math.PI) d -= 2 * Math.PI; if (d < -Math.PI) d += 2 * Math.PI;
       fine = Math.abs(d) / Math.max(now - drag.t, 1) * 1000 < 0.75;
       var step = fine ? 1 : 5;
-      dialMins = Math.round((dialMins + d / (2 * Math.PI) * 1440) / step) * step;
-      dialMins = ((dialMins % 1440) + 1440) % 1440;
+      drag.raw += d / (2 * Math.PI) * 1440;
+      dialMins = ((Math.round(drag.raw / step) * step % 1440) + 1440) % 1440;
       drag.last = a; drag.t = now;
       render();
     });
@@ -568,13 +572,15 @@
       if (pin.getAttribute('aria-disabled') === 'true') return;
       var p = PINNED.find(function (x) { return x.name === pin.dataset.pin; });
       cities.push({ name: p.name, cc: p.cc, country: p.country, tz: p.tz });
-      firstRun = false; closeSheet(); render(); save(); return;
+      if (firstRun) { addWink(); firstRun = false; }
+      closeSheet(); render(); save(); return;
     }
     var li = e.target.closest('li[data-idx]');
     if (!li || li.getAttribute('aria-disabled') === 'true') return;
     var r = DB.c[+li.dataset.idx];
     cities.push({ name: r[0], cc: DB.cc[r[1]], country: DB.country[r[1]], tz: DB.tz[r[2]] });
-    firstRun = false; closeSheet(); render(); save();
+    if (firstRun) { addWink(); firstRun = false; }
+    closeSheet(); render(); save();
   });
 
   /* ---------- live ticking ---------- */
@@ -594,6 +600,20 @@
      it yours. For anyone outside that one city it was simply wrong, and the person it was most
      wrong for was the one whose city is pinned. Asking once costs a tap and is always right. */
   var firstRun = false;
+
+  /* The wink: once you have said where home is, one pinned city drops in beneath it, so the
+     list arrives as a list rather than a single row. It is chosen from a zone that is NOT yours,
+     so it reads as a demonstration of stacking rather than a claim about where you are.
+     Kept when the seeding went - the two were tangled in one function, and only the guessing
+     was the problem. */
+  function addWink() {
+    var homeTzNow = cities.length ? cities[0].tz : null;
+    var winks = PINNED.filter(function (p) { return p.tz !== homeTzNow; });
+    if (!winks.length) return;
+    var pick = winks[Math.floor(Math.random() * winks.length)];
+    if (cities.some(function (c) { return c.name === pick.name && c.tz === pick.tz; })) return;
+    cities.push({ name: pick.name, cc: pick.cc, country: pick.country, tz: pick.tz });
+  }
 
   buildDial();
   buildPicker();
