@@ -424,6 +424,37 @@ filled or outlined at constant size.
 
 ---
 
+## Next version — raised 4 Sept 2026, after using the live build
+
+Not scoped or scheduled. Recorded here so the reasoning survives.
+
+**1. Drag to reorder the city list.** Order currently only changes via *Set home*, which promotes a
+city to the top — there is no way to arrange the rest. Note that order is not cosmetic here: index
+0 *is* home and drives the dial, so a reorder gesture and the home rule have to agree. Simplest
+version that keeps them consistent: dragging to position 0 promotes to home, exactly as the button
+does. The rows already own `pointerdown`/`pointermove` for swipe-to-delete, so the drag will have
+to share that gesture space — a long-press to pick up is the usual answer, and it must not fight
+the horizontal swipe.
+
+**2. Usage analytics.** Worth knowing this is not free on GitHub Pages: it is static hosting with
+no server logs, so anything at all means adding a client-side script. Candidates —
+**GoatCounter** (free for personal use, no cookies, ~3KB), **Plausible** (~£7/mo, no cookies),
+self-hosted **Umami**. Two caveats specific to Pando: the service worker means repeat visits can
+be served entirely from cache, and the whole point of the app is that it works **offline** — so
+any figure will undercount real use, and should be read as "sessions that reached the network",
+not "sessions". Also: adding a third-party script to a page that currently makes **zero** network
+calls after first load is a real change in what the app is. Worth deciding deliberately.
+
+**3. The search sheet's position is wrong on desktop.** It is `position:fixed; inset:0` anchored to
+the *top* of the viewport, so tapping **Add city** — which sits at the bottom of the list — throws
+the field to the top of the screen. On a phone that is defensible: the sheet lands near the
+keyboard and the viewport is short. On a desktop browser it is a long way from where you clicked,
+and the jump reads as a glitch. Options: anchor the sheet near the button that opened it, a
+centred modal, or a popover attached to the Add row. The mobile and desktop cases genuinely want
+different things, so this may be one place a media query earns its keep.
+
+---
+
 ## Cost
 
 | Path | Up-front | Ongoing | Gets you |
