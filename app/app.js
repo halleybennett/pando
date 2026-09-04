@@ -4,15 +4,14 @@
 (function () {
   'use strict';
 
-  var BUILD = '2026-09-04 13:49';
+  var BUILD = '2026-09-04 14:17';
   var MAX = 6;
   var DB = null;
   var cities = [];          // [{name, cc, country, tz}] - index 0 is home
   var dialMins = null;      // null = following the clock ("live")
   var selMonth = null;      // null = today
   var use24 = true;
-  var fine = false;         // slow-drag precision mode
-  var fineTimer = null, tickTimer = null;
+  var tickTimer = null;
 
   var $ = function (id) { return document.getElementById(id); };
   var MONTHS = ['January','February','March','April','May','June',
@@ -124,8 +123,8 @@
      instead, which keeps one source of truth and makes a second colour scheme a stylesheet
      change rather than a hunt through this file. */
   var T = {};
-  var TOKENS = ['ink', 'muted', 'dial-face', 'tick-maj', 'tick-min', 'tick-maj-fine',
-                'tick-min-fine', 'ramp-mode', 'ramp-toward', 'ramp-soften', 'ramp-floor',
+  var TOKENS = ['ink', 'muted', 'dial-face', 'tick-maj', 'tick-min',
+                'ramp-mode', 'ramp-toward', 'ramp-soften', 'ramp-floor',
                 'ramp-ceil', 'moon', 'sun', 'sun-edge'];
   function readTheme() {
     var cs = getComputedStyle(document.documentElement);
@@ -246,6 +245,28 @@
     return shade(col);
   }
 
+  /* ---------- where the dial lets you stop ----------
+     The whole day is ~754px of arc, so one minute is half a pixel: minute precision by finger is
+     below the resolution of the input, whatever scheme is used. Detents do not add precision,
+     they REDISTRIBUTE it - the quarter hours get a wide landing zone and everything else shares
+     what is left.
+
+     Within DEAD minutes of a quarter hour the drag produces no change, so 11:30 is a 6-minute
+     (3.1px) target - 20% wider than the old uniform 5-minute step used to be, and unlike a plain
+     grid it HOLDS you: overshoot a little and you are still on 11:30 rather than on 11:31. Past
+     that the remaining travel is compressed, so every other minute is still reachable, just
+     fiddly - 11:07 costs about a third of a pixel.
+
+     This replaces the speed-sensing "slow drag" mode, which was a mode you could not see, entered
+     by accident, that changed the rules under your finger. */
+  var DETENT = 15, DEAD = 3;
+  function detent(raw) {
+    var n = Math.round(raw / DETENT), off = raw - n * DETENT, a = Math.abs(off);
+    var out = a <= DEAD ? 0 : (a - DEAD) * (DETENT / 2) / (DETENT / 2 - DEAD);
+    var m = Math.round(n * DETENT + (off < 0 ? -out : out));
+    return ((m % 1440) + 1440) % 1440;
+  }
+
   /* ---------- dial geometry ---------- */
   var C = 150, R_FACE = 78, R_BAND = 106, TICK_IN = 126, TICK_OUT = 135, R_NUM = 144;
   var ARC = { r: 116, w: 10 };
@@ -363,12 +384,6 @@
       ? '<span>12h</span><span class="sep">·</span><b>24h</b>'
       : '<b>12h</b><span class="sep">·</span><span>24h</span>') + '</span>';
 
-    $('dial').querySelectorAll('.tk').forEach(function (t) {
-      var maj = t.dataset.maj === '1';
-      t.setAttribute('stroke-width', fine ? (maj ? 2 : 1.3) : (maj ? 1.2 : 0.7));
-      t.setAttribute('stroke', fine ? (maj ? T['tick-maj-fine'] : T['tick-min-fine'])
-                                    : (maj ? T['tick-maj'] : T['tick-min']));
-    });
 
     $('empty').hidden = cities.length > 0;
     $('add').hidden = cities.length >= MAX;
@@ -457,8 +472,7 @@
          away any movement smaller than half a step - so at the 5-minute step nothing under
          2.5 minutes of arc registered at all, and a slow drag did nothing. The grid is applied
          for display only; the underlying position is continuous. */
-      fine = false;                     /* every drag starts coarse */
-      drag = { last: ang(e), t: performance.now(), raw: dialMins };
+      drag = { last: ang(e), raw: dialMins };
       stopTick();
       e.preventDefault();
     });
@@ -466,19 +480,9 @@
       if (!drag) return;
       var a = ang(e), now = performance.now(), d = a - drag.last;
       if (d > Math.PI) d -= 2 * Math.PI; if (d < -Math.PI) d += 2 * Math.PI;
-      /* The whole day is about 754px of arc, so a 5-minute step was 2.6px - landing on 9:00
-         rather than 8:55 needed a pixel and a half of finger precision, which is not a thing.
-         The default step is now a quarter hour: 7.8px, and the times people actually aim for
-         (9:00, 9:15, 9:30) are the only ones on the grid.
-
-         Slow down once and it drops to single minutes for the rest of the drag - sticky, not
-         re-evaluated every frame, so it cannot flicker between grids under your finger. The
-         ticks thicken and turn Klein to say precision is on. */
-      if (!fine && Math.abs(d) / Math.max(now - drag.t, 1) * 1000 < 0.6) fine = true;
-      var step = fine ? 1 : 15;
       drag.raw += d / (2 * Math.PI) * 1440;
-      dialMins = ((Math.round(drag.raw / step) * step % 1440) + 1440) % 1440;
-      drag.last = a; drag.t = now;
+      dialMins = detent(drag.raw);
+      drag.last = a;
       render();
     });
     ['pointerup', 'pointercancel', 'pointerleave'].forEach(function (ev) {
@@ -486,8 +490,6 @@
         if (!drag) return;
         drag = null; svg.classList.remove('drag');
         save();
-        clearTimeout(fineTimer);
-        fineTimer = setTimeout(function () { fine = false; render(); }, 900);
       });
     });
   })();

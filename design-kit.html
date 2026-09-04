@@ -467,9 +467,20 @@ footer{ text-align:center; color:var(--muted); font-family:var(--accent-font);
           <tr><td>Ramp</td><td class="val">Soft (see §01). Full is kept and reversible.</td></tr>
           <tr><td>Marker</td><td class="val">The arc's own rounded cap. No notch, bar or knob.</td></tr>
           <tr><td>Drag surface</td><td class="val">The entire dial, middle included.</td></tr>
-          <tr><td>Steps</td><td class="val">5 minutes on a normal drag; 1 minute when the drag slows below ~0.75 rad/s.</td></tr>
-          <tr><td>Drag feedback</td><td class="val">Ticks thicken and turn Klein on entering fine mode, with a label under the dial.</td></tr>
+          <tr><td>Stopping points</td><td class="val">Detents at the quarter hours. No modes, no speed sensing.</td></tr>
         </table>
+        <div class="callout" style="margin-top:20px"><b>Why detents, and not a finer grid.</b>
+        The whole day is about <b>754px</b> of arc, so <b>one minute is half a pixel</b> — minute
+        precision by finger is below the resolution of the input device, whatever scheme is used.
+        Detents do not add precision, they <i>redistribute</i> it. Within 3 minutes of a quarter
+        hour the drag produces no change, so 11:30 is a <b>3.46px</b> landing zone while every
+        other minute gets <b>0.31px</b>. Unlike a plain grid it also <i>holds</i>: overshoot by up
+        to ±3 minutes and you are still on 11:30, not on 11:31.
+        <br><br>
+        <b>Slow-drag fine adjust is retired</b> (4 Sept 2026). It was a mode you could not see,
+        entered by accident, that changed the rules mid-drag — and fingers <i>start</i> slow, so it
+        engaged within the first few move events of every drag. The mechanism was wrong, not the
+        constants. The <code>--tick-*-fine</code> tokens went with it.</div>
         <p style="font-size:16.2px;color:var(--muted);margin:18px 0 0">
           <b style="color:var(--ink);font-weight:400">Geometry</b> (400px viewBox): white face r&nbsp;104
           · ramp band 104–142 · outer arc track r&nbsp;155, 13px wide · ticks 168–180 · numerals r&nbsp;192.

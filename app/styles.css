@@ -31,8 +31,6 @@
      hold their old relationship to the majors. */
   --tick-maj:#79717e;
   --tick-min:#aea7b3;
-  --tick-maj-fine:#0d21a5;   /* slow-drag: the ticks thicken and turn Klein */
-  --tick-min-fine:#8ba2f0;
   /* How the ramp is toned down. 'mix' blends each stop toward --ramp-toward by
      --ramp-soften (0 = full strength); that is the locked light-mode treatment. 'lift'
      keeps every stop's hue and chroma and remaps only its lightness into
