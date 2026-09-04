@@ -55,7 +55,15 @@
   </div>
 </div>
 
-<footer>City data from <b>GeoNames</b>, CC BY 4.0 · times from your device’s own timezone database</footer>
+<footer>City data from <b>GeoNames</b>, CC BY 4.0 · times from your device’s own timezone database
+  <span class="build" id="build"></span></footer>
+
+<!-- Installed to the home screen there is no address bar and so no reload button. Without this
+     the app can sit on a cached build indefinitely and never tell you. -->
+<div class="toast" id="toast" hidden>
+  <span>A new version is ready.</span>
+  <button type="button" id="reload">Reload</button>
+</div>
 
 <script src="app.js"></script>
 <script>
@@ -65,7 +73,31 @@
    themes, and a cache serving them yesterday's stylesheet makes the comparison a lie. */
 if ('serviceWorker' in navigator && window.top === window) {
   window.addEventListener('load', function () {
-    navigator.serviceWorker.register('sw.js').catch(function () {});
+    navigator.serviceWorker.register('sw.js').then(function (reg) {
+      /* A worker that installs while another one is already controlling the page means the
+         files on the server have changed. Say so, rather than waiting for a reload that a
+         home-screen app has no way to ask for. */
+      function watch(w) {
+        if (!w) return;
+        w.addEventListener('statechange', function () {
+          if (w.state === 'installed' && navigator.serviceWorker.controller) {
+            document.getElementById('toast').hidden = false;
+          }
+        });
+      }
+      if (reg.waiting && navigator.serviceWorker.controller) {
+        document.getElementById('toast').hidden = false;
+      }
+      watch(reg.installing);
+      reg.addEventListener('updatefound', function () { watch(reg.installing); });
+      /* Standalone apps are resumed, not reloaded - so check for a new build on every resume. */
+      document.addEventListener('visibilitychange', function () {
+        if (!document.hidden) reg.update().catch(function () {});
+      });
+    }).catch(function () {});
+  });
+  document.getElementById('reload').addEventListener('click', function () {
+    location.reload();
   });
 }
 </script>

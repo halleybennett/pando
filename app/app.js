@@ -4,6 +4,7 @@
 (function () {
   'use strict';
 
+  var BUILD = '2026-09-04 13:49';
   var MAX = 6;
   var DB = null;
   var cities = [];          // [{name, cc, country, tz}] - index 0 is home
@@ -352,10 +353,12 @@
     big.innerHTML = cities.length
       ? pr.num + (pr.ap ? '<tspan font-size="20" dx="6" fill="' + T.muted + '">' + pr.ap + '</tspan>' : '')
       : '';
-    $('dial').querySelector('.hometag').textContent = cities.length ? cities[0].name.toUpperCase() : '';
+    fitHometag(cities.length ? cities[0].name.toUpperCase() : '');
     $('dial').setAttribute('aria-valuenow', m);
     $('dial').setAttribute('aria-valuetext', parts(m).num + (parts(m).ap ? ' ' + parts(m).ap : ''));
 
+    /* With no cities there is nothing for it to govern, and it floats in an empty circle. */
+    $('tog').hidden = !cities.length;
     $('tog').innerHTML = '<span class="tg" id="tgbtn">' + (use24
       ? '<span>12h</span><span class="sep">·</span><b>24h</b>'
       : '<b>12h</b><span class="sep">·</span><span>24h</span>') + '</span>';
@@ -369,6 +372,35 @@
 
     $('empty').hidden = cities.length > 0;
     $('add').hidden = cities.length >= MAX;
+  }
+
+  /* The city label sits inside the dial's white face, which is 156 units across at the centre
+     and narrower at the label's height. "PALMA DE MALLORCA" measures about 156 at 11px/2.4 and
+     ran out over the ring. Rather than pick a size that happens to fit the longest name anyone
+     has tried, measure the drawn text and shrink until it fits - dropping the tracking first,
+     since that is what makes a long name wide, then the size. Beyond that, truncate. */
+  var TAG_MAX = 138;
+  function fitHometag(text) {
+    var t = $('dial').querySelector('.hometag');
+    t.textContent = text;
+    if (!text) return;
+    var size = 11, track = 2.4;
+    t.setAttribute('font-size', size);
+    t.setAttribute('letter-spacing', track);
+    while (t.getComputedTextLength() > TAG_MAX && (track > 0.6 || size > 8.2)) {
+      if (track > 0.6) track = Math.max(0.6, track - 0.3);
+      else size = Math.max(8.2, size - 0.3);
+      t.setAttribute('font-size', size.toFixed(2));
+      t.setAttribute('letter-spacing', track.toFixed(2));
+    }
+    /* Still over at the floor - a name long enough that shrinking further would be unreadable. */
+    if (t.getComputedTextLength() > TAG_MAX) {
+      var s = text;
+      while (s.length > 4 && t.getComputedTextLength() > TAG_MAX) {
+        s = s.slice(0, -1);
+        t.textContent = s.replace(/[\s·]+$/, '') + '…';
+      }
+    }
   }
 
   /* ---------- date picker ---------- */
@@ -425,6 +457,7 @@
          away any movement smaller than half a step - so at the 5-minute step nothing under
          2.5 minutes of arc registered at all, and a slow drag did nothing. The grid is applied
          for display only; the underlying position is continuous. */
+      fine = false;                     /* every drag starts coarse */
       drag = { last: ang(e), t: performance.now(), raw: dialMins };
       stopTick();
       e.preventDefault();
@@ -433,8 +466,16 @@
       if (!drag) return;
       var a = ang(e), now = performance.now(), d = a - drag.last;
       if (d > Math.PI) d -= 2 * Math.PI; if (d < -Math.PI) d += 2 * Math.PI;
-      fine = Math.abs(d) / Math.max(now - drag.t, 1) * 1000 < 0.75;
-      var step = fine ? 1 : 5;
+      /* The whole day is about 754px of arc, so a 5-minute step was 2.6px - landing on 9:00
+         rather than 8:55 needed a pixel and a half of finger precision, which is not a thing.
+         The default step is now a quarter hour: 7.8px, and the times people actually aim for
+         (9:00, 9:15, 9:30) are the only ones on the grid.
+
+         Slow down once and it drops to single minutes for the rest of the drag - sticky, not
+         re-evaluated every frame, so it cannot flicker between grids under your finger. The
+         ticks thicken and turn Klein to say precision is on. */
+      if (!fine && Math.abs(d) / Math.max(now - drag.t, 1) * 1000 < 0.6) fine = true;
+      var step = fine ? 1 : 15;
       drag.raw += d / (2 * Math.PI) * 1440;
       dialMins = ((Math.round(drag.raw / step) * step % 1440) + 1440) % 1440;
       drag.last = a; drag.t = now;
@@ -615,6 +656,7 @@
     cities.push({ name: pick.name, cc: pick.cc, country: pick.country, tz: pick.tz });
   }
 
+  $('build').textContent = 'build ' + BUILD;
   buildDial();
   buildPicker();
   restore();          // saved rows carry their own zone, so the app paints before the fetch lands

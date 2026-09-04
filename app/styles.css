@@ -136,6 +136,7 @@ main,header,footer{max-width:var(--maxw);margin:0 auto}
 /* the toggle is an overlay ABOVE the svg, so tapping it cannot start a drag.
    Padding carries the 44pt hit area; the box is positioned so the *text* sits
    close under the city label rather than the box being centred on it. */
+.tog[hidden]{display:none}
 .tog{position:absolute;left:0;right:0;top:157px;display:flex;justify-content:center;z-index:3}
 .tg{display:inline-flex;align-items:center;gap:6px;font-size:12px;letter-spacing:.16em;
   text-transform:uppercase;color:var(--muted);cursor:pointer;padding:15px 10px}
@@ -247,3 +248,16 @@ footer b{font-weight:400}
    Light mode's UI colours do not change between the two - they are the raw stops.
    0.68 is the light ceiling: at 0.70 the night band measures 2.92 against a 3.0 floor.
    --------------------------------------------------------------------------- */
+
+/* The build stamp: quiet, but it answers "am I on the new one?" without a console. */
+.build{display:block;margin-top:6px;opacity:.55;font-variant-numeric:tabular-nums}
+
+/* Update toast. Sits above the safe area so it clears the home indicator. */
+.toast{position:fixed;left:16px;right:16px;bottom:calc(16px + env(safe-area-inset-bottom));
+  z-index:60;display:flex;align-items:center;justify-content:space-between;gap:14px;
+  background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  box-shadow:var(--shadow);padding:13px 14px 13px 18px;font-size:15px;color:var(--ink);
+  max-width:var(--maxw);margin:0 auto}
+.toast[hidden]{display:none}
+.toast button{font-family:var(--font);font-weight:400;font-size:15px;border:0;cursor:pointer;
+  background:var(--night);color:var(--on-night);border-radius:99px;padding:9px 18px;min-height:40px}
