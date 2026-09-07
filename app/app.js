@@ -4,7 +4,7 @@
 (function () {
   'use strict';
 
-  var BUILD = '2026-09-07 14:03';
+  var BUILD = '2026-09-07 15:41';
   var MAX = 6;
   var DB = null;
   var cities = [];          // [{name, cc, country, tz}] - index 0 is home
@@ -356,7 +356,7 @@
         return '<li class="city" data-i="' + i + '">' +
           '<div class="face">' +
             '<span class="handle" aria-hidden="true">' + GRIP() + '</span>' +
-            '<div class="name"><span class="n">' + esc(c.name) +
+            '<div class="name"><span class="n"><span class="cityname">' + esc(c.name) + '</span>' +
               (i === 0 ? '<span class="chip">home</span>' : '') + '</span>' +
               '<span class="zone">' + esc(c.country || '') + '</span></div>' +
             '<div class="right"><div class="stack">' +

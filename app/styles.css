@@ -183,6 +183,12 @@ main,header,footer{max-width:var(--maxw);margin:0 auto}
    and the day tag land on the same baseline across the row */
 .name{font-size:17px;min-width:0;flex:1;display:flex;flex-direction:column}
 .name .n{display:flex;align-items:center;gap:9px;min-width:0;height:28px}
+/* Truncates instead of wrapping, same as .zone below it. The row never had this - a long
+   enough name (or a shorter one carrying the home chip) would wrap the second word onto a
+   line the fixed-height .n box doesn't have room for, overlapping .zone underneath. The grip
+   narrowed the name column enough to make "Palma de Mallorca" + the chip hit it; the dataset
+   has real names twice that length, so this was only ever a matter of which name found it. */
+.cityname{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .zone{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;
   height:13px;line-height:13px;margin-top:3px}
