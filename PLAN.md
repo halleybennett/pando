@@ -424,6 +424,13 @@ filled or outlined at constant size.
 - **Slow-drag discoverability** — needs a visible response as the drag slows, or the
   single-minute precision is unreachable in practice.
 - Nov 1 DST edge case (below) — leave honest, or pin to midday?
+- **Home is purely positional** (`cities[0]` *is* home — see `homeTz()` in `app.js`), so
+  drag-to-reorder inherited the same rule the `Set home` button already used: dropping a city
+  in the top slot promotes it, because the data model has no other way to say which city is
+  home. Raised by Halley 7 Sept 2026, after shipping drag-to-reorder — she noticed it and asked
+  why. Left as-is for now. Decoupling them (reordering freely without ever touching home) would
+  need home to become its own field rather than a derived position - a real data-model change,
+  not a tweak.
 
 *Scorecard: parked at Halley's request. No cards, no project tag for now.*
 
