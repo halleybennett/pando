@@ -4,7 +4,7 @@
 (function () {
   'use strict';
 
-  var BUILD = '2026-09-04 14:17';
+  var BUILD = '2026-09-07 14:03';
   var MAX = 6;
   var DB = null;
   var cities = [];          // [{name, cc, country, tz}] - index 0 is home
@@ -156,6 +156,12 @@
 
   var CHEV = '<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" ' +
     'stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9.5l6 6 6-6"/></svg>';
+  function GRIP() {
+    return '<svg viewBox="0 0 14 16" width="14" height="16" fill="currentColor" aria-hidden="true">' +
+      '<circle cx="3" cy="3" r="1.4"/><circle cx="11" cy="3" r="1.4"/>' +
+      '<circle cx="3" cy="8" r="1.4"/><circle cx="11" cy="8" r="1.4"/>' +
+      '<circle cx="3" cy="13" r="1.4"/><circle cx="11" cy="13" r="1.4"/></svg>';
+  }
   /* The crescent's bounding box ran 1.96-13.40 in x and 4.60-16.04 in y, so it sat 1.32 units
      up and to the left of the centre of its own box - visible once it is in a column with the
      sun and the add button. The path is the locked one; only the transform is new. */
@@ -349,6 +355,7 @@
         var shift = Math.round((Date.UTC(p.y, p.mo - 1, p.d) - Date.UTC(hp.y, hp.mo - 1, hp.d)) / 86400000);
         return '<li class="city" data-i="' + i + '">' +
           '<div class="face">' +
+            '<span class="handle" aria-hidden="true">' + GRIP() + '</span>' +
             '<div class="name"><span class="n">' + esc(c.name) +
               (i === 0 ? '<span class="chip">home</span>' : '') + '</span>' +
               '<span class="zone">' + esc(c.country || '') + '</span></div>' +
@@ -498,7 +505,15 @@
   function closeAllRows(except) {
     document.querySelectorAll('.city.open').forEach(function (el) { if (el !== except) el.classList.remove('open'); });
   }
+  /* Reordering replaces the row under the finger with a fresh one on render(), so the
+     synthetic click that follows pointerup would land on whatever city is now there
+     instead of being a no-op - suppressed the same way the swipe-drag already was. A
+     timestamp rather than a plain flag: touch-action:none during the drag means some
+     browsers never fire that trailing click at all, and a flag left waiting for a click
+     that never comes would silently eat the next unrelated tap instead. */
+  var suppressClickUntil = 0;
   $('cities').addEventListener('click', function (e) {
+    if (Date.now() < suppressClickUntil) { suppressClickUntil = 0; return; }
     var del = e.target.closest('[data-del]');
     if (del) { cities.splice(+del.dataset.del, 1); render(); save(); return; }
     var home = e.target.closest('[data-home]');
@@ -510,14 +525,69 @@
     closeAllRows();
     if (!wasOpen) li.classList.add('open');
   });
+  /* Tap-to-open, horizontal swipe-to-reveal, and drag-to-reorder share this one pointer
+     stream on the list. Reorder used to start from a press-and-hold anywhere on the row,
+     timed to disambiguate it from a tap or a swipe - on a mouse that timing is hard to land
+     and the held-down row's own text starts a native selection in the meantime, which reads
+     as broken. The grip removes the ambiguity instead of timing around it: a pointerdown
+     that starts there is unambiguously a reorder, on any input, from the first pixel. */
   (function () {
-    var sx = 0, sy = 0, li = null, decided = false, horiz = false, list = $('cities');
+    var list = $('cities');
+    var sx = 0, sy = 0, li = null, decided = false, horiz = false;
+    var reordering = false, startIndex = 0, targetIndex = 0, rowH = 0, siblings = [];
+
+    function beginReorder(e) {
+      reordering = true;
+      startIndex = targetIndex = +li.dataset.i;
+      rowH = li.offsetHeight;
+      closeAllRows();
+      li.classList.add('dragging');
+      try { list.setPointerCapture(e.pointerId); } catch (_) {}
+      siblings = Array.prototype.filter.call(list.children, function (el) { return el !== li; });
+      siblings.forEach(function (el) { el.classList.add('reorder-shift'); });
+    }
+
+    /* The dragged row tracks the finger 1:1 via an inline transform; siblings between its
+       old and new slot get an animated transform to open the gap live, exactly like reordering
+       iOS home-screen icons. Nothing touches the DOM order until release - see endReorder. */
+    function updateReorder(dy) {
+      li.style.transform = 'translateY(' + dy + 'px) rotate(' + (dy > 0 ? -1.2 : 1.2) + 'deg) scale(1.02)';
+      var next = Math.max(0, Math.min(cities.length - 1, startIndex + Math.round(dy / rowH)));
+      if (next === targetIndex) return;
+      targetIndex = next;
+      siblings.forEach(function (el) {
+        var i = +el.dataset.i, shift = 0;
+        if (targetIndex > startIndex && i > startIndex && i <= targetIndex) shift = -rowH;
+        else if (targetIndex < startIndex && i >= targetIndex && i < startIndex) shift = rowH;
+        el.style.transform = shift ? 'translateY(' + shift + 'px)' : '';
+      });
+    }
+
+    /* Dropping at index 0 is a promotion to home - that is simply what index 0 means
+       elsewhere in the app, so the splice below needs no separate home-setting step. */
+    function endReorder() {
+      li.classList.remove('dragging');
+      li.style.transform = '';
+      siblings.forEach(function (el) { el.classList.remove('reorder-shift'); el.style.transform = ''; });
+      if (targetIndex !== startIndex) {
+        cities.splice(targetIndex, 0, cities.splice(startIndex, 1)[0]);
+        suppressClickUntil = Date.now() + 400;
+        render(); save();
+      }
+      reordering = false; siblings = [];
+    }
+
     list.addEventListener('pointerdown', function (e) {
       li = e.target.closest('.city'); if (!li) return;
       sx = e.clientX; sy = e.clientY; decided = false; horiz = false; li.dataset.moved = '0';
+      if (e.target.closest('.handle') && cities.length > 1) {
+        beginReorder(e);
+        e.preventDefault();
+      }
     });
     list.addEventListener('pointermove', function (e) {
       if (!li) return;
+      if (reordering) { updateReorder(e.clientY - sy); e.preventDefault(); return; }
       var dx = e.clientX - sx, dy = e.clientY - sy;
       if (!decided) {
         if (Math.abs(dx) < 10 && Math.abs(dy) < 10) return;
@@ -528,6 +598,7 @@
     ['pointerup', 'pointercancel', 'pointerleave'].forEach(function (ev) {
       list.addEventListener(ev, function (e) {
         if (!li) return;
+        if (reordering) { endReorder(); li = null; return; }
         if (horiz) {
           var dx = e.clientX - sx;
           if (dx < -45) { closeAllRows(li); li.classList.add('open'); }

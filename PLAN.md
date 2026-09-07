@@ -544,6 +544,12 @@ and the jump reads as a glitch. Options: anchor the sheet near the button that o
 centred modal, or a popover attached to the Add row. The mobile and desktop cases genuinely want
 different things, so this may be one place a media query earns its keep.
 
+**7. A new app icon direction — raised 7 Sept 2026.** Halley's read on the current V2b icon on an
+actual home screen: the grove mark reads as cheap at that size and is too small to carry any
+meaning. Idea to try: drop the mark entirely and design the icon around just the ring - the
+gradient treatment, explored across variants. Not scoped - needs its own round of candidates
+before anything is decided.
+
 ---
 
 ## Cost

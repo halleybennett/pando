@@ -47,6 +47,9 @@
   --row-open:#f9f7f3;        /* an opened row, tinted off the paper */
   --scrim:rgba(20,22,26,.28);
   --shadow:0 14px 40px rgba(20,20,26,.18);
+  /* A centred modal needs more separation from the page than a dropdown like .picker does -
+     .shadow stays theirs, unchanged; the search sheet gets its own, heavier one. */
+  --shadow-modal:0 24px 64px rgba(20,20,26,.28);
   --on-night:#ffffff;        /* text that sits on Klein */
   --radius:20px;
   --radius-sm:12px;
@@ -81,6 +84,7 @@
     --ramp-toward:#ffffff;
     --scrim:rgba(4,5,10,.55);
     --shadow:0 14px 40px rgba(0,0,0,.5);
+    --shadow-modal:0 24px 64px rgba(0,0,0,.6);
   }
 }
 *{box-sizing:border-box}
@@ -151,8 +155,30 @@ main,header,footer{max-width:var(--maxw);margin:0 auto}
 .city:last-child{border-radius:0 0 var(--radius) var(--radius)}
 .city:only-child{border-radius:var(--radius)}
 .city .face{display:flex;justify-content:space-between;align-items:center;gap:12px;
-  padding:10px 18px;background:var(--card);cursor:pointer;transition:background .18s;touch-action:pan-y}
+  padding:10px 18px;background:var(--card);cursor:pointer;transition:background .18s;touch-action:pan-y;
+  -webkit-user-select:none;user-select:none}
 .city.open .face{background:var(--row-open)}
+.city .face:active{background:var(--row-open)}
+/* Grip: mousedown/touchstart here is unambiguous, so the drag can start on the first pixel -
+   no hold-to-arm timing, which is also what keeps a mouse from selecting the row's own text
+   while it waits (a held-down press-anywhere gesture fought the browser for that). 26px visual
+   box under the 44pt hit-area floor the rest of the app uses, so padding widens the tappable
+   area without widening the column - the .datebtn trick, padding out then pulling back in with
+   an equal negative margin. */
+/* Klein (--night), not muted - it's the app's one action colour, and a drag handle is an
+   action affordance, not a label. Reads as --night in both schemes rather than a literal,
+   so it stays true to whatever each theme's action colour actually is. */
+.handle{flex:none;width:26px;height:16px;display:flex;align-items:center;justify-content:center;
+  color:var(--night);cursor:grab;touch-action:none;padding:14px 8px;margin:-14px -8px}
+.city.dragging .handle{cursor:grabbing}
+/* Picked up by its grip. Needs its own overflow and z-index because .city itself is
+   overflow:hidden for the swipe-reveal clip, which would otherwise clip this row's own
+   box-shadow. transform is set inline per pointermove so it can track the finger every frame;
+   reorder-shift is the sibling that animates instead. */
+.city.dragging{position:relative;z-index:5;overflow:visible;border-radius:var(--radius-sm);
+  box-shadow:0 10px 26px rgba(20,20,26,.22);background:var(--card)}
+.city.dragging .face{background:var(--card)}
+.city.reorder-shift{transition:transform .18s ease}
 /* both columns are a 28px primary line over a 13px secondary line, so the country
    and the day tag land on the same baseline across the row */
 .name{font-size:17px;min-width:0;flex:1;display:flex;flex-direction:column}
@@ -196,13 +222,19 @@ main,header,footer{max-width:var(--maxw);margin:0 auto}
 .empty b{font-weight:400;color:var(--ink)}
 .empty[hidden]{display:none}
 
-/* ---- search sheet ---- */
+/* ---- search sheet ----
+   A centred modal, on every screen size - it used to anchor to the top of the viewport,
+   which read fine close to a phone's keyboard but landed nowhere near the Add row on a
+   wider screen and looked like a glitch. Blurring what's behind it is what actually reads
+   as "modal" rather than "panel" - the scrim alone was too close in tone to the paper
+   ground to separate the two, especially on the lighter grounds. */
 .sheet{position:fixed;inset:0;background:var(--scrim);display:flex;
-  align-items:flex-start;justify-content:center;z-index:40}
+  align-items:center;justify-content:center;z-index:40;padding:24px;
+  backdrop-filter:blur(10px) saturate(1.1);-webkit-backdrop-filter:blur(10px) saturate(1.1)}
 .sheet[hidden]{display:none}
 .sheetcard{background:var(--card);width:100%;max-width:var(--maxw);
-  border-radius:0 0 var(--radius) var(--radius);
-  padding:max(20px,env(safe-area-inset-top)) 16px 12px;
+  border-radius:var(--radius);box-shadow:var(--shadow-modal);
+  padding:20px 16px 16px;
   display:flex;flex-direction:column;max-height:88vh}
 .searchrow{display:flex;gap:10px;align-items:center}
 #q{flex:1;min-width:0;font-family:var(--font);font-weight:300;font-size:17px;color:var(--ink);
@@ -211,7 +243,13 @@ main,header,footer{max-width:var(--maxw);margin:0 auto}
 #q:focus{border-color:var(--night)}
 .cancel{border:0;background:none;font-family:var(--font);font-weight:300;font-size:16px;
   color:var(--night);cursor:pointer;padding:6px 2px}
-.results{list-style:none;margin:12px 0 0;padding:0;overflow-y:auto;-webkit-overflow-scrolling:touch}
+/* Fixed at roughly five result rows' worth of height, not just a floor - a min-height still
+   let the card grow past it for a sixth row onward, which was its own jump, just delayed.
+   Whether there's no query, one match or forty, the card is this one size and the list
+   scrolls inside it; nothing about the sheet's own height ever changes after it opens. */
+.sheet-body{display:flex;flex-direction:column;height:260px;
+  overflow-y:auto;-webkit-overflow-scrolling:touch}
+.results{list-style:none;margin:12px 0 0;padding:0}
 .results li{display:flex;justify-content:space-between;align-items:baseline;gap:12px;
   padding:13px 4px;border-top:1px solid var(--line);cursor:pointer}
 .results li:first-child{border-top:none}
